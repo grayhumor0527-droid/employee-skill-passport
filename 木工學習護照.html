@@ -422,6 +422,32 @@
     opacity: 0; transition: opacity 0.3s;
   }
   .done .done-stamp { opacity: 1; }
+  .skill-card.locked { border-color: #ffc107; }
+  .skill-card.locked .card-check { background: #ffc107; border-color: #ffc107; cursor: not-allowed; }
+  .skill-card.locked .star { cursor: not-allowed; pointer-events: none; }
+  .skill-card.locked .btn-cert { display: none; }
+  .skill-card.locked .mentor-select { pointer-events: none; background: #f5f5f5; }
+  .skill-card.locked .date-input { pointer-events: none; }
+  .locked-stamp {
+    position: absolute; top: 8px; left: 8px;
+    font-size: 9px; font-family: 'DM Mono', monospace;
+    padding: 2px 6px; border-radius: 4px;
+    border: 1.5px solid #ffc107; color: #ffc107;
+    background: rgba(255,248,225,0.95);
+    transform: rotate(8deg);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .locked .locked-stamp { opacity: 1; }
+  .viewer-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 8px;
+  }
+  .viewer-admin { background: #ffeb3b; color: #f57f17; }
+  .viewer-leader { background: #e3f2fd; color: #1976d2; }
 
   /* Training Section */
   .training-section {
@@ -554,9 +580,17 @@
 <div class="employee-section">
   <div class="employee-grid">
     <div class="info-field">
+      <label>🔐 登入身份</label>
+      <div class="name-search">
+        <select id="viewerLogin" onchange="onViewerChange()">
+          <option value="">請先登入</option>
+        </select>
+      </div>
+    </div>
+    <div class="info-field">
       <label>員工姓名</label>
       <div class="name-search">
-        <select id="employeeName" onchange="onEmployeeSelect()">
+        <select id="employeeName" onchange="onEmployeeSelect()" disabled>
           <option value="">請選擇員工</option>
         </select>
         <button class="btn-search" onclick="searchEmployee()">🔍 查詢</button>
@@ -573,6 +607,10 @@
     <div class="info-field">
       <label>職級</label>
       <div id="currentRank" class="info-display">-</div>
+    </div>
+    <div class="info-field">
+      <label>最後認證</label>
+      <div id="lastCertDate" class="info-display">-</div>
     </div>
   </div>
   <div id="employeeNameBanner" class="employee-banner" style="display:none;">
@@ -967,7 +1005,47 @@ const salaryTable = [
 const STORE_PREFIX = 'wood-passport-';
 const INDEX_KEY = 'wood-passport-index';
 let currentEmployee = '';
+let currentViewer = ''; // 目前登入者
 let state = { skills:{}, training:{}, employee:{} };
+
+// 權限系統 - 陳瑋鑫為最高權限
+const ADMIN_USER = '陳瑋鑫';
+
+// 取得登入者可查看的員工列表
+function getViewableEmployees(viewer) {
+  if (!viewer) return [];
+
+  // 管理員可看所有人
+  if (viewer === ADMIN_USER) {
+    return Object.keys(EMPLOYEE_DATA.rates);
+  }
+
+  // 組長只能看自己組的成員
+  for (const [teamName, team] of Object.entries(EMPLOYEE_DATA.teams)) {
+    if (team.leader === viewer) {
+      return [viewer, ...(team.members || [])];
+    }
+  }
+
+  // 一般員工只能看自己
+  return [viewer];
+}
+
+// 是否為組長或管理員
+function isLeaderOrAdmin(viewer) {
+  if (viewer === ADMIN_USER) return true;
+  for (const team of Object.values(EMPLOYEE_DATA.teams)) {
+    if (team.leader === viewer) return true;
+  }
+  return false;
+}
+
+// 取得登入者身份標籤
+function getViewerBadge(viewer) {
+  if (viewer === ADMIN_USER) return '<span class="viewer-badge viewer-admin">管理員</span>';
+  if (isLeaderOrAdmin(viewer)) return '<span class="viewer-badge viewer-leader">組長</span>';
+  return '';
+}
 
 // 員工資料（來自 config.json）
 const EMPLOYEE_DATA = {
@@ -1034,12 +1112,59 @@ function updateEmployeeIndex(name) {
   populateEmployeeList();
 }
 
-// 填充員工下拉選單
+// 填充登入者下拉選單（導師及組長）
+function populateViewerList() {
+  const select = document.getElementById('viewerLogin');
+  // 所有可登入的人（管理員 + 組長 + 所有員工）
+  const viewers = Object.keys(EMPLOYEE_DATA.rates).sort((a, b) => {
+    // 管理員排第一
+    if (a === ADMIN_USER) return -1;
+    if (b === ADMIN_USER) return 1;
+    // 組長排前面
+    const aLeader = isLeaderOrAdmin(a);
+    const bLeader = isLeaderOrAdmin(b);
+    if (aLeader && !bLeader) return -1;
+    if (!aLeader && bLeader) return 1;
+    return a.localeCompare(b);
+  });
+  select.innerHTML = '<option value="">請先登入</option>' +
+    viewers.map(name => {
+      const badge = name === ADMIN_USER ? '👑 ' : (isLeaderOrAdmin(name) ? '⭐ ' : '');
+      return `<option value="${name}">${badge}${name}</option>`;
+    }).join('');
+}
+
+// 登入者變更
+function onViewerChange() {
+  const viewer = document.getElementById('viewerLogin').value;
+  currentViewer = viewer;
+
+  const employeeSelect = document.getElementById('employeeName');
+
+  if (!viewer) {
+    employeeSelect.disabled = true;
+    employeeSelect.innerHTML = '<option value="">請先登入</option>';
+    clearEmployeeInfo();
+    return;
+  }
+
+  employeeSelect.disabled = false;
+  populateEmployeeList();
+
+  // 如果是查看自己，自動選擇
+  if (!isLeaderOrAdmin(viewer)) {
+    employeeSelect.value = viewer;
+    onEmployeeSelect();
+    searchEmployee();
+  }
+}
+
+// 填充員工下拉選單（根據權限過濾）
 function populateEmployeeList() {
   const select = document.getElementById('employeeName');
-  const employees = Object.keys(EMPLOYEE_DATA.rates).sort();
+  const viewableEmployees = getViewableEmployees(currentViewer).sort();
   select.innerHTML = '<option value="">請選擇員工</option>' +
-    employees.map(name => `<option value="${name}">${name}</option>`).join('');
+    viewableEmployees.map(name => `<option value="${name}">${name}</option>`).join('');
 }
 
 // 員工選擇時觸發
@@ -1058,10 +1183,25 @@ function updateEmployeeInfo(name) {
   document.getElementById('currentSalary').textContent =
     EMPLOYEE_DATA.rates[name] ? `$${EMPLOYEE_DATA.rates[name].toLocaleString()}` : '-';
 
-  // 計算技能分數對應職級
+  // 計算技能分數對應職級（使用實際得分）
   const done = SKILLS.filter(s => state.skills[s.id]?.done);
-  const total = done.reduce((a, s) => a + s.pts, 0);
-  document.getElementById('currentRank').textContent = getRankByScore(total);
+  const total = done.reduce((a, s) => a + getActualScore(s.id), 0);
+  document.getElementById('currentRank').textContent = getRankByScore(Math.round(total));
+
+  // 取得最後一次認證時間
+  let lastDate = '-';
+  const allDates = [];
+  for (const skill of SKILLS) {
+    const history = state.skills[skill.id]?.history || [];
+    if (history.length > 0) {
+      allDates.push(history[history.length - 1].date);
+    }
+  }
+  if (allDates.length > 0) {
+    allDates.sort();
+    lastDate = allDates[allDates.length - 1];
+  }
+  document.getElementById('lastCertDate').textContent = lastDate;
 
   // 顯示員工名稱橫幅
   const banner = document.getElementById('employeeNameBanner');
@@ -1077,6 +1217,7 @@ function clearEmployeeInfo() {
   document.getElementById('teamDisplay').textContent = '-';
   document.getElementById('currentSalary').textContent = '-';
   document.getElementById('currentRank').textContent = '-';
+  document.getElementById('lastCertDate').textContent = '-';
   document.getElementById('employeeNameBanner').style.display = 'none';
 }
 
@@ -1112,7 +1253,7 @@ function searchEmployee() {
 function resetState() {
   state = { skills:{}, training:{}, employee:{} };
   SKILLS.forEach(s => {
-    state.skills[s.id] = { done:false, date:'', stars:0, mentor:'', history:[] };
+    state.skills[s.id] = { done:false, date:'', stars:0, mentor:'', locked:false, history:[] };
   });
 }
 
@@ -1168,6 +1309,7 @@ function autoCheckSkillsByScore(targetScore) {
       date: today,
       stars: 5, // 初始設為5星，得滿分
       mentor: '系統初始化',
+      locked: true, // 滿星自動鎖定
       history: [{
         date: today,
         mentor: '系統初始化',
@@ -1209,7 +1351,7 @@ function initAllEmployees() {
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('currentDate').textContent = new Date().toLocaleDateString('zh-TW');
   initState();
-  populateEmployeeList();
+  populateViewerList();
   buildSkillsNav();
   buildSkillsContent();
   buildTraining();
@@ -1353,6 +1495,7 @@ function buildSkillCard(skill, cat) {
   card.id = `card-${skill.id}`;
   card.innerHTML = `
     <div class="done-stamp">完成</div>
+    <div class="locked-stamp">🔒 滿星鎖定</div>
     <div class="card-stripe" style="background:${cat.color}"></div>
     <div class="card-main">
       <div class="card-top-row">
@@ -1384,6 +1527,11 @@ function buildSkillCard(skill, cat) {
   card.querySelector(`#certBtn-${skill.id}`).addEventListener('click', () => certifySkill(skill.id));
   card.querySelectorAll(`#stars-${skill.id} .star`).forEach(star => {
     star.addEventListener('click', () => {
+      // 檢查是否已鎖定
+      if (isSkillLocked(skill.id)) {
+        alert('此技能已滿星鎖定，無法修改');
+        return;
+      }
       const n = parseInt(star.dataset.n);
       state.skills[skill.id].stars = (state.skills[skill.id].stars === n) ? 0 : n;
       save(); renderStars(skill.id); updateActualPts(skill.id); updateStats();
@@ -1395,6 +1543,12 @@ function buildSkillCard(skill, cat) {
 
 // 認證技能
 function certifySkill(id) {
+  // 檢查是否已鎖定
+  if (isSkillLocked(id)) {
+    alert('此技能已滿星鎖定，無法修改');
+    return;
+  }
+
   const mentor = document.getElementById(`mentor-${id}`).value;
   const date = document.getElementById(`date-${id}`).value || new Date().toISOString().split('T')[0];
   const stars = state.skills[id].stars || 3;
@@ -1420,10 +1574,39 @@ function certifySkill(id) {
   state.skills[id].mentor = mentor;
   state.skills[id].stars = stars;
 
+  // 滿星自動鎖定
+  if (stars === 5) {
+    state.skills[id].locked = true;
+  }
+
   save();
   refreshSkillCard(id);
   updateStats();
   renderHistory(id);
+}
+
+// 檢查技能是否已鎖定（滿星）
+function isSkillLocked(id) {
+  const s = state.skills[id];
+  if (!s) return false;
+  // 有滿星認證記錄即鎖定
+  if (s.locked) return true;
+  if (s.done && s.stars === 5) return true;
+  return false;
+}
+
+// 取得最後一次認證時間
+function getLastCertDate(id) {
+  const history = state.skills[id]?.history || [];
+  if (history.length === 0) return null;
+  return history[history.length - 1].date;
+}
+
+// 取得最後一次認證的星數（用於計算分數）
+function getLastCertStars(id) {
+  const history = state.skills[id]?.history || [];
+  if (history.length === 0) return state.skills[id]?.stars || 0;
+  return history[history.length - 1].stars;
 }
 
 // 顯示認證歷史
@@ -1446,13 +1629,15 @@ function renderHistory(id) {
     `).join('');
 }
 
-// 計算實際得分（星數影響）
+// 計算實際得分（以最後一次認證的星數為準）
 function getActualScore(skillId) {
   const skill = SKILLS.find(s => s.id === skillId);
   const s = state.skills[skillId];
-  if (!s.done) return 0;
+  if (!s || !s.done) return 0;
+  // 使用最後一次認證的星數
+  const stars = getLastCertStars(skillId);
   // 星數比例：1星=20%, 2星=40%, 3星=60%, 4星=80%, 5星=100%
-  const starRatio = (s.stars || 3) * 0.2;
+  const starRatio = (stars || 3) * 0.2;
   return Math.round(skill.pts * starRatio * 10) / 10;
 }
 
@@ -1469,6 +1654,11 @@ function updateActualPts(id) {
 }
 
 function toggleSkill(id) {
+  // 檢查是否已鎖定
+  if (isSkillLocked(id)) {
+    alert('此技能已滿星鎖定，無法修改');
+    return;
+  }
   const s = state.skills[id];
   s.done = !s.done;
   if (s.done && !s.date) s.date = new Date().toISOString().split('T')[0];
@@ -1481,6 +1671,7 @@ function refreshSkillCard(id) {
   const card = document.getElementById(`card-${id}`);
   if (!card) return;
   card.classList.toggle('done', s.done);
+  card.classList.toggle('locked', isSkillLocked(id));
   const dateEl = card.querySelector(`#date-${id}`);
   if (dateEl) dateEl.value = s.date || '';
   const mentorEl = card.querySelector(`#mentor-${id}`);
