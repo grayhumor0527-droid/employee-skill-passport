@@ -907,78 +907,298 @@ const SKILLS = [
   { id:154, cat:'app', title:'TimeThree 學徒工作時間', desc:'', pts:1 },
 ];
 
-// Training Data (8 Weeks) - 新人入職訓練
-const trainingData = {
-  "第一周｜公司文化與行政": [
-    { id:"w1-01", text:"📋 簽署勞動契約、保密協議、員工手冊確認" },
-    { id:"w1-02", text:"🏢 認識公司：使命、願景、核心價值、組織架構" },
-    { id:"w1-03", text:"👥 認識團隊：導師、組長、同事介紹" },
-    { id:"w1-04", text:"📱 加入 Line 群組：公司群、組別群、案場群" },
-    { id:"w1-05", text:"⏰ 出勤規範：上下班時間、加班申請、請假流程" },
-    { id:"w1-06", text:"💰 薪資制度：日薪計算、外地加給、晚餐補貼說明" },
-    { id:"w1-07", text:"🎯 職涯發展：學徒→半技→師傅→領班 晉升路徑" }
-  ],
-  "第二周｜系統操作訓練": [
-    { id:"w2-01", text:"📲 金豐打卡系統：每日打卡、加班記錄、請假申請" },
-    { id:"w2-02", text:"📅 TimeThree 排程：查看工作安排、回報出勤" },
-    { id:"w2-03", text:"📦 Asana 訂貨系統：進料申請、退料流程、詢價作業" },
-    { id:"w2-04", text:"🔧 ON!Track 工具管理：領用、歸還、維修申報" },
-    { id:"w2-05", text:"📸 Asana 照片上傳：每日進度照、完工照規範" },
-    { id:"w2-06", text:"✅ 系統操作測驗：獨立完成各系統基本操作" }
-  ],
-  "第三周｜安全與工地規範": [
-    { id:"w3-01", text:"🦺 個人防護裝備：安全帽、護目鏡、手套、安全鞋" },
-    { id:"w3-02", text:"⚠️ 工地安全守則：高處作業、電氣安全、消防常識" },
-    { id:"w3-03", text:"🚨 緊急應變：受傷處理、火災逃生、急救箱位置" },
-    { id:"w3-04", text:"🧹 5S 整理原則：整理、整頓、清掃、清潔、素養" },
-    { id:"w3-05", text:"🏠 案場值日生職責：關電、關窗、垃圾清運、環境整潔" },
-    { id:"w3-06", text:"📋 工地禮儀：與業主應對、鄰居互動、噪音管制" }
-  ],
-  "第四周｜材料認識": [
-    { id:"w4-01", text:"🪵 骨料認識：角材規格（1×1、1×2）、F1/F3 等級" },
-    { id:"w4-02", text:"📐 板材認識：矽酸鈣板、木心板、夾板、塑合板" },
-    { id:"w4-03", text:"🔩 五金認識：釘子種類（ST、F、J）、螺絲規格" },
-    { id:"w4-04", text:"🔗 絞鍊認識：西德絞鍊、十字絞鍊、回歸絞鍊" },
-    { id:"w4-05", text:"📏 滑軌認識：三節式滑軌、座式滑軌" },
-    { id:"w4-06", text:"🧴 膠合劑認識：白膠、強力膠、矽利康用途" },
-    { id:"w4-07", text:"✅ 材料辨識測驗：正確辨認各類材料" }
-  ],
-  "第五周｜手工具操作": [
-    { id:"w5-01", text:"📏 量測工具：捲尺使用、角尺校正、雷射水平儀" },
-    { id:"w5-02", text:"✏️ 劃線工具：墨斗彈線、鉛筆標記技巧" },
-    { id:"w5-03", text:"🔨 敲擊工具：鐵鎚正確握法、釘釘技巧" },
-    { id:"w5-04", text:"✂️ 切割工具：美工刀安全使用、手鋸操作" },
-    { id:"w5-05", text:"🔧 拆裝工具：螺絲起子、老虎鉗、肉路阿" },
-    { id:"w5-06", text:"🪚 鉋削工具：鉋刀使用、鑿刀操作" },
-    { id:"w5-07", text:"✅ 手工具實作測驗：正確安全地操作各類手工具" }
-  ],
-  "第六周｜電動與氣動工具": [
-    { id:"w6-01", text:"⚡ 電鑽/起子機：鑽孔、鎖螺絲、換鑽頭" },
-    { id:"w6-02", text:"🪚 電鋸/彎鋸：直線切割、曲線切割安全操作" },
-    { id:"w6-03", text:"📐 角度切斷機：45度、90度精準裁切" },
-    { id:"w6-04", text:"🌀 修邊機/砂磨機：邊緣修整、表面處理" },
-    { id:"w6-05", text:"💨 氣動釘槍：小鋼炮、鋼樑槍、蚊釘槍操作" },
-    { id:"w6-06", text:"🔌 空壓機：開機、調壓、接管、保養" },
-    { id:"w6-07", text:"✅ 電動工具實作測驗：安全操作各類電動工具" }
-  ],
-  "第七周｜基礎施作練習": [
-    { id:"w7-01", text:"📐 放樣練習：使用雷射儀、墨斗彈線" },
-    { id:"w7-02", text:"🔨 骨架組立：角材切割、組裝、固定" },
-    { id:"w7-03", text:"📦 封板練習：矽酸鈣板裁切、對位、固定" },
-    { id:"w7-04", text:"🔍 品質檢查：平整度確認、釘距檢查、不浮釘" },
-    { id:"w7-05", text:"🧹 收尾作業：批土、砂磨、清潔" },
-    { id:"w7-06", text:"📸 完工紀錄：拍照角度、上傳流程" },
-    { id:"w7-07", text:"✅ 基礎施作測驗：協助完成封板作業" }
-  ],
-  "第八周｜獨立作業與考核": [
-    { id:"w8-01", text:"🏗️ 獨立任務：完成指定區域平釘天花板" },
-    { id:"w8-02", text:"📋 技能考核：導師評分各項技能達成度" },
-    { id:"w8-03", text:"💬 導師面談：回顧8周學習、討論改進方向" },
-    { id:"w8-04", text:"📊 自我評估：填寫技能護照、設定下階段目標" },
-    { id:"w8-05", text:"🎓 結訓認證：通過考核獲得「學徒認證」" },
-    { id:"w8-06", text:"🚀 後續發展：制定3個月晉升半技計畫" }
-  ]
+// Training Data by Rank - 依職級8周導師考核
+const TRAINING_BY_RANK = {
+  "學徒": {
+    title: "🔰 學徒入職訓練",
+    weeks: {
+      "第一周｜公司文化與行政": [
+        { id:"a1-01", text:"📋 簽署勞動契約、保密協議、員工手冊確認" },
+        { id:"a1-02", text:"🏢 認識公司：使命、願景、核心價值、組織架構" },
+        { id:"a1-03", text:"👥 認識團隊：導師、組長、同事介紹" },
+        { id:"a1-04", text:"📱 加入 Line 群組：公司群、組別群、案場群" },
+        { id:"a1-05", text:"⏰ 出勤規範：上下班時間、加班申請、請假流程" },
+        { id:"a1-06", text:"💰 薪資制度：日薪計算、外地加給、晚餐補貼說明" },
+        { id:"a1-07", text:"🎯 職涯發展：學徒→半技→師傅→領班 晉升路徑" }
+      ],
+      "第二周｜系統操作訓練": [
+        { id:"a2-01", text:"📲 金豐打卡系統：每日打卡、加班記錄、請假申請" },
+        { id:"a2-02", text:"📅 TimeThree 排程：查看工作安排、回報出勤" },
+        { id:"a2-03", text:"📦 Asana 訂貨系統：進料申請、退料流程、詢價作業" },
+        { id:"a2-04", text:"🔧 ON!Track 工具管理：領用、歸還、維修申報" },
+        { id:"a2-05", text:"📸 Asana 照片上傳：每日進度照、完工照規範" },
+        { id:"a2-06", text:"✅ 系統操作測驗：獨立完成各系統基本操作" }
+      ],
+      "第三周｜安全與工地規範": [
+        { id:"a3-01", text:"🦺 個人防護裝備：安全帽、護目鏡、手套、安全鞋" },
+        { id:"a3-02", text:"⚠️ 工地安全守則：高處作業、電氣安全、消防常識" },
+        { id:"a3-03", text:"🚨 緊急應變：受傷處理、火災逃生、急救箱位置" },
+        { id:"a3-04", text:"🧹 5S 整理原則：整理、整頓、清掃、清潔、素養" },
+        { id:"a3-05", text:"🏠 案場值日生職責：關電、關窗、垃圾清運、環境整潔" },
+        { id:"a3-06", text:"📋 工地禮儀：與業主應對、鄰居互動、噪音管制" }
+      ],
+      "第四周｜材料認識": [
+        { id:"a4-01", text:"🪵 骨料認識：角材規格（1×1、1×2）、F1/F3 等級" },
+        { id:"a4-02", text:"📐 板材認識：矽酸鈣板、木心板、夾板、塑合板" },
+        { id:"a4-03", text:"🔩 五金認識：釘子種類（ST、F、J）、螺絲規格" },
+        { id:"a4-04", text:"🔗 絞鍊認識：西德絞鍊、十字絞鍊、回歸絞鍊" },
+        { id:"a4-05", text:"📏 滑軌認識：三節式滑軌、座式滑軌" },
+        { id:"a4-06", text:"🧴 膠合劑認識：白膠、強力膠、矽利康用途" },
+        { id:"a4-07", text:"✅ 材料辨識測驗：正確辨認各類材料" }
+      ],
+      "第五周｜手工具操作": [
+        { id:"a5-01", text:"📏 量測工具：捲尺使用、角尺校正、雷射水平儀" },
+        { id:"a5-02", text:"✏️ 劃線工具：墨斗彈線、鉛筆標記技巧" },
+        { id:"a5-03", text:"🔨 敲擊工具：鐵鎚正確握法、釘釘技巧" },
+        { id:"a5-04", text:"✂️ 切割工具：美工刀安全使用、手鋸操作" },
+        { id:"a5-05", text:"🔧 拆裝工具：螺絲起子、老虎鉗、肉路阿" },
+        { id:"a5-06", text:"🪚 鉋削工具：鉋刀使用、鑿刀操作" },
+        { id:"a5-07", text:"✅ 手工具實作測驗：正確安全地操作各類手工具" }
+      ],
+      "第六周｜電動與氣動工具": [
+        { id:"a6-01", text:"⚡ 電鑽/起子機：鑽孔、鎖螺絲、換鑽頭" },
+        { id:"a6-02", text:"🪚 電鋸/彎鋸：直線切割、曲線切割安全操作" },
+        { id:"a6-03", text:"📐 角度切斷機：45度、90度精準裁切" },
+        { id:"a6-04", text:"🌀 修邊機/砂磨機：邊緣修整、表面處理" },
+        { id:"a6-05", text:"💨 氣動釘槍：小鋼炮、鋼樑槍、蚊釘槍操作" },
+        { id:"a6-06", text:"🔌 空壓機：開機、調壓、接管、保養" },
+        { id:"a6-07", text:"✅ 電動工具實作測驗：安全操作各類電動工具" }
+      ],
+      "第七周｜基礎施作練習": [
+        { id:"a7-01", text:"📐 放樣練習：使用雷射儀、墨斗彈線" },
+        { id:"a7-02", text:"🔨 骨架組立：角材切割、組裝、固定" },
+        { id:"a7-03", text:"📦 封板練習：矽酸鈣板裁切、對位、固定" },
+        { id:"a7-04", text:"🔍 品質檢查：平整度確認、釘距檢查、不浮釘" },
+        { id:"a7-05", text:"🧹 收尾作業：批土、砂磨、清潔" },
+        { id:"a7-06", text:"📸 完工紀錄：拍照角度、上傳流程" },
+        { id:"a7-07", text:"✅ 基礎施作測驗：協助完成封板作業" }
+      ],
+      "第八周｜獨立作業與考核": [
+        { id:"a8-01", text:"🏗️ 獨立任務：完成指定區域平釘天花板" },
+        { id:"a8-02", text:"📋 技能考核：導師評分各項技能達成度" },
+        { id:"a8-03", text:"💬 導師面談：回顧8周學習、討論改進方向" },
+        { id:"a8-04", text:"📊 自我評估：填寫職能認證、設定下階段目標" },
+        { id:"a8-05", text:"🎓 結訓認證：通過考核獲得「學徒認證」" },
+        { id:"a8-06", text:"🚀 後續發展：制定3個月晉升半技計畫" }
+      ]
+    }
+  },
+  "半技": {
+    title: "⚡ 半技進階訓練",
+    weeks: {
+      "第一周｜獨立施作能力": [
+        { id:"b1-01", text:"📐 獨立放樣：天花板水平線、隔間定位線" },
+        { id:"b1-02", text:"🔨 骨架獨立施作：不需師傅指導完成角材組立" },
+        { id:"b1-03", text:"📦 封板獨立施作：板材裁切、對位、固定一氣呵成" },
+        { id:"b1-04", text:"🔍 自主品檢：施作完成後自我檢查" },
+        { id:"b1-05", text:"⏱️ 效率提升：達到師傅70%以上工作效率" },
+        { id:"b1-06", text:"✅ 獨立施作考核：完成一間房間天花板" }
+      ],
+      "第二周｜天花板進階": [
+        { id:"b2-01", text:"🏠 間接照明施作：燈槽尺寸、角度、造型" },
+        { id:"b2-02", text:"📐 窗簾盒製作：尺寸計算、骨架、封板" },
+        { id:"b2-03", text:"🔲 維修孔安裝：標準維修孔、隱藏式維修孔" },
+        { id:"b2-04", text:"💨 出風口處理：下吹、側吹出風口框架" },
+        { id:"b2-05", text:"📏 線板收邊：角度切割、45度接角" },
+        { id:"b2-06", text:"✅ 天花板進階考核：完成間接照明天花" }
+      ],
+      "第三周｜地板與壁板": [
+        { id:"b3-01", text:"🟫 直鋪地板：底板整平、面板鋪設、收邊" },
+        { id:"b3-02", text:"📐 平鋪地板：角材放樣、夾板固定、面板" },
+        { id:"b3-03", text:"🎨 壁板施作：骨架、封板、造型切割" },
+        { id:"b3-04", text:"🪵 木格柵安裝：間距計算、固定方式" },
+        { id:"b3-05", text:"🔲 床頭板製作：造型設計、施作、收邊" },
+        { id:"b3-06", text:"✅ 地壁考核：完成架高地板施作" }
+      ],
+      "第四周｜門片基礎": [
+        { id:"b4-01", text:"🚪 門框安裝：水平垂直校正、固定方式" },
+        { id:"b4-02", text:"🔧 絞鍊調整：西德絞鍊三向調整" },
+        { id:"b4-03", text:"🔒 門鎖安裝：喇叭鎖、水平鎖開孔安裝" },
+        { id:"b4-04", text:"📐 門片校正：縫隙調整、開關順暢度" },
+        { id:"b4-05", text:"🪵 櫥櫃門安裝：門片對位、調整" },
+        { id:"b4-06", text:"✅ 門片考核：獨立完成房門安裝" }
+      ],
+      "第五周｜櫥櫃基礎": [
+        { id:"b5-01", text:"🗄️ 櫃體結構：側板、層板、背板組裝" },
+        { id:"b5-02", text:"📏 抽屜製作：三節滑軌抽屜組裝安裝" },
+        { id:"b5-03", text:"🔩 五金安裝：把手、滑軌、絞鍊" },
+        { id:"b5-04", text:"📐 櫃體安裝：壁掛固定、落地調整" },
+        { id:"b5-05", text:"🧴 收邊處理：矽利康打膠、邊條安裝" },
+        { id:"b5-06", text:"✅ 櫥櫃考核：完成簡易書櫃製作" }
+      ],
+      "第六周｜系統櫃操作": [
+        { id:"b6-01", text:"🗄️ 系統櫃認識：板材、五金、配件" },
+        { id:"b6-02", text:"📦 系統櫃組裝：照圖施作、零件確認" },
+        { id:"b6-03", text:"🔧 系統櫃設立：水平校正、壁面固定" },
+        { id:"b6-04", text:"🚪 系統門調整：絞鍊調校、縫隙統一" },
+        { id:"b6-05", text:"📏 抽屜安裝：滑軌調整、面板對位" },
+        { id:"b6-06", text:"✅ 系統櫃考核：獨立完成衣櫃組裝" }
+      ],
+      "第七周｜材料用量計算": [
+        { id:"b7-01", text:"📐 天花板用量：骨料、板材計算" },
+        { id:"b7-02", text:"🟫 地板用量：角材、夾板、面材估算" },
+        { id:"b7-03", text:"🧱 隔間用量：骨架、石膏板計算" },
+        { id:"b7-04", text:"🔩 五金用量：釘子、螺絲預估" },
+        { id:"b7-05", text:"📋 叫料練習：正確填寫進料單" },
+        { id:"b7-06", text:"✅ 用量考核：計算指定空間材料需求" }
+      ],
+      "第八周｜晉升師傅考核": [
+        { id:"b8-01", text:"🏗️ 綜合施作：完成一間臥室天地壁" },
+        { id:"b8-02", text:"📋 品質評核：導師逐項檢查評分" },
+        { id:"b8-03", text:"⏱️ 效率評估：達到師傅80%效率" },
+        { id:"b8-04", text:"💬 導師面談：回顧半技階段、改進建議" },
+        { id:"b8-05", text:"🎓 晉升認證：通過考核晉升「師傅」" },
+        { id:"b8-06", text:"🚀 後續發展：制定師傅階段成長計畫" }
+      ]
+    }
+  },
+  "師傅": {
+    title: "🔨 師傅精進訓練",
+    weeks: {
+      "第一周｜造型天花進階": [
+        { id:"c1-01", text:"🎨 弧形天花：放樣、骨架彎曲、封板技巧" },
+        { id:"c1-02", text:"📐 多層次天花：高低差設計、銜接處理" },
+        { id:"c1-03", text:"💡 複雜燈槽：雙層燈槽、異形燈槽" },
+        { id:"c1-04", text:"🔲 特殊維修孔：大型維修孔、隱藏式設計" },
+        { id:"c1-05", text:"📏 線板進階：複雜角度、弧形線板" },
+        { id:"c1-06", text:"✅ 造型考核：完成指定造型天花" }
+      ],
+      "第二周｜特殊門片與五金": [
+        { id:"c2-01", text:"🚪 拉門系統：軌道安裝、門片調整" },
+        { id:"c2-02", text:"🔒 嵌入式把手：開孔、安裝、調整" },
+        { id:"c2-03", text:"🔐 隱藏鎖安裝：位置設定、機構安裝" },
+        { id:"c2-04", text:"📐 百葉門製作：框架、葉片、組裝" },
+        { id:"c2-05", text:"🪵 實木門調整：變形處理、密合調整" },
+        { id:"c2-06", text:"✅ 門片進階考核：完成拉門系統安裝" }
+      ],
+      "第三周｜複雜櫥櫃製作": [
+        { id:"c3-01", text:"🗄️ 衣櫃製作：層板、吊桿、抽屜規劃" },
+        { id:"c3-02", text:"📐 書桌製作：結構設計、五金配置" },
+        { id:"c3-03", text:"🛏️ 床組製作：床架、床頭櫃整合" },
+        { id:"c3-04", text:"🔩 特殊五金：旋轉架、升降架應用" },
+        { id:"c3-05", text:"🎨 造型櫃：異形設計、曲面處理" },
+        { id:"c3-06", text:"✅ 櫥櫃進階考核：完成整組衣櫃製作" }
+      ],
+      "第四周｜品質管控": [
+        { id:"c4-01", text:"🔍 品檢標準：平整度、釘距、縫隙規範" },
+        { id:"c4-02", text:"📋 驗收流程：自檢、互檢、終檢程序" },
+        { id:"c4-03", text:"🛠️ 瑕疵修補：凹痕、刮傷、縫隙處理" },
+        { id:"c4-04", text:"📸 完工紀錄：標準拍照角度、重點記錄" },
+        { id:"c4-05", text:"📝 缺失回報：問題描述、改善追蹤" },
+        { id:"c4-06", text:"✅ 品管考核：執行完整品檢流程" }
+      ],
+      "第五周｜帶領學徒": [
+        { id:"c5-01", text:"👥 工作分配：依能力指派適當任務" },
+        { id:"c5-02", text:"📚 技術教導：示範、說明、指導操作" },
+        { id:"c5-03", text:"🔍 品質監督：即時檢查、錯誤糾正" },
+        { id:"c5-04", text:"💬 溝通技巧：正向回饋、建設性批評" },
+        { id:"c5-05", text:"📋 進度回報：學徒學習狀況記錄" },
+        { id:"c5-06", text:"✅ 帶人考核：指導學徒完成指定項目" }
+      ],
+      "第六周｜基礎水電配合": [
+        { id:"c6-01", text:"🔌 插座位置：高度標準、數量規劃" },
+        { id:"c6-02", text:"💡 燈具出線：位置確認、開孔預留" },
+        { id:"c6-03", text:"📺 弱電配置：網路、電視、音響出口" },
+        { id:"c6-04", text:"🔧 開關迴路：單切、雙切配置邏輯" },
+        { id:"c6-05", text:"📋 水電協調：與水電師傅溝通配合" },
+        { id:"c6-06", text:"✅ 水電考核：正確完成電路預留" }
+      ],
+      "第七周｜問題處理": [
+        { id:"c7-01", text:"🔧 現場問題：尺寸誤差、結構問題處理" },
+        { id:"c7-02", text:"📐 圖面釐清：與設計師溝通確認" },
+        { id:"c7-03", text:"🛠️ 補救方案：施工錯誤的修正方法" },
+        { id:"c7-04", text:"💬 業主溝通：變更說明、進度回報" },
+        { id:"c7-05", text:"📋 異常記錄：問題、處理、結果記錄" },
+        { id:"c7-06", text:"✅ 問題處理考核：模擬現場問題解決" }
+      ],
+      "第八周｜晉升領班考核": [
+        { id:"c8-01", text:"🏗️ 綜合施作：主導完成整間客廳裝修" },
+        { id:"c8-02", text:"👥 團隊協作：帶領2-3人完成任務" },
+        { id:"c8-03", text:"📋 品質總評：全項目品質達標" },
+        { id:"c8-04", text:"💬 導師評核：技術、態度、領導力評分" },
+        { id:"c8-05", text:"🎓 晉升認證：通過考核晉升「領班」" },
+        { id:"c8-06", text:"🚀 後續發展：制定領班職責與目標" }
+      ]
+    }
+  },
+  "領班": {
+    title: "👔 領班管理訓練",
+    weeks: {
+      "第一周｜案場管理基礎": [
+        { id:"d1-01", text:"📋 案場交接：圖面確認、現場丈量、問題記錄" },
+        { id:"d1-02", text:"📐 施工規劃：工序安排、人力配置" },
+        { id:"d1-03", text:"📦 材料規劃：用量計算、進料時程" },
+        { id:"d1-04", text:"🔧 工具調度：設備需求、借調安排" },
+        { id:"d1-05", text:"📱 系統設定：Asana專案建立、TimeThree排程" },
+        { id:"d1-06", text:"✅ 案場規劃考核：完成新案場規劃書" }
+      ],
+      "第二周｜進度管控": [
+        { id:"d2-01", text:"📅 工程排程：甘特圖規劃、里程碑設定" },
+        { id:"d2-02", text:"⏱️ 每日進度：實際vs計畫、差異分析" },
+        { id:"d2-03", text:"🚨 進度落後：原因分析、趕工對策" },
+        { id:"d2-04", text:"📊 週報撰寫：進度、問題、下周計畫" },
+        { id:"d2-05", text:"💬 進度會議：主持晨會、協調會議" },
+        { id:"d2-06", text:"✅ 進度管控考核：維持案場進度達成率95%" }
+      ],
+      "第三周｜人員管理": [
+        { id:"d3-01", text:"👥 人力調度：依技能分配工作區域" },
+        { id:"d3-02", text:"📋 出勤管理：打卡確認、加班申請審核" },
+        { id:"d3-03", text:"🎯 目標設定：每日工作目標、驗收標準" },
+        { id:"d3-04", text:"💬 績效面談：即時回饋、改善指導" },
+        { id:"d3-05", text:"🤝 團隊氣氛：衝突處理、士氣維持" },
+        { id:"d3-06", text:"✅ 人管考核：帶領團隊完成周目標" }
+      ],
+      "第四周｜業主溝通": [
+        { id:"d4-01", text:"📱 定期回報：進度照片、完工通知" },
+        { id:"d4-02", text:"💬 變更處理：追加減確認、報價說明" },
+        { id:"d4-03", text:"🔍 驗收陪同：缺失記錄、改善承諾" },
+        { id:"d4-04", text:"📋 問題回應：客訴處理、修繕安排" },
+        { id:"d4-05", text:"🤝 關係維護：專業形象、信任建立" },
+        { id:"d4-06", text:"✅ 溝通考核：獨立完成業主驗收" }
+      ],
+      "第五周｜成本管控": [
+        { id:"d5-01", text:"📊 預算掌握：成本結構、利潤目標" },
+        { id:"d5-02", text:"📦 材料管控：損耗率控制、剩料處理" },
+        { id:"d5-03", text:"⏱️ 工時效率：人力成本、效率提升" },
+        { id:"d5-04", text:"💰 追加管理：變更報價、簽認流程" },
+        { id:"d5-05", text:"📋 結算準備：數量確認、請款資料" },
+        { id:"d5-06", text:"✅ 成本考核：案場毛利率達標" }
+      ],
+      "第六周｜異常處理": [
+        { id:"d6-01", text:"🚨 工安事件：應變處理、通報流程" },
+        { id:"d6-02", text:"🔧 施工瑕疵：原因分析、返工安排" },
+        { id:"d6-03", text:"📐 設計衝突：問題釐清、方案建議" },
+        { id:"d6-04", text:"👥 人員問題：缺勤、衝突、離職處理" },
+        { id:"d6-05", text:"📋 異常報告：事件記錄、改善措施" },
+        { id:"d6-06", text:"✅ 異常處理考核：模擬情境應變" }
+      ],
+      "第七周｜跨部門協調": [
+        { id:"d7-01", text:"🔌 水電協調：進場時機、施工配合" },
+        { id:"d7-02", text:"🎨 油漆協調：批土時機、保護措施" },
+        { id:"d7-03", text:"🪟 門窗協調：丈量時機、安裝配合" },
+        { id:"d7-04", text:"🚚 廠商協調：送貨時間、進場動線" },
+        { id:"d7-05", text:"📋 協調會議：主持跨部門協調會" },
+        { id:"d7-06", text:"✅ 協調考核：順利完成複雜案場交界面" }
+      ],
+      "第八周｜獨立顧場考核": [
+        { id:"d8-01", text:"🏗️ 獨立顧場：完整負責一個案場" },
+        { id:"d8-02", text:"📊 績效達成：進度、品質、成本全達標" },
+        { id:"d8-03", text:"👥 團隊評價：組員滿意度調查" },
+        { id:"d8-04", text:"💬 業主評價：取得業主書面好評" },
+        { id:"d8-05", text:"🎓 領班認證：通過考核正式授權顧場" },
+        { id:"d8-06", text:"🚀 後續發展：分潤合夥或獨立承攬規劃" }
+      ]
+    }
+  }
 };
+
+// 取得當前職級的訓練資料
+function getTrainingDataForRank(rank) {
+  return TRAINING_BY_RANK[rank] || TRAINING_BY_RANK["學徒"];
+}
+
+// 相容舊版 trainingData 格式
+let trainingData = TRAINING_BY_RANK["學徒"].weeks;
 
 // Salary Table
 const salaryTable = [
@@ -1238,6 +1458,8 @@ function searchEmployee() {
     loadDataToUI();
     updateStats();
     updateEmployeeInfo(name);
+    // 根據職級載入對應訓練
+    loadTrainingByRank();
   } else {
     if (confirm(`找不到 ${name} 的技能資料，是否建立新紀錄？`)) {
       currentEmployee = name;
@@ -1245,8 +1467,18 @@ function searchEmployee() {
       state.employee.name = name;
       updateStats();
       updateEmployeeInfo(name);
+      // 新員工預設學徒訓練
+      buildTraining('學徒');
     }
   }
+}
+
+// 根據員工當前分數載入對應職級訓練
+function loadTrainingByRank() {
+  const done = SKILLS.filter(s => state.skills[s.id]?.done);
+  const total = done.reduce((a, s) => a + getActualScore(s.id), 0);
+  const rank = getRankByScore(Math.round(total));
+  buildTraining(rank);
 }
 
 // 重置狀態
@@ -1690,17 +1922,31 @@ function renderStars(id) {
   });
 }
 
-// Training
-function buildTraining() {
+// Training - 依職級顯示不同訓練內容
+let currentTrainingRank = '學徒';
+
+function buildTraining(rank) {
+  rank = rank || currentTrainingRank;
+  currentTrainingRank = rank;
+  const trainingInfo = getTrainingDataForRank(rank);
+  trainingData = trainingInfo.weeks;
+
   const container = document.getElementById('trainingContainer');
-  let html = '<div class="section-header">📚 新人入職訓練（8周）</div>';
+  let html = `<div class="section-header">${trainingInfo.title}（8周導師考核）</div>`;
+  html += `<div style="padding:12px 24px;background:#f5f5f5;border-bottom:1px solid #ddd;">
+    <span style="margin-right:12px;font-weight:500;">選擇職級訓練：</span>
+    ${Object.keys(TRAINING_BY_RANK).map(r =>
+      `<button onclick="buildTraining('${r}')" style="padding:6px 16px;margin-right:8px;border:2px solid ${r===rank?'var(--primary)':'#ddd'};border-radius:20px;background:${r===rank?'var(--primary)':'white'};color:${r===rank?'white':'#333'};cursor:pointer;font-weight:${r===rank?'bold':'normal'}">${r}</button>`
+    ).join('')}
+  </div>`;
+
   for (const [week, items] of Object.entries(trainingData)) {
     html += `<div class="week-card">
       <div class="week-header" onclick="toggleWeek('${week}')">
         <span class="week-title">${week}</span>
-        <span class="week-progress" id="progress-${week}">0/${items.length}</span>
+        <span class="week-progress" id="progress-${week.replace(/[｜]/g,'-')}">0/${items.length}</span>
       </div>
-      <div class="week-content" id="content-${week}">
+      <div class="week-content" id="content-${week.replace(/[｜]/g,'-')}">
         ${items.map(item => `
           <div class="training-item">
             <input type="checkbox" id="${item.id}" onchange="updateTrainingProgress()">
@@ -1711,10 +1957,26 @@ function buildTraining() {
     </div>`;
   }
   container.innerHTML = html;
+
+  // 載入已儲存的訓練進度
+  loadTrainingProgress();
 }
 
 function toggleWeek(week) {
-  document.getElementById(`content-${week}`).classList.toggle('hidden');
+  const el = document.getElementById(`content-${week.replace(/[｜]/g,'-')}`);
+  if (el) el.classList.toggle('hidden');
+}
+
+function loadTrainingProgress() {
+  for (const [week, items] of Object.entries(trainingData)) {
+    items.forEach(item => {
+      const el = document.getElementById(item.id);
+      if (el && state.training[item.id]) {
+        el.checked = true;
+      }
+    });
+  }
+  updateTrainingProgress();
 }
 
 function updateTrainingProgress() {
@@ -1727,11 +1989,12 @@ function updateTrainingProgress() {
       state.training[item.id] = el?.checked || false;
       totalItems++;
     });
-    const progressEl = document.getElementById(`progress-${week}`);
+    const progressEl = document.getElementById(`progress-${week.replace(/[｜]/g,'-')}`);
     if (progressEl) progressEl.textContent = `${weekChecked}/${items.length}`;
   }
-  const pct = Math.round((totalChecked / totalItems) * 100);
+  const pct = totalItems > 0 ? Math.round((totalChecked / totalItems) * 100) : 0;
   document.getElementById('trainingProgress').textContent = `${pct}%`;
+  document.getElementById('trainingWeek').textContent = currentTrainingRank + '訓練';
   save();
 }
 
