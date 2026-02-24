@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>木工裝潢技能學習護照</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap');
+  :root {
+    --bg: #f8f4ee;
+    --bg2: #ede8de;
+    --card: #ffffff;
+    --border: #ddd6c8;
+    --text: #1c1812;
+    --muted: #8a7d6a;
+    --shadow: rgba(70,45,10,0.10);
+    --primary: #8B4513;
+    --primary-light: #A0522D;
+    --success: #2a6634;
+    --star-off: #e0d8cc;
+    --star-on: #e6a030;
+    --done-bg: #e7f4e9;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    padding: 24px 48px;
+  }
+  .header-top {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap; gap: 20px;
+  }
+  .brand { display: flex; align-items: center; gap: 18px; }
+  .passport-cover {
+    width: 54px; height: 70px;
+    background: linear-gradient(160deg, #c47830 0%, #8a4510 100%);
+    border-radius: 6px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 5px;
+    box-shadow: 3px 4px 0 rgba(0,0,0,0.30);
+  }
+  .passport-cover .pc-icon { font-size: 22px; }
+  .passport-cover .pc-text {
+    font-size: 6.5px; letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.70); text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+  .brand-text h1 { font-size: 24px; font-weight: 900; }
+  .brand-text p {
+    font-size: 11px; color: rgba(255,255,255,0.6);
+    letter-spacing: 2px; text-transform: uppercase;
+    margin-top: 4px; font-family: 'DM Mono', monospace;
+  }
+
+  /* Employee Info */
+  .employee-section {
+    background: white;
+    margin: 24px 48px;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  .employee-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .info-field { display: flex; flex-direction: column; }
+  .info-field label { font-size: 0.85rem; color: var(--muted); margin-bottom: 4px; }
+  .info-field input, .info-field select {
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+  .name-search {
+    display: flex;
+    gap: 8px;
+  }
+  .name-search input {
+    flex: 1;
+  }
+  .btn-search {
+    padding: 10px 16px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .btn-search:hover {
+    background: var(--primary-light);
+  }
+  .info-display {
+    padding: 10px;
+    background: var(--bg2);
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  .employee-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .name-search select {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+
+  /* Dashboard */
+  .dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin: 0 48px 24px;
+  }
+  .stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px var(--shadow);
+    text-align: center;
+  }
+  .stat-card h3 { font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; }
+  .stat-card .value { font-size: 2rem; font-weight: bold; color: var(--primary); }
+  .stat-card .sub { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+  .level-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: bold;
+  }
+  .level-F { background: #E3F2FD; color: #1976D2; }
+  .level-E { background: #E8F5E9; color: #388E3C; }
+  .level-D { background: #FFF3E0; color: #F57C00; }
+  .level-C { background: #FCE4EC; color: #C2185B; }
+  .level-B { background: #F3E5F5; color: #7B1FA2; }
+  .level-A { background: #FFEB3B; color: #F57F17; }
+
+  /* Progress Bar */
+  .progress-section {
+    margin: 0 48px 24px;
+    background: white;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  .progress-bar {
+    height: 20px;
+    background: #E0E0E0;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--success));
+    transition: width 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: bold;
+  }
+
+  /* Main Tabs */
+  .main-tabs {
+    display: flex;
+    gap: 4px;
+    margin: 0 48px 20px;
+    flex-wrap: wrap;
+  }
+  .main-tab {
+    padding: 12px 24px;
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 8px 8px 0 0;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s;
+  }
+  .main-tab:hover { background: var(--bg2); }
+  .main-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Skills Section */
+  .cat-nav {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--bg2);
+    border-bottom: 2px solid var(--border);
+    display: flex; overflow-x: auto; scrollbar-width: none;
+    margin: 0 48px;
+    border-radius: 8px 8px 0 0;
+  }
+  .cat-nav::-webkit-scrollbar { display: none; }
+  .cat-tab {
+    display: flex; align-items: center; gap: 6px;
+    padding: 12px 16px;
+    font-size: 12px; font-weight: 500; color: var(--muted);
+    cursor: pointer; border: none; background: transparent;
+    border-bottom: 3px solid transparent; margin-bottom: -2px;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+  .cat-tab:hover { color: var(--text); background: rgba(0,0,0,0.04); }
+  .cat-tab.active { color: var(--text); border-bottom-color: var(--tab-c); }
+  .tab-badge {
+    font-size: 9px; font-family: 'DM Mono', monospace;
+    padding: 2px 6px; border-radius: 99px;
+    background: var(--border); color: var(--muted);
+  }
+  .cat-tab.active .tab-badge { background: var(--tab-c); color: #fff; }
+
+  .skills-content {
+    background: white;
+    margin: 0 48px;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 2px 8px var(--shadow);
+    padding: 24px;
+  }
+  .cat-section { display: none; }
+  .cat-section.active { display: block; }
+  .cat-header {
+    display: flex; align-items: center; gap: 16px; margin-bottom: 20px;
+  }
+  .cat-header-icon {
+    width: 50px; height: 50px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+  .cat-header-text h2 { font-size: 18px; font-weight: 800; }
+  .cat-header-text p { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+  /* Subcategory Header */
+  .subcat-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 0 8px;
+    margin-top: 16px;
+    border-bottom: 2px solid var(--border);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primary);
+  }
+  .subcat-header:first-of-type { margin-top: 0; }
+  .subcat-icon { font-size: 18px; }
+  .subcat-count {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    background: var(--bg2);
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: auto;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+  .skill-card {
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .skill-card:hover { box-shadow: 0 4px 16px var(--shadow); transform: translateY(-2px); }
+  .skill-card.done { border-color: var(--success); background: var(--done-bg); }
+  .card-stripe { height: 4px; }
+  .card-main { padding: 12px 14px; }
+  .card-top-row {
+    display: flex; align-items: center;
+    justify-content: space-between; gap: 8px; margin-bottom: 8px;
+  }
+  .card-no {
+    font-size: 10px; font-family: 'DM Mono', monospace;
+    color: var(--muted);
+  }
+  .card-pts {
+    font-size: 11px; font-family: 'DM Mono', monospace;
+    color: var(--primary); font-weight: 600;
+  }
+  .card-check {
+    width: 26px; height: 26px; border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; cursor: pointer;
+    transition: all 0.2s;
+    color: transparent; background: transparent;
+  }
+  .card-check:hover { border-color: var(--success); color: var(--success); }
+  .done .card-check { background: var(--success); border-color: var(--success); color: #fff; }
+  .card-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .card-desc { font-size: 11px; color: var(--muted); }
+  .card-footer {
+    padding: 10px 14px;
+    background: rgba(0,0,0,0.02);
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .done .card-footer { background: rgba(42,102,52,0.05); }
+  .actual-pts {
+    font-size: 11px;
+    color: var(--success);
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+  }
+  .card-cert {
+    padding: 8px 14px;
+    background: rgba(0,0,0,0.02);
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .mentor-select {
+    flex: 1;
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 11px;
+  }
+  .card-cert .date-input {
+    width: 110px;
+    padding: 6px;
+    font-size: 11px;
+  }
+  .btn-cert {
+    padding: 6px 12px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+  }
+  .btn-cert:hover { background: var(--primary-light); }
+  .card-history {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s;
+  }
+  .done .card-history { max-height: 200px; }
+  .history-title {
+    padding: 6px 14px;
+    font-size: 10px;
+    color: var(--muted);
+    border-top: 1px dashed var(--border);
+  }
+  .history-item {
+    padding: 4px 14px;
+    font-size: 10px;
+    display: flex;
+    gap: 8px;
+    color: var(--muted);
+  }
+  .history-date { font-family: 'DM Mono', monospace; }
+  .history-mentor { color: var(--primary); }
+  .history-stars { color: var(--star-on); }
+  .stars { display: flex; gap: 2px; }
+  .star {
+    font-size: 16px; cursor: pointer;
+    color: var(--star-off);
+    transition: all 0.15s;
+  }
+  .star:hover { transform: scale(1.2); }
+  .star.lit { color: var(--star-on); }
+  .date-input {
+    font-size: 11px; font-family: 'DM Mono', monospace;
+    border: none; background: transparent;
+    color: var(--muted); width: 90px;
+  }
+  .done-stamp {
+    position: absolute; top: 8px; right: 8px;
+    font-size: 9px; font-family: 'DM Mono', monospace;
+    padding: 2px 6px; border-radius: 4px;
+    border: 1.5px solid var(--success); color: var(--success);
+    background: rgba(232,245,234,0.9);
+    transform: rotate(-8deg);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .done .done-stamp { opacity: 1; }
+
+  /* Training Section */
+  .training-section {
+    background: white;
+    margin: 0 48px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px var(--shadow);
+    overflow: hidden;
+  }
+  .section-header {
+    background: var(--primary);
+    color: white;
+    padding: 16px 24px;
+    font-size: 1.1rem;
+    font-weight: bold;
+  }
+  .week-card { border-bottom: 1px solid var(--border); }
+  .week-header {
+    padding: 14px 24px;
+    background: linear-gradient(90deg, var(--bg2), white);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .week-header:hover { background: var(--bg2); }
+  .week-title { font-weight: bold; }
+  .week-progress {
+    font-size: 0.85rem;
+    padding: 4px 12px;
+    background: var(--primary);
+    color: white;
+    border-radius: 20px;
+  }
+  .week-content { padding: 16px 24px; }
+  .week-content.hidden { display: none; }
+  .training-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #EEE;
+    align-items: flex-start;
+  }
+  .training-item:last-child { border-bottom: none; }
+  .training-item input[type="checkbox"] {
+    width: 18px; height: 18px;
+    margin-top: 2px;
+    accent-color: var(--success);
+  }
+
+  /* Salary Table */
+  .salary-section {
+    margin: 0 48px;
+  }
+  .salary-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  .salary-table th, .salary-table td {
+    padding: 12px 16px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .salary-table th {
+    background: var(--primary);
+    color: white;
+  }
+  .salary-table tr:hover { background: #FAFAFA; }
+  .salary-table tr.current { background: #FFF3E0; font-weight: bold; }
+
+  /* Actions */
+  .actions {
+    display: flex;
+    gap: 12px;
+    margin: 24px 48px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s;
+  }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { background: var(--primary-light); }
+  .btn-secondary { background: #E0E0E0; color: var(--text); }
+  .btn-secondary:hover { background: #BDBDBD; }
+  .btn-success { background: var(--success); color: white; }
+
+  @media (max-width: 768px) {
+    header, .employee-section, .dashboard, .progress-section,
+    .main-tabs, .cat-nav, .skills-content, .training-section,
+    .salary-section, .actions { margin-left: 16px; margin-right: 16px; }
+    header { padding: 20px 16px; }
+    .skills-grid { grid-template-columns: 1fr; }
+  }
+  @media print {
+    .actions, .main-tabs { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="brand">
+      <div class="passport-cover">
+        <span class="pc-icon">🪵</span>
+        <span class="pc-text">Skill Pass</span>
+      </div>
+      <div class="brand-text">
+        <h1>木工裝潢技能學習護照</h1>
+        <p>Carpentry &amp; Interior · Skill Tree</p>
+      </div>
+    </div>
+    <div style="text-align: right; font-size: 0.9rem;">
+      <div>摩研室內裝修</div>
+      <div id="currentDate"></div>
+    </div>
+  </div>
+</header>
+
+<div class="employee-section">
+  <div class="employee-grid">
+    <div class="info-field">
+      <label>員工姓名</label>
+      <div class="name-search">
+        <select id="employeeName" onchange="onEmployeeSelect()">
+          <option value="">請選擇員工</option>
+        </select>
+        <button class="btn-search" onclick="searchEmployee()">🔍 查詢</button>
+      </div>
+    </div>
+    <div class="info-field">
+      <label>所屬團隊</label>
+      <div id="teamDisplay" class="info-display">-</div>
+    </div>
+    <div class="info-field">
+      <label>目前日薪</label>
+      <div id="currentSalary" class="info-display">-</div>
+    </div>
+    <div class="info-field">
+      <label>職級</label>
+      <div id="currentRank" class="info-display">-</div>
+    </div>
+  </div>
+</div>
+
+<div class="dashboard">
+  <div class="stat-card">
+    <h3>目前總分</h3>
+    <div class="value" id="totalScore">0</div>
+    <div class="sub">滿分 431 分</div>
+  </div>
+  <div class="stat-card">
+    <h3>已完成技能</h3>
+    <div class="value" id="doneCount">0</div>
+    <div class="sub">共 154 項</div>
+  </div>
+  <div class="stat-card">
+    <h3>技能等級</h3>
+    <div id="levelBadge" class="level-badge level-F">🔰 F 級</div>
+  </div>
+  <div class="stat-card">
+    <h3>對應日薪</h3>
+    <div class="value" id="dailySalary">1,300</div>
+    <div class="sub">新台幣</div>
+  </div>
+  <div class="stat-card">
+    <h3>8周培訓</h3>
+    <div class="value" id="trainingProgress">0%</div>
+    <div class="sub" id="trainingWeek">第 1 周</div>
+  </div>
+</div>
+
+<div class="progress-section">
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width: 0%">0%</div>
+  </div>
+</div>
+
+<div class="main-tabs">
+  <div class="main-tab active" data-tab="skills">📋 技能認證</div>
+  <div class="main-tab" data-tab="training">📚 8周培訓</div>
+  <div class="main-tab" data-tab="salary">💰 薪資對照表</div>
+</div>
+
+<!-- Skills Tab -->
+<div id="skills-tab" class="tab-content active">
+  <nav class="cat-nav" id="cat-nav"></nav>
+  <div class="skills-content" id="skills-content"></div>
+</div>
+
+<!-- Training Tab -->
+<div id="training-tab" class="tab-content">
+  <div class="training-section" id="trainingContainer"></div>
+</div>
+
+<!-- Salary Tab -->
+<div id="salary-tab" class="tab-content">
+  <div class="salary-section">
+    <table class="salary-table">
+      <thead>
+        <tr>
+          <th>分數級距</th>
+          <th>技能定位</th>
+          <th>日薪</th>
+          <th>月薪換算</th>
+          <th>職等</th>
+        </tr>
+      </thead>
+      <tbody id="salaryTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="actions">
+  <button class="btn btn-primary" onclick="saveData()">💾 儲存進度</button>
+  <button class="btn btn-success" onclick="window.print()">📄 列印</button>
+  <button class="btn btn-secondary" onclick="clearData()">🗑️ 清除資料</button>
+  <button class="btn btn-secondary" onclick="initAllEmployees()" style="background:#9c27b0;color:white;">⚡ 批次建立全員資料</button>
+</div>
+
+<script>
+// Categories - 輕隔間/系統櫃/木工 三大領域
+const CATEGORIES = [
+  { id:'basic', name:'基礎', icon:'🔧', desc:'材料認識、手工具、電動、氣動、膠合、五金、水電', color:'#2f6637', colorL:'#e7f4e9' },
+  { id:'partition', name:'輕隔間', icon:'🧱', desc:'輕鋼架天花、暗架、乾濕式隔間', color:'#607d8b', colorL:'#eceff1' },
+  { id:'system', name:'系統櫃', icon:'🗄️', desc:'系統櫃組裝、設立、調門、收尾', color:'#ff7043', colorL:'#fbe9e7' },
+  { id:'wood', name:'木工', icon:'🪵', desc:'木作天花、地板、壁板、門片、櫥櫃', color:'#8d6e63', colorL:'#efebe9' },
+  { id:'attitude', name:'態度', icon:'💪', desc:'配合加班、開車、場勘', color:'#c44a4a', colorL:'#fceaea' },
+  { id:'app', name:'系統', icon:'📱', desc:'On!track、Asana、TimeThree', color:'#3a8a8a', colorL:'#e8f5f5' },
+];
+
+// 子分類定義
+const SUBCATS = {
+  basic: [
+    { id:'material', name:'材料認識', icon:'🪵' },
+    { id:'hand-tool', name:'手工具', icon:'🔨' },
+    { id:'power-tool', name:'電動工具', icon:'⚡' },
+    { id:'air-tool', name:'氣動工具', icon:'💨' },
+    { id:'glue', name:'膠合劑', icon:'🧴' },
+    { id:'hardware', name:'五金配件', icon:'🔩' },
+    { id:'operation', name:'工具操作', icon:'⚙️' },
+    { id:'auxiliary', name:'輔助工具', icon:'🛠️' },
+    { id:'electrical', name:'水電配置', icon:'🔌' },
+  ],
+  partition: [
+    { id:'light-steel', name:'輕鋼架天花', icon:'🏗️' },
+    { id:'hidden', name:'暗架天花', icon:'📐' },
+    { id:'drywall', name:'隔間施作', icon:'🧱' },
+  ],
+  system: [
+    { id:'sys-cabinet', name:'系統櫃', icon:'🗄️' },
+  ],
+  wood: [
+    { id:'ceiling', name:'天花板', icon:'🏠' },
+    { id:'floor', name:'地板', icon:'🟫' },
+    { id:'wall', name:'壁板造型', icon:'🎨' },
+    { id:'door', name:'門片門框', icon:'🚪' },
+    { id:'cabinet', name:'櫥櫃床組', icon:'🛏️' },
+  ],
+};
+
+// Skills Data (154 items) - 天地壁櫃門分類
+const SKILLS = [
+  // 基礎 (76項) - 材料認識 + 手工具 + 電動 + 氣動 + 膠合 + 五金 + 操作 + 水電
+  { id:1, cat:'basic', subcat:'material', title:'骨料辨別與板材', desc:'木料、骨料、板材辨識', pts:1 },
+  { id:2, cat:'basic', subcat:'hand-tool', title:'鐵鎚', desc:'', pts:1 },
+  { id:3, cat:'basic', subcat:'hand-tool', title:'鋸子', desc:'', pts:1 },
+  { id:4, cat:'basic', subcat:'hand-tool', title:'角尺', desc:'', pts:1 },
+  { id:5, cat:'basic', subcat:'hand-tool', title:'捲尺', desc:'', pts:1 },
+  { id:6, cat:'basic', subcat:'hand-tool', title:'鉋刀', desc:'', pts:1 },
+  { id:7, cat:'basic', subcat:'hand-tool', title:'鑿刀', desc:'', pts:1 },
+  { id:8, cat:'basic', subcat:'hand-tool', title:'美工刀', desc:'', pts:1 },
+  { id:9, cat:'basic', subcat:'hand-tool', title:'墨斗', desc:'', pts:1 },
+  { id:10, cat:'basic', subcat:'hand-tool', title:'雷射', desc:'', pts:1 },
+  { id:11, cat:'basic', subcat:'hand-tool', title:'水線', desc:'', pts:1 },
+  { id:12, cat:'basic', subcat:'hand-tool', title:'老虎鉗', desc:'', pts:1 },
+  { id:13, cat:'basic', subcat:'hand-tool', title:'螺絲起子', desc:'', pts:1 },
+  { id:14, cat:'basic', subcat:'hand-tool', title:'肉路阿', desc:'', pts:1 },
+  { id:15, cat:'basic', subcat:'hand-tool', title:'竹竿槍', desc:'', pts:1 },
+  { id:16, cat:'basic', subcat:'hand-tool', title:'剪刀', desc:'', pts:1 },
+  { id:17, cat:'basic', subcat:'power-tool', title:'電鋸', desc:'', pts:1 },
+  { id:18, cat:'basic', subcat:'power-tool', title:'彎鋸', desc:'', pts:1 },
+  { id:19, cat:'basic', subcat:'power-tool', title:'壓台', desc:'', pts:1 },
+  { id:20, cat:'basic', subcat:'power-tool', title:'電鑽', desc:'', pts:1 },
+  { id:21, cat:'basic', subcat:'power-tool', title:'電動起子', desc:'', pts:1 },
+  { id:22, cat:'basic', subcat:'power-tool', title:'修邊機', desc:'', pts:1 },
+  { id:23, cat:'basic', subcat:'power-tool', title:'砂磨機', desc:'', pts:1 },
+  { id:24, cat:'basic', subcat:'power-tool', title:'空壓機', desc:'', pts:1 },
+  { id:25, cat:'basic', subcat:'power-tool', title:'噴槍', desc:'', pts:1 },
+  { id:26, cat:'basic', subcat:'power-tool', title:'大路打', desc:'', pts:1 },
+  { id:27, cat:'basic', subcat:'power-tool', title:'電動刨刀', desc:'', pts:1 },
+  { id:28, cat:'basic', subcat:'power-tool', title:'磁磚切勾機', desc:'', pts:1 },
+  { id:29, cat:'basic', subcat:'power-tool', title:'砂輪切斷機', desc:'', pts:1 },
+  { id:30, cat:'basic', subcat:'power-tool', title:'砂輪機', desc:'', pts:1 },
+  { id:31, cat:'basic', subcat:'power-tool', title:'切割機(板材)', desc:'', pts:1 },
+  { id:32, cat:'basic', subcat:'air-tool', title:'小鋼炮', desc:'', pts:1 },
+  { id:33, cat:'basic', subcat:'air-tool', title:'鋼樑槍', desc:'', pts:1 },
+  { id:34, cat:'basic', subcat:'air-tool', title:'風管', desc:'', pts:1 },
+  { id:35, cat:'basic', subcat:'air-tool', title:'大砲', desc:'', pts:1 },
+  { id:36, cat:'basic', subcat:'air-tool', title:'中T', desc:'', pts:1 },
+  { id:37, cat:'basic', subcat:'air-tool', title:'單腳', desc:'', pts:1 },
+  { id:38, cat:'basic', subcat:'air-tool', title:'雙腳', desc:'', pts:1 },
+  { id:39, cat:'basic', subcat:'air-tool', title:'寬腳', desc:'', pts:1 },
+  { id:40, cat:'basic', subcat:'air-tool', title:'蚊釘', desc:'', pts:1 },
+  { id:41, cat:'basic', subcat:'glue', title:'白膠', desc:'', pts:1 },
+  { id:42, cat:'basic', subcat:'glue', title:'強力膠', desc:'', pts:1 },
+  { id:43, cat:'basic', subcat:'glue', title:'噴膠', desc:'', pts:1 },
+  { id:44, cat:'basic', subcat:'glue', title:'AB膠', desc:'', pts:1 },
+  { id:45, cat:'basic', subcat:'glue', title:'免釘膠', desc:'', pts:1 },
+  { id:46, cat:'basic', subcat:'glue', title:'矽利康', desc:'', pts:1 },
+  { id:47, cat:'basic', subcat:'hardware', title:'釘子種類', desc:'', pts:1 },
+  { id:48, cat:'basic', subcat:'hardware', title:'螺絲', desc:'', pts:1 },
+  { id:49, cat:'basic', subcat:'hardware', title:'絞鍊', desc:'', pts:1 },
+  { id:50, cat:'basic', subcat:'hardware', title:'鎖', desc:'', pts:1 },
+  { id:51, cat:'basic', subcat:'hardware', title:'滑軌', desc:'', pts:1 },
+  { id:52, cat:'basic', subcat:'hardware', title:'把手', desc:'', pts:1 },
+  { id:53, cat:'basic', subcat:'hardware', title:'掛鉤器/吊筋', desc:'', pts:1 },
+  { id:54, cat:'basic', subcat:'operation', title:'切割機操作', desc:'', pts:1 },
+  { id:55, cat:'basic', subcat:'operation', title:'砂輪切斷機操作', desc:'', pts:1 },
+  { id:56, cat:'basic', subcat:'operation', title:'竹竿槍操作', desc:'', pts:1 },
+  { id:57, cat:'basic', subcat:'operation', title:'尺/坪/m²換算', desc:'材料計算', pts:1 },
+  { id:58, cat:'basic', subcat:'operation', title:'鉋刀操作', desc:'', pts:1 },
+  { id:59, cat:'basic', subcat:'operation', title:'鋸子操作', desc:'', pts:1 },
+  { id:60, cat:'basic', subcat:'operation', title:'美工刀操作', desc:'', pts:1 },
+  { id:61, cat:'basic', subcat:'operation', title:'墨斗操作', desc:'', pts:1 },
+  { id:62, cat:'basic', subcat:'operation', title:'鐵鎚操作', desc:'', pts:1 },
+  { id:63, cat:'basic', subcat:'operation', title:'雷射操作', desc:'', pts:1 },
+  { id:64, cat:'basic', subcat:'operation', title:'電鋸工作台', desc:'', pts:1 },
+  { id:65, cat:'basic', subcat:'operation', title:'修邊機操作', desc:'', pts:1 },
+  { id:66, cat:'basic', subcat:'operation', title:'電鑽操作', desc:'', pts:1 },
+  { id:67, cat:'basic', subcat:'operation', title:'彎鋸操作', desc:'', pts:1 },
+  { id:68, cat:'basic', subcat:'operation', title:'大路打操作', desc:'', pts:1 },
+  { id:69, cat:'basic', subcat:'auxiliary', title:'工作鋸台校正', desc:'', pts:3 },
+  { id:70, cat:'basic', subcat:'auxiliary', title:'木工梯製作', desc:'', pts:3 },
+  { id:71, cat:'basic', subcat:'auxiliary', title:'線板裁切盒', desc:'', pts:3 },
+  { id:72, cat:'basic', subcat:'auxiliary', title:'斜倒版', desc:'', pts:1 },
+  { id:73, cat:'basic', subcat:'electrical', title:'插座', desc:'', pts:1 },
+  { id:74, cat:'basic', subcat:'electrical', title:'單切', desc:'', pts:2 },
+  { id:75, cat:'basic', subcat:'electrical', title:'雙切', desc:'', pts:2 },
+  { id:76, cat:'basic', subcat:'electrical', title:'專插', desc:'', pts:5 },
+  // ========== 輕隔間 (10項) ==========
+  // 輕鋼架天花
+  { id:96, cat:'partition', subcat:'light-steel', title:'輕鋼架-水平放樣', desc:'', pts:1 },
+  { id:97, cat:'partition', subcat:'light-steel', title:'輕鋼架-修邊條', desc:'', pts:2 },
+  { id:98, cat:'partition', subcat:'light-steel', title:'輕鋼架-主副支', desc:'', pts:2 },
+  { id:99, cat:'partition', subcat:'light-steel', title:'輕鋼架-板材裁切', desc:'', pts:3 },
+  // 暗架天花
+  { id:100, cat:'partition', subcat:'hidden', title:'暗架-水平放樣', desc:'', pts:1 },
+  { id:101, cat:'partition', subcat:'hidden', title:'暗架-主副支', desc:'', pts:2 },
+  // 隔間施作
+  { id:105, cat:'partition', subcat:'drywall', title:'隔間施作', desc:'', pts:3 },
+  { id:106, cat:'partition', subcat:'drywall', title:'乾式隔間', desc:'上下槽/立柱', pts:3 },
+  { id:107, cat:'partition', subcat:'drywall', title:'濕式隔間', desc:'上下槽/立柱', pts:5 },
+  { id:108, cat:'partition', subcat:'drywall', title:'隔間開窗/門', desc:'', pts:4 },
+  // ========== 系統櫃 (7項) ==========
+  { id:77, cat:'system', subcat:'sys-cabinet', title:'系統櫃認識', desc:'五金/材料', pts:1 },
+  { id:78, cat:'system', subcat:'sys-cabinet', title:'系統櫃組合', desc:'', pts:2 },
+  { id:79, cat:'system', subcat:'sys-cabinet', title:'系統櫃設立', desc:'', pts:3 },
+  { id:80, cat:'system', subcat:'sys-cabinet', title:'系統櫃調門', desc:'', pts:4 },
+  { id:81, cat:'system', subcat:'sys-cabinet', title:'系統櫃抽頭安裝', desc:'', pts:4 },
+  { id:82, cat:'system', subcat:'sys-cabinet', title:'系統櫃收尾', desc:'填縫及矽利康', pts:3 },
+  { id:83, cat:'system', subcat:'sys-cabinet', title:'系統櫃特殊五金', desc:'', pts:6 },
+  // ========== 木工 (55項) ==========
+  // 天花板
+  { id:84, cat:'wood', subcat:'ceiling', title:'水平放樣', desc:'吊筋/格柵角料', pts:3 },
+  { id:85, cat:'wood', subcat:'ceiling', title:'窗簾盒', desc:'', pts:4 },
+  { id:86, cat:'wood', subcat:'ceiling', title:'包管/樑', desc:'', pts:4 },
+  { id:87, cat:'wood', subcat:'ceiling', title:'維修孔', desc:'', pts:2 },
+  { id:88, cat:'wood', subcat:'ceiling', title:'特殊維修孔', desc:'', pts:4 },
+  { id:89, cat:'wood', subcat:'ceiling', title:'下吹出風口', desc:'有框無框', pts:3 },
+  { id:90, cat:'wood', subcat:'ceiling', title:'側吹出風口', desc:'無框', pts:4 },
+  { id:91, cat:'wood', subcat:'ceiling', title:'間接照明', desc:'', pts:3 },
+  { id:92, cat:'wood', subcat:'ceiling', title:'塑膠天花板', desc:'', pts:3 },
+  { id:93, cat:'wood', subcat:'ceiling', title:'矽酸天花板', desc:'', pts:3 },
+  { id:94, cat:'wood', subcat:'ceiling', title:'線板', desc:'', pts:3 },
+  { id:95, cat:'wood', subcat:'ceiling', title:'造型天花板', desc:'', pts:9 },
+  { id:142, cat:'wood', subcat:'ceiling', title:'特殊天花板', desc:'', pts:9 },
+  // 地板
+  { id:102, cat:'wood', subcat:'floor', title:'平鋪', desc:'', pts:3 },
+  { id:103, cat:'wood', subcat:'floor', title:'直鋪', desc:'', pts:2 },
+  { id:104, cat:'wood', subcat:'floor', title:'架高', desc:'面板/底板/軌道', pts:4 },
+  // 壁板造型
+  { id:109, cat:'wood', subcat:'wall', title:'造型開口', desc:'', pts:9 },
+  { id:110, cat:'wood', subcat:'wall', title:'木格柵', desc:'', pts:3 },
+  { id:111, cat:'wood', subcat:'wall', title:'壁板施作', desc:'', pts:3 },
+  { id:112, cat:'wood', subcat:'wall', title:'貓道', desc:'', pts:3 },
+  { id:113, cat:'wood', subcat:'wall', title:'造型', desc:'', pts:9 },
+  { id:114, cat:'wood', subcat:'wall', title:'床頭板', desc:'', pts:3 },
+  { id:115, cat:'wood', subcat:'wall', title:'方柱', desc:'', pts:3 },
+  { id:116, cat:'wood', subcat:'wall', title:'圓柱', desc:'', pts:5 },
+  { id:117, cat:'wood', subcat:'wall', title:'弧形', desc:'', pts:5 },
+  // 門片門框
+  { id:118, cat:'wood', subcat:'door', title:'房間門', desc:'合門及安裝', pts:5 },
+  { id:119, cat:'wood', subcat:'door', title:'櫥櫃門', desc:'合門及安裝', pts:4 },
+  { id:120, cat:'wood', subcat:'door', title:'櫥櫃拉門', desc:'合門及安裝', pts:4 },
+  { id:121, cat:'wood', subcat:'door', title:'百頁門', desc:'合門及安裝', pts:5 },
+  { id:122, cat:'wood', subcat:'door', title:'懸吊拉門', desc:'合門及安裝', pts:5 },
+  { id:123, cat:'wood', subcat:'door', title:'實木障子門', desc:'合門及安裝', pts:5 },
+  { id:124, cat:'wood', subcat:'door', title:'門鎖安裝', desc:'喇叭/水平鎖', pts:3 },
+  { id:125, cat:'wood', subcat:'door', title:'崁入式拉門把手', desc:'', pts:4 },
+  { id:126, cat:'wood', subcat:'door', title:'崁入式拉門鎖', desc:'', pts:6 },
+  { id:127, cat:'wood', subcat:'door', title:'隱藏鎖安裝', desc:'', pts:4 },
+  { id:128, cat:'wood', subcat:'door', title:'特殊鎖安裝', desc:'', pts:8 },
+  { id:129, cat:'wood', subcat:'door', title:'特殊門片', desc:'合門及安裝', pts:9 },
+  // 櫥櫃床組
+  { id:130, cat:'wood', subcat:'cabinet', title:'櫃體', desc:'', pts:6 },
+  { id:131, cat:'wood', subcat:'cabinet', title:'三節式滑軌抽屜', desc:'製作安裝', pts:4 },
+  { id:132, cat:'wood', subcat:'cabinet', title:'座式滑軌抽屜', desc:'製作安裝', pts:4 },
+  { id:133, cat:'wood', subcat:'cabinet', title:'床架', desc:'', pts:3 },
+  { id:134, cat:'wood', subcat:'cabinet', title:'床頭櫃', desc:'', pts:4 },
+  { id:135, cat:'wood', subcat:'cabinet', title:'半高櫃', desc:'', pts:5 },
+  { id:136, cat:'wood', subcat:'cabinet', title:'造型櫃', desc:'', pts:9 },
+  { id:137, cat:'wood', subcat:'cabinet', title:'書桌', desc:'', pts:4 },
+  { id:138, cat:'wood', subcat:'cabinet', title:'書櫃', desc:'', pts:3 },
+  { id:139, cat:'wood', subcat:'cabinet', title:'上下櫃', desc:'', pts:3 },
+  { id:140, cat:'wood', subcat:'cabinet', title:'拉門櫃', desc:'', pts:7 },
+  { id:141, cat:'wood', subcat:'cabinet', title:'衣櫃', desc:'', pts:6 },
+  // 態度 (3項)
+  { id:143, cat:'attitude', title:'配合加班', desc:'夜間與假日', pts:10 },
+  { id:144, cat:'attitude', title:'會開貨車', desc:'', pts:10 },
+  { id:145, cat:'attitude', title:'場勘與工作安排', desc:'', pts:20 },
+  // 系統 (9項)
+  { id:146, cat:'app', title:'On!track 工具領用/歸還', desc:'', pts:5 },
+  { id:147, cat:'app', title:'On!track 工具維修/保養', desc:'', pts:2 },
+  { id:148, cat:'app', title:'On!track 數量項目', desc:'', pts:1 },
+  { id:149, cat:'app', title:'Asana 每日照片上傳', desc:'', pts:1 },
+  { id:150, cat:'app', title:'Asana 專案照片上傳', desc:'', pts:5 },
+  { id:151, cat:'app', title:'Asana 追加/改善項目', desc:'', pts:5 },
+  { id:152, cat:'app', title:'Asana 訂貨系統使用', desc:'', pts:3 },
+  { id:153, cat:'app', title:'TimeThree 領班工作時程', desc:'', pts:5 },
+  { id:154, cat:'app', title:'TimeThree 學徒工作時間', desc:'', pts:1 },
+];
+
+// Training Data (8 Weeks)
+const trainingData = {
+  "第一周": [
+    { id:"w1-01", text:"了解公司使命、願景、核心價值，各部門負責項目" },
+    { id:"w1-02", text:"加入Line群組，了解各群組功能並使用" },
+    { id:"w1-03", text:"TimeThree工作排程：能夠為自己安排與爭取工作定位" },
+    { id:"w1-04", text:"Asana訂貨系統教學：進料、退料、詢價" },
+    { id:"w1-05", text:"金豐打卡系統運用：清楚知道上下班及加班請假規範" },
+    { id:"w1-06", text:"EST系統操作與運用：能夠完成當日任務與回報" },
+    { id:"w1-07", text:"工具與系統操作：ON!Track工具使用" }
+  ],
+  "第二周": [
+    { id:"w2-01", text:"獎懲系統使用：為自己負責任，做到加減分" },
+    { id:"w2-02", text:"基本材料/五金認識：保護材料，矽酸�ite板與角材F1/F3" },
+    { id:"w2-03", text:"基本手工具認識：尺/筆/手鋸/鐵鎚/美工刀" },
+    { id:"w2-04", text:"基本電/氣動工具認識：釘槍/雷射/鋸台/風車" },
+    { id:"w2-05", text:"擔任案場值日生：關電/關窗/環境整潔" },
+    { id:"w2-06", text:"與導師週回顧，追蹤表現與挑戰" }
+  ],
+  "第三周": [
+    { id:"w3-01", text:"新人獨立操作：切副支、畫主支，知道121/151差別" },
+    { id:"w3-02", text:"確認工作技能進展（包括協作、系統運用能力）" },
+    { id:"w3-03", text:"基本材料/五金認識：ST45/F50/F30/J416" },
+    { id:"w3-04", text:"基本電/氣動工具認識：電動起子/角度裁斷機" },
+    { id:"w3-05", text:"擔任案場值日生" },
+    { id:"w3-06", text:"與導師週回顧" }
+  ],
+  "第四周": [
+    { id:"w4-01", text:"新人獨立操作：能夠協作封板，檢查平整度/不浮釘" },
+    { id:"w4-02", text:"確認工作技能進展" },
+    { id:"w4-03", text:"基本材料/五金認識：活頁/喇叭鎖/木心板" },
+    { id:"w4-04", text:"基本電/氣動工具認識：路打/模切機" },
+    { id:"w4-05", text:"擔任案場值日生" },
+    { id:"w4-06", text:"與導師週回顧" }
+  ],
+  "第五周": [
+    { id:"w5-01", text:"新人獨立操作：包樑骨架" },
+    { id:"w5-02", text:"確認工作技能進展" },
+    { id:"w5-03", text:"基本材料/五金認識：各類夾板/滑軌" },
+    { id:"w5-04", text:"基本電/氣動工具認識：線鋸機/砂輪機" },
+    { id:"w5-05", text:"擔任案場值日生" },
+    { id:"w5-06", text:"與導師週回顧" }
+  ],
+  "第六周": [
+    { id:"w6-01", text:"新人獨立操作：窗簾盒" },
+    { id:"w6-02", text:"確認工作技能進展" },
+    { id:"w6-03", text:"基本材料/五金認識：皮板/美耐板/西德絞鍊" },
+    { id:"w6-04", text:"基本電/氣動工具認識：大路打/竹竿槍" },
+    { id:"w6-05", text:"擔任案場值日生" },
+    { id:"w6-06", text:"與導師週回顧" }
+  ],
+  "第七周": [
+    { id:"w7-01", text:"新人獨立操作：拍拍手（出風口）" },
+    { id:"w7-02", text:"確認工作技能進展" },
+    { id:"w7-03", text:"基本材料/五金認識：三節式滑軌/拉門勾鎖" },
+    { id:"w7-04", text:"基本電/氣動工具認識：火藥槍/槌鑽" },
+    { id:"w7-05", text:"擔任案場值日生" },
+    { id:"w7-06", text:"與導師週回顧" }
+  ],
+  "第八周": [
+    { id:"w8-01", text:"新人獨立操作：能夠獨立完成平釘天花板" },
+    { id:"w8-02", text:"確認工作技能進展" },
+    { id:"w8-03", text:"基本材料/五金認識：拉門軌道/回歸絞鍊/十字絞鍊" },
+    { id:"w8-04", text:"基本電/氣動工具認識：噴膠槍/電動鉋刀" },
+    { id:"w8-05", text:"擔任案場值日生" },
+    { id:"w8-06", text:"與導師週回顧" }
+  ]
+};
+
+// Salary Table
+const salaryTable = [
+  { range:"0-60", position:"依勞基法入職薪資", daily:1300, monthly:27470, grade:"F1" },
+  { range:"61-80", position:"", daily:1400, monthly:28370, grade:"F10" },
+  { range:"81-100", position:"", daily:1500, monthly:29270, grade:"F19" },
+  { range:"101-120", position:"", daily:1600, monthly:30170, grade:"E7" },
+  { range:"121-140", position:"", daily:1700, monthly:31200, grade:"E16" },
+  { range:"141-160", position:"", daily:1800, monthly:33000, grade:"E25" },
+  { range:"161-180", position:"半技(會天地壁基本門片)", daily:2000, monthly:36750, grade:"D6" },
+  { range:"181-200", position:"", daily:2200, monthly:40250, grade:"D16" },
+  { range:"201-220", position:"", daily:2400, monthly:44100, grade:"D27" },
+  { range:"221-240", position:"", daily:2600, monthly:47700, grade:"C6" },
+  { range:"241-260", position:"基本天花板木工師傅", daily:2800, monthly:51300, grade:"C15" },
+  { range:"261-280", position:"基本造型天地壁師傅", daily:3000, monthly:54900, grade:"C23" },
+  { range:"281-300", position:"有經驗師傅", daily:3100, monthly:56700, grade:"C27" },
+  { range:"301-320", position:"額外能看場", daily:3200, monthly:58550, grade:"B20" },
+  { range:"321-340", position:"額外會基本水電", daily:3300, monthly:60350, grade:"B30" },
+  { range:"341-360", position:"額外會系統櫃", daily:3400, monthly:62150, grade:"B28" },
+  { range:"361-380", position:"能顧場師傅", daily:3500, monthly:64000, grade:"A9" },
+  { range:"381-431", position:"資深師傅", daily:3600, monthly:66000, grade:"A13" }
+];
+
+const STORE_PREFIX = 'wood-passport-';
+const INDEX_KEY = 'wood-passport-index';
+let currentEmployee = '';
+let state = { skills:{}, training:{}, employee:{} };
+
+// 員工資料（來自 config.json）
+const EMPLOYEE_DATA = {
+  rates: {
+    "翁建信": 3600, "劉明智": 3600, "陳瑋鑫": 3600, "陳冠興": 2300,
+    "林哲立": 3600, "張城少": 3600, "劉哲林": 2000, "許子軒": 1600,
+    "陳偉瀚": 3000, "智凱學徒": 2500, "劉星沅": 3500, "王瑞富": 3100,
+    "溫智勳": 3500, "徐師傅": 3500, "洪豐洋父子": 3300, "陳琦斌": 3000, "吳仁傑": 1500
+  },
+  teams: {
+    "陳瑋鑫組": { leader: "陳瑋鑫", members: ["翁建信", "陳冠興", "許子軒"] },
+    "林哲立組": { leader: "林哲立", members: ["劉明智", "張城少", "劉哲林", "陳琦斌", "吳仁傑"] },
+    "劉星沅組": { leader: "劉星沅", members: ["王瑞富"] },
+    "溫智勳組": { leader: "溫智勳", members: ["智凱學徒", "徐師傅"] },
+    "外調": { members: ["陳偉瀚", "洪豐洋父子"] }
+  },
+  ranks: [
+    { name: "學徒", min: 0, max: 160 },
+    { name: "半技", min: 161, max: 280 },
+    { name: "師傅", min: 281, max: 380 },
+    { name: "領班", min: 381, max: 431 }
+  ]
+};
+
+// 取得員工所屬團隊
+function getEmployeeTeam(name) {
+  for (const [teamName, team] of Object.entries(EMPLOYEE_DATA.teams)) {
+    if (team.leader === name || (team.members && team.members.includes(name))) {
+      return teamName;
+    }
+  }
+  return '-';
+}
+
+// 取得員工目前日薪
+function getEmployeeSalary(name) {
+  return EMPLOYEE_DATA.rates[name] || '-';
+}
+
+// 根據技能分數取得職級
+function getRankByScore(score) {
+  for (const rank of EMPLOYEE_DATA.ranks) {
+    if (score >= rank.min && score <= rank.max) {
+      return rank.name;
+    }
+  }
+  return '學徒';
+}
+
+// 取得所有已儲存的員工名單
+function getEmployeeIndex() {
+  try {
+    return JSON.parse(localStorage.getItem(INDEX_KEY)) || [];
+  } catch(e) { return []; }
+}
+
+// 更新員工名單索引
+function updateEmployeeIndex(name) {
+  const index = getEmployeeIndex();
+  if (name && !index.includes(name)) {
+    index.push(name);
+    localStorage.setItem(INDEX_KEY, JSON.stringify(index));
+  }
+  populateEmployeeList();
+}
+
+// 填充員工下拉選單
+function populateEmployeeList() {
+  const select = document.getElementById('employeeName');
+  const employees = Object.keys(EMPLOYEE_DATA.rates).sort();
+  select.innerHTML = '<option value="">請選擇員工</option>' +
+    employees.map(name => `<option value="${name}">${name}</option>`).join('');
+}
+
+// 員工選擇時觸發
+function onEmployeeSelect() {
+  const name = document.getElementById('employeeName').value;
+  if (name) {
+    updateEmployeeInfo(name);
+  } else {
+    clearEmployeeInfo();
+  }
+}
+
+// 更新員工資訊顯示
+function updateEmployeeInfo(name) {
+  document.getElementById('teamDisplay').textContent = getEmployeeTeam(name);
+  document.getElementById('currentSalary').textContent =
+    EMPLOYEE_DATA.rates[name] ? `$${EMPLOYEE_DATA.rates[name].toLocaleString()}` : '-';
+
+  // 計算技能分數對應職級
+  const done = SKILLS.filter(s => state.skills[s.id]?.done);
+  const total = done.reduce((a, s) => a + s.pts, 0);
+  document.getElementById('currentRank').textContent = getRankByScore(total);
+}
+
+// 清除員工資訊顯示
+function clearEmployeeInfo() {
+  document.getElementById('teamDisplay').textContent = '-';
+  document.getElementById('currentSalary').textContent = '-';
+  document.getElementById('currentRank').textContent = '-';
+}
+
+// 查詢員工資料
+function searchEmployee() {
+  const name = document.getElementById('employeeName').value;
+  if (!name) {
+    alert('請先選擇員工');
+    return;
+  }
+
+  const key = STORE_PREFIX + name;
+  const saved = localStorage.getItem(key);
+
+  if (saved) {
+    state = JSON.parse(saved);
+    currentEmployee = name;
+    loadDataToUI();
+    updateStats();
+    updateEmployeeInfo(name);
+    alert(`已載入 ${name} 的技能資料`);
+  } else {
+    if (confirm(`找不到 ${name} 的技能資料，是否建立新紀錄？`)) {
+      currentEmployee = name;
+      resetState();
+      state.employee.name = name;
+      updateStats();
+      updateEmployeeInfo(name);
+    }
+  }
+}
+
+// 重置狀態
+function resetState() {
+  state = { skills:{}, training:{}, employee:{} };
+  SKILLS.forEach(s => {
+    state.skills[s.id] = { done:false, date:'', stars:0, mentor:'', history:[] };
+  });
+}
+
+// 根據日薪計算目標技能分數
+function getTargetScoreFromSalary(salary) {
+  const salaryMap = [
+    { salary: 1300, score: 30 },
+    { salary: 1400, score: 70 },
+    { salary: 1500, score: 90 },
+    { salary: 1600, score: 110 },
+    { salary: 1700, score: 130 },
+    { salary: 1800, score: 150 },
+    { salary: 2000, score: 170 },
+    { salary: 2200, score: 190 },
+    { salary: 2300, score: 200 },
+    { salary: 2400, score: 210 },
+    { salary: 2500, score: 230 },
+    { salary: 2600, score: 235 },
+    { salary: 2800, score: 250 },
+    { salary: 3000, score: 270 },
+    { salary: 3100, score: 290 },
+    { salary: 3200, score: 310 },
+    { salary: 3300, score: 330 },
+    { salary: 3400, score: 350 },
+    { salary: 3500, score: 370 },
+    { salary: 3600, score: 400 },
+  ];
+  for (let i = salaryMap.length - 1; i >= 0; i--) {
+    if (salary >= salaryMap[i].salary) return salaryMap[i].score;
+  }
+  return 30;
+}
+
+// 根據目標分數自動勾選技能
+function autoCheckSkillsByScore(targetScore) {
+  resetState();
+  let currentScore = 0;
+  const today = new Date().toISOString().split('T')[0];
+
+  // 按分類順序勾選技能，優先勾選基礎技能
+  const categoryOrder = ['basic', 'partition', 'system', 'wood', 'attitude', 'app'];
+  const sortedSkills = [...SKILLS].sort((a, b) => {
+    const aIdx = categoryOrder.indexOf(a.cat);
+    const bIdx = categoryOrder.indexOf(b.cat);
+    if (aIdx !== bIdx) return aIdx - bIdx;
+    return a.pts - b.pts; // 同類別先勾低分的
+  });
+
+  for (const skill of sortedSkills) {
+    if (currentScore >= targetScore) break;
+    state.skills[skill.id] = {
+      done: true,
+      date: today,
+      stars: 5, // 初始設為5星，得滿分
+      mentor: '系統初始化',
+      history: [{
+        date: today,
+        mentor: '系統初始化',
+        stars: 5,
+        time: new Date().toISOString()
+      }]
+    };
+    currentScore += skill.pts; // 5星 = 100% = 原始分數
+  }
+
+  return currentScore;
+}
+
+// 為所有員工建立初始資料
+function initAllEmployees() {
+  if (!confirm('確定要根據目前日薪為所有員工建立技能紀錄？\n（已有紀錄的員工將被覆蓋）')) return;
+
+  const employees = Object.entries(EMPLOYEE_DATA.rates);
+  let count = 0;
+
+  for (const [name, salary] of employees) {
+    const targetScore = getTargetScoreFromSalary(salary);
+    const actualScore = autoCheckSkillsByScore(targetScore);
+
+    state.employee = { name: name };
+    const key = STORE_PREFIX + name;
+    localStorage.setItem(key, JSON.stringify(state));
+    updateEmployeeIndex(name);
+    count++;
+
+    console.log(`${name}: 日薪 $${salary} → 目標 ${targetScore} 分 → 實際 ${actualScore} 分`);
+  }
+
+  alert(`已為 ${count} 位員工建立技能紀錄！`);
+  location.reload();
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('currentDate').textContent = new Date().toLocaleDateString('zh-TW');
+  initState();
+  populateEmployeeList();
+  buildSkillsNav();
+  buildSkillsContent();
+  buildTraining();
+  buildSalaryTable();
+  setupMainTabs();
+  loadData();
+  updateStats();
+
+  // 首次載入自動生成全員資料
+  const existingIndex = getEmployeeIndex();
+  if (existingIndex.length === 0) {
+    initAllEmployeesSilent();
+  }
+});
+
+// 靜默初始化所有員工（不彈出確認框）
+function initAllEmployeesSilent() {
+  const employees = Object.entries(EMPLOYEE_DATA.rates);
+
+  for (const [name, salary] of employees) {
+    const targetScore = getTargetScoreFromSalary(salary);
+    autoCheckSkillsByScore(targetScore);
+    state.employee = { name: name };
+    const key = STORE_PREFIX + name;
+    localStorage.setItem(key, JSON.stringify(state));
+    updateEmployeeIndex(name);
+  }
+
+  populateEmployeeList();
+  console.log(`已自動為 ${employees.length} 位員工建立技能紀錄`);
+}
+
+function initState() {
+  resetState();
+}
+
+function save() {
+  const name = document.getElementById('employeeName').value;
+  if (!name) return;
+
+  state.employee = { name: name };
+
+  currentEmployee = name;
+  const key = STORE_PREFIX + name;
+  localStorage.setItem(key, JSON.stringify(state));
+  updateEmployeeIndex(name);
+}
+
+function loadDataToUI() {
+  if (state.employee) {
+    document.getElementById('employeeName').value = state.employee.name || '';
+  }
+  SKILLS.forEach(s => refreshSkillCard(s.id));
+  for (const [id, checked] of Object.entries(state.training || {})) {
+    const el = document.getElementById(id);
+    if (el) el.checked = checked;
+  }
+  updateTrainingProgress();
+}
+
+// Main Tabs
+function setupMainTabs() {
+  document.querySelectorAll('.main-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById(`${this.dataset.tab}-tab`).classList.add('active');
+    });
+  });
+}
+
+// Skills Nav
+function buildSkillsNav() {
+  const nav = document.getElementById('cat-nav');
+  CATEGORIES.forEach((cat, i) => {
+    const catSkills = SKILLS.filter(s => s.cat === cat.id);
+    const btn = document.createElement('button');
+    btn.className = 'cat-tab' + (i===0 ? ' active' : '');
+    btn.dataset.cat = cat.id;
+    btn.style.setProperty('--tab-c', cat.color);
+    btn.innerHTML = `${cat.icon} ${cat.name} <span class="tab-badge" id="badge-${cat.id}">0/${catSkills.length}</span>`;
+    btn.addEventListener('click', () => switchCat(cat.id));
+    nav.appendChild(btn);
+  });
+}
+
+function switchCat(catId) {
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.toggle('active', t.dataset.cat === catId));
+  document.querySelectorAll('.cat-section').forEach(s => s.classList.toggle('active', s.dataset.cat === catId));
+}
+
+// Skills Content
+function buildSkillsContent() {
+  const content = document.getElementById('skills-content');
+  CATEGORIES.forEach((cat, ci) => {
+    const catSkills = SKILLS.filter(s => s.cat === cat.id);
+    const sec = document.createElement('div');
+    sec.className = 'cat-section' + (ci===0 ? ' active' : '');
+    sec.dataset.cat = cat.id;
+    sec.innerHTML = `
+      <div class="cat-header">
+        <div class="cat-header-icon" style="background:${cat.colorL};color:${cat.color}">${cat.icon}</div>
+        <div class="cat-header-text"><h2>${cat.name}</h2><p>${cat.desc}</p></div>
+      </div>
+    `;
+
+    // 有子分類的類別按子分類分組顯示
+    if (SUBCATS[cat.id]) {
+      SUBCATS[cat.id].forEach(subcat => {
+        const subcatSkills = catSkills.filter(s => s.subcat === subcat.id);
+        if (subcatSkills.length === 0) return;
+
+        const subcatHeader = document.createElement('div');
+        subcatHeader.className = 'subcat-header';
+        subcatHeader.innerHTML = `<span class="subcat-icon">${subcat.icon}</span> ${subcat.name} <span class="subcat-count">${subcatSkills.length}項</span>`;
+        sec.appendChild(subcatHeader);
+
+        const grid = document.createElement('div');
+        grid.className = 'skills-grid';
+        subcatSkills.forEach(skill => grid.appendChild(buildSkillCard(skill, cat)));
+        sec.appendChild(grid);
+      });
+    } else {
+      const grid = document.createElement('div');
+      grid.className = 'skills-grid';
+      catSkills.forEach(skill => grid.appendChild(buildSkillCard(skill, cat)));
+      sec.appendChild(grid);
+    }
+
+    content.appendChild(sec);
+  });
+}
+
+// 導師名單
+const MENTORS = ['陳瑋鑫', '林哲立', '翁建信', '劉明智', '張城少', '劉星沅'];
+
+function buildSkillCard(skill, cat) {
+  const card = document.createElement('div');
+  card.className = 'skill-card';
+  card.id = `card-${skill.id}`;
+  card.innerHTML = `
+    <div class="done-stamp">完成</div>
+    <div class="card-stripe" style="background:${cat.color}"></div>
+    <div class="card-main">
+      <div class="card-top-row">
+        <span class="card-no">#${skill.id}</span>
+        <span class="card-pts" id="pts-${skill.id}">${skill.pts}分</span>
+        <div class="card-check" id="chk-${skill.id}">✓</div>
+      </div>
+      <div class="card-title">${skill.title}</div>
+      <div class="card-desc">${skill.desc || ''}</div>
+    </div>
+    <div class="card-footer">
+      <div class="stars" id="stars-${skill.id}">
+        ${[1,2,3,4,5].map(n => `<span class="star" data-n="${n}">★</span>`).join('')}
+      </div>
+      <span class="actual-pts" id="actual-${skill.id}"></span>
+    </div>
+    <div class="card-cert">
+      <select class="mentor-select" id="mentor-${skill.id}">
+        <option value="">認證導師</option>
+        ${MENTORS.map(m => `<option value="${m}">${m}</option>`).join('')}
+      </select>
+      <input type="date" class="date-input" id="date-${skill.id}">
+      <button class="btn-cert" id="certBtn-${skill.id}">認證</button>
+    </div>
+    <div class="card-history" id="history-${skill.id}"></div>
+  `;
+  // Events
+  card.querySelector(`#chk-${skill.id}`).addEventListener('click', () => toggleSkill(skill.id));
+  card.querySelector(`#certBtn-${skill.id}`).addEventListener('click', () => certifySkill(skill.id));
+  card.querySelectorAll(`#stars-${skill.id} .star`).forEach(star => {
+    star.addEventListener('click', () => {
+      const n = parseInt(star.dataset.n);
+      state.skills[skill.id].stars = (state.skills[skill.id].stars === n) ? 0 : n;
+      save(); renderStars(skill.id); updateActualPts(skill.id); updateStats();
+    });
+  });
+  refreshSkillCard(skill.id);
+  return card;
+}
+
+// 認證技能
+function certifySkill(id) {
+  const mentor = document.getElementById(`mentor-${id}`).value;
+  const date = document.getElementById(`date-${id}`).value || new Date().toISOString().split('T')[0];
+  const stars = state.skills[id].stars || 3;
+
+  if (!mentor) {
+    alert('請選擇認證導師');
+    return;
+  }
+
+  // 初始化歷史記錄
+  if (!state.skills[id].history) state.skills[id].history = [];
+
+  // 新增認證記錄
+  state.skills[id].history.push({
+    date: date,
+    mentor: mentor,
+    stars: stars,
+    time: new Date().toISOString()
+  });
+
+  state.skills[id].done = true;
+  state.skills[id].date = date;
+  state.skills[id].mentor = mentor;
+  state.skills[id].stars = stars;
+
+  save();
+  refreshSkillCard(id);
+  updateStats();
+  renderHistory(id);
+}
+
+// 顯示認證歷史
+function renderHistory(id) {
+  const historyEl = document.getElementById(`history-${id}`);
+  const history = state.skills[id].history || [];
+
+  if (history.length === 0) {
+    historyEl.innerHTML = '';
+    return;
+  }
+
+  historyEl.innerHTML = '<div class="history-title">考核紀錄</div>' +
+    history.map((h, i) => `
+      <div class="history-item">
+        <span class="history-date">${h.date}</span>
+        <span class="history-mentor">${h.mentor}</span>
+        <span class="history-stars">${'★'.repeat(h.stars)}${'☆'.repeat(5-h.stars)}</span>
+      </div>
+    `).join('');
+}
+
+// 計算實際得分（星數影響）
+function getActualScore(skillId) {
+  const skill = SKILLS.find(s => s.id === skillId);
+  const s = state.skills[skillId];
+  if (!s.done) return 0;
+  // 星數比例：1星=20%, 2星=40%, 3星=60%, 4星=80%, 5星=100%
+  const starRatio = (s.stars || 3) * 0.2;
+  return Math.round(skill.pts * starRatio * 10) / 10;
+}
+
+// 更新實際得分顯示
+function updateActualPts(id) {
+  const actualEl = document.getElementById(`actual-${id}`);
+  const s = state.skills[id];
+  if (actualEl && s.done) {
+    const actual = getActualScore(id);
+    actualEl.textContent = `實得 ${actual} 分`;
+  } else if (actualEl) {
+    actualEl.textContent = '';
+  }
+}
+
+function toggleSkill(id) {
+  const s = state.skills[id];
+  s.done = !s.done;
+  if (s.done && !s.date) s.date = new Date().toISOString().split('T')[0];
+  if (s.done && !s.stars) s.stars = 3;
+  save(); refreshSkillCard(id); updateStats();
+}
+
+function refreshSkillCard(id) {
+  const s = state.skills[id];
+  const card = document.getElementById(`card-${id}`);
+  if (!card) return;
+  card.classList.toggle('done', s.done);
+  const dateEl = card.querySelector(`#date-${id}`);
+  if (dateEl) dateEl.value = s.date || '';
+  const mentorEl = card.querySelector(`#mentor-${id}`);
+  if (mentorEl) mentorEl.value = s.mentor || '';
+  renderStars(id);
+  updateActualPts(id);
+  renderHistory(id);
+}
+
+function renderStars(id) {
+  const val = state.skills[id].stars || 0;
+  const card = document.getElementById(`card-${id}`);
+  if (!card) return;
+  card.querySelectorAll(`#stars-${id} .star`).forEach(s => {
+    s.classList.toggle('lit', parseInt(s.dataset.n) <= val);
+  });
+}
+
+// Training
+function buildTraining() {
+  const container = document.getElementById('trainingContainer');
+  let html = '<div class="section-header">📚 8周導師培訓進度</div>';
+  for (const [week, items] of Object.entries(trainingData)) {
+    html += `<div class="week-card">
+      <div class="week-header" onclick="toggleWeek('${week}')">
+        <span class="week-title">${week}</span>
+        <span class="week-progress" id="progress-${week}">0/${items.length}</span>
+      </div>
+      <div class="week-content" id="content-${week}">
+        ${items.map(item => `
+          <div class="training-item">
+            <input type="checkbox" id="${item.id}" onchange="updateTrainingProgress()">
+            <div>${item.text}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+  }
+  container.innerHTML = html;
+}
+
+function toggleWeek(week) {
+  document.getElementById(`content-${week}`).classList.toggle('hidden');
+}
+
+function updateTrainingProgress() {
+  let totalChecked = 0, totalItems = 0;
+  for (const [week, items] of Object.entries(trainingData)) {
+    let weekChecked = 0;
+    items.forEach(item => {
+      const el = document.getElementById(item.id);
+      if (el?.checked) { weekChecked++; totalChecked++; }
+      state.training[item.id] = el?.checked || false;
+      totalItems++;
+    });
+    const progressEl = document.getElementById(`progress-${week}`);
+    if (progressEl) progressEl.textContent = `${weekChecked}/${items.length}`;
+  }
+  const pct = Math.round((totalChecked / totalItems) * 100);
+  document.getElementById('trainingProgress').textContent = `${pct}%`;
+  save();
+}
+
+// Salary Table
+function buildSalaryTable() {
+  const tbody = document.getElementById('salaryTableBody');
+  tbody.innerHTML = salaryTable.map(row => `
+    <tr data-range="${row.range}">
+      <td>${row.range}</td>
+      <td>${row.position || '-'}</td>
+      <td>$${row.daily.toLocaleString()}</td>
+      <td>$${row.monthly.toLocaleString()}</td>
+      <td>${row.grade}</td>
+    </tr>
+  `).join('');
+}
+
+// Stats
+function updateStats() {
+  const done = SKILLS.filter(s => state.skills[s.id].done);
+  // 計算實際得分（含星數加權）
+  const total = done.reduce((a, s) => a + getActualScore(s.id), 0);
+  const maxTotal = SKILLS.reduce((a, s) => a + s.pts, 0); // 431
+
+  document.getElementById('totalScore').textContent = Math.round(total * 10) / 10;
+  document.getElementById('doneCount').textContent = done.length;
+
+  const pct = Math.round((total / 431) * 100);
+  const fill = document.getElementById('progressFill');
+  fill.style.width = `${pct}%`;
+  fill.textContent = `${pct}%`;
+
+  // Level & Salary
+  let level, levelClass, salary;
+  if (total <= 60) { level = "F 級"; levelClass = "level-F"; salary = 1300; }
+  else if (total <= 100) { level = "F 級"; levelClass = "level-F"; salary = 1500; }
+  else if (total <= 160) { level = "E 級"; levelClass = "level-E"; salary = 1800; }
+  else if (total <= 240) { level = "D 級"; levelClass = "level-D"; salary = 2400; }
+  else if (total <= 280) { level = "C 級"; levelClass = "level-C"; salary = 3000; }
+  else if (total <= 340) { level = "B 級"; levelClass = "level-B"; salary = 3300; }
+  else { level = "A 級"; levelClass = "level-A"; salary = 3600; }
+
+  const badge = document.getElementById('levelBadge');
+  badge.className = `level-badge ${levelClass}`;
+  badge.textContent = `🎖️ ${level}`;
+  document.getElementById('dailySalary').textContent = salary.toLocaleString();
+
+  // Highlight salary row
+  document.querySelectorAll('.salary-table tbody tr').forEach(row => {
+    row.classList.remove('current');
+    const range = row.dataset.range.split('-').map(Number);
+    if (total >= range[0] && total <= (range[1] || 431)) row.classList.add('current');
+  });
+
+  // Category badges
+  CATEGORIES.forEach(cat => {
+    const cs = SKILLS.filter(s => s.cat === cat.id);
+    const cd = cs.filter(s => state.skills[s.id].done);
+    const badge = document.getElementById(`badge-${cat.id}`);
+    if (badge) badge.textContent = `${cd.length}/${cs.length}`;
+  });
+
+  // 更新職級顯示
+  const rankEl = document.getElementById('currentRank');
+  if (rankEl && currentEmployee) {
+    rankEl.textContent = getRankByScore(total);
+  }
+}
+
+// Save/Load
+function saveData() {
+  const name = document.getElementById('employeeName').value;
+  if (!name) {
+    alert('請先選擇員工');
+    return;
+  }
+  save();
+  alert(`${name} 的進度已儲存！`);
+}
+
+function loadData() {
+  // 頁面載入時不自動載入，等待使用者查詢
+  updateStats();
+}
+
+function clearData() {
+  const name = document.getElementById('employeeName').value;
+  if (!name) {
+    alert('請先選擇員工');
+    return;
+  }
+  if (confirm(`確定要清除 ${name} 的所有資料嗎？`)) {
+    const key = STORE_PREFIX + name;
+    localStorage.removeItem(key);
+    // 從索引中移除
+    const index = getEmployeeIndex().filter(n => n !== name);
+    localStorage.setItem(INDEX_KEY, JSON.stringify(index));
+    location.reload();
+  }
+}
+</script>
+</body>
+</html>
