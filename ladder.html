@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>摩研裝修 升職階梯架構</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #3498db;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #1a252f;
+            --gold: #d4a574;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'Noto Sans TC', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            color: var(--dark);
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 60px 40px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(44, 62, 80, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        header .meta {
+            font-size: 0.95rem;
+            opacity: 0.85;
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin: 50px 0 25px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--accent);
+            position: relative;
+        }
+
+        h3 {
+            color: var(--secondary);
+            font-size: 1.4rem;
+            margin: 35px 0 20px;
+            padding-left: 15px;
+            border-left: 4px solid var(--accent);
+        }
+
+        h4 {
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin: 25px 0 15px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        /* 職級分頁標籤 */
+        .level-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 0;
+            flex-wrap: wrap;
+        }
+
+        .level-tab {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px 12px 0 0;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            opacity: 0.6;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .level-tab:hover {
+            opacity: 0.85;
+            transform: translateY(-2px);
+        }
+
+        .level-tab.active {
+            opacity: 1;
+            transform: translateY(0);
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+        }
+
+        .level-tab-1 { background: linear-gradient(135deg, #95a5a6, #7f8c8d); }
+        .level-tab-2 { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .level-tab-3 { background: linear-gradient(135deg, #27ae60, #229954); }
+        .level-tab-4 { background: linear-gradient(135deg, #f39c12, #d68910); }
+        .level-tab-5 { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        .level-tab-6 { background: linear-gradient(135deg, #d4a574, #b8956e); }
+
+        .level-tab .tab-num {
+            width: 24px;
+            height: 24px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+        }
+
+        .level-content {
+            display: none;
+        }
+
+        .level-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hierarchy-diagram {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 40px 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+
+        .ladder-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+
+        .ladder-step {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .ladder-card {
+            flex: 1;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+
+        .ladder-card:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.02);
+        }
+
+        .ladder-level {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .ladder-level-6 { background: linear-gradient(135deg, #d4a574, #b8956e); }
+        .ladder-level-5 { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        .ladder-level-4 { background: linear-gradient(135deg, #f39c12, #d68910); }
+        .ladder-level-3 { background: linear-gradient(135deg, #27ae60, #229954); }
+        .ladder-level-2 { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .ladder-level-1 { background: linear-gradient(135deg, #95a5a6, #7f8c8d); }
+
+        .ladder-info {
+            flex: 1;
+        }
+
+        .ladder-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .ladder-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .ladder-desc {
+            width: 200px;
+            text-align: right;
+            font-size: 0.85rem;
+            opacity: 0.7;
+            padding-left: 15px;
+        }
+
+        .ladder-connector {
+            width: 3px;
+            height: 25px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(255,255,255,0.2));
+            margin: 0 auto;
+        }
+
+        .ladder-arrow {
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 10px solid rgba(255,255,255,0.4);
+            margin: 0 auto 5px;
+        }
+
+        @media (max-width: 768px) {
+            .ladder-desc {
+                display: none;
+            }
+            .ladder-card {
+                padding: 12px 15px;
+            }
+            .ladder-level {
+                width: 40px;
+                height: 40px;
+                font-size: 0.95rem;
+            }
+            .ladder-title {
+                font-size: 1rem;
+            }
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 14px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: #f8fafc;
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .level-1 { background: linear-gradient(135deg, #95a5a6, #7f8c8d); }
+        .level-2 { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .level-3 { background: linear-gradient(135deg, #27ae60, #229954); }
+        .level-4 { background: linear-gradient(135deg, #f39c12, #d68910); }
+        .level-5 { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        .level-6 { background: linear-gradient(135deg, #d4a574, #b8956e); }
+
+        .job-card {
+            background: white;
+            border-radius: 12px;
+            padding: 0;
+            margin: 25px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .job-header {
+            padding: 25px 30px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .job-header.level-1 { background: linear-gradient(135deg, #95a5a6, #7f8c8d); }
+        .job-header.level-2 { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .job-header.level-3 { background: linear-gradient(135deg, #27ae60, #229954); }
+        .job-header.level-4 { background: linear-gradient(135deg, #f39c12, #d68910); }
+        .job-header.level-5 { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        .job-header.level-6 { background: linear-gradient(135deg, #d4a574, #b8956e); }
+
+        .job-header h3 {
+            color: white;
+            margin: 0;
+            padding: 0;
+            border: none;
+            font-size: 1.5rem;
+        }
+
+        .job-level {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .job-body {
+            padding: 30px;
+        }
+
+        .job-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .job-section {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .job-section h4 {
+            color: var(--primary);
+            margin: 0 0 15px;
+            font-size: 1rem;
+            padding: 0;
+            border: none;
+        }
+
+        .job-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .job-section li {
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .job-section li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        blockquote {
+            background: linear-gradient(135deg, #fff9e6, #fff3cd);
+            border-left: 4px solid var(--warning);
+            padding: 20px 25px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+            font-style: italic;
+        }
+
+        blockquote strong {
+            color: var(--primary);
+        }
+
+        .gains-table {
+            margin: 20px 0;
+        }
+
+        .gains-table td:first-child {
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--accent);
+            width: 60px;
+        }
+
+        .flow-diagram {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .flow-step {
+            display: inline-block;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--accent);
+        }
+
+        .flow-arrow {
+            color: var(--accent);
+            font-size: 1.5rem;
+            margin: 0 5px;
+        }
+
+        .formula-box {
+            background: linear-gradient(135deg, var(--dark), var(--primary));
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            font-family: 'Consolas', monospace;
+            margin: 20px 0;
+        }
+
+        .formula-box code {
+            display: block;
+            padding: 5px 0;
+        }
+
+        .rating-table td:first-child {
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .rating-5 { color: var(--success); }
+        .rating-4 { color: #2ecc71; }
+        .rating-3 { color: var(--warning); }
+        .rating-2 { color: #e67e22; }
+        .rating-1 { color: var(--danger); }
+
+        .salary-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .salary-highlight {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9) !important;
+        }
+
+        /* 雙迴圈流程圖 */
+        .dual-cycle-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin: 20px 0;
+        }
+
+        .cycle-box {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cycle-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .cycle-promotion::before {
+            background: linear-gradient(90deg, #3498db, #9b59b6);
+        }
+
+        .cycle-salary::before {
+            background: linear-gradient(90deg, #27ae60, #f39c12);
+        }
+
+        .cycle-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .cycle-icon {
+            font-size: 1.8rem;
+        }
+
+        .cycle-header h3 {
+            margin: 0;
+            padding: 0;
+            border: none;
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+
+        .cycle-badge {
+            background: var(--light);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: var(--secondary);
+            margin-left: auto;
+        }
+
+        .cycle-desc {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            padding-left: 42px;
+        }
+
+        .cycle-ring {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto 1fr;
+            grid-template-rows: auto auto auto;
+            gap: 8px;
+            align-items: center;
+            justify-items: center;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .cycle-step {
+            background: white;
+            padding: 12px 8px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            min-width: 80px;
+        }
+
+        .step-num {
+            display: block;
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+
+        .step-text {
+            font-size: 0.85rem;
+            color: var(--primary);
+        }
+
+        .cycle-arrow {
+            color: var(--accent);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .cycle-arrow-down {
+            grid-column: 5;
+            color: var(--accent);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .highlight-step {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            border: 2px solid var(--success);
+        }
+
+        .highlight-step .step-num {
+            color: var(--success);
+        }
+
+        .cycle-footer {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .cycle-info {
+            font-size: 0.85rem;
+            color: var(--secondary);
+        }
+
+        .cycle-info strong {
+            color: var(--primary);
+        }
+
+        @media (max-width: 500px) {
+            .dual-cycle-container {
+                grid-template-columns: 1fr;
+            }
+            .cycle-ring {
+                grid-template-columns: 1fr auto 1fr;
+                font-size: 0.8rem;
+            }
+            .cycle-step {
+                min-width: 60px;
+                padding: 8px 4px;
+            }
+        }
+
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #ddd, transparent);
+            margin: 40px 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .five-elements {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .job-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .card, .job-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>摩研裝修 升職階梯架構</h1>
+            <div class="meta">
+                <p>建立日期：2026-02-15 ｜ 版本：1.4（2026-02-22 升級流程雙迴圈）</p>
+            </div>
+        </header>
+
+        <h2>職級階梯總覽</h2>
+
+        <div class="hierarchy-diagram">
+            <div class="ladder-container">
+                <!-- 6級：加盟 -->
+                <div class="ladder-step">
+                    <div class="ladder-card">
+                        <div class="ladder-level ladder-level-6">6</div>
+                        <div class="ladder-info">
+                            <div class="ladder-title">加盟</div>
+                            <div class="ladder-subtitle">獨立營運，品牌授權</div>
+                        </div>
+                        <div class="ladder-desc">年營收達標、完整團隊</div>
+                    </div>
+                </div>
+                <div class="ladder-arrow"></div>
+                <div class="ladder-connector"></div>
+
+                <!-- 5級：分潤 -->
+                <div class="ladder-step">
+                    <div class="ladder-card">
+                        <div class="ladder-level ladder-level-5">5</div>
+                        <div class="ladder-info">
+                            <div class="ladder-title">分潤</div>
+                            <div class="ladder-subtitle">利潤分成夥伴</div>
+                        </div>
+                        <div class="ladder-desc">案件獨立承接、自組團隊</div>
+                    </div>
+                </div>
+                <div class="ladder-arrow"></div>
+                <div class="ladder-connector"></div>
+
+                <!-- 4級：領班 -->
+                <div class="ladder-step">
+                    <div class="ladder-card">
+                        <div class="ladder-level ladder-level-4">4</div>
+                        <div class="ladder-info">
+                            <div class="ladder-title">領班</div>
+                            <div class="ladder-subtitle">案場管理者</div>
+                        </div>
+                        <div class="ladder-desc">獨立帶隊、品質把關</div>
+                    </div>
+                </div>
+                <div class="ladder-arrow"></div>
+                <div class="ladder-connector"></div>
+
+                <!-- 3級：師傅 -->
+                <div class="ladder-step">
+                    <div class="ladder-card">
+                        <div class="ladder-level ladder-level-3">3</div>
+                        <div class="ladder-info">
+                            <div class="ladder-title">師傅</div>
+                            <div class="ladder-subtitle">技術獨立者</div>
+                        </div>
+                        <div class="ladder-desc">各類工法獨立施作</div>
+                    </div>
+                </div>
+                <div class="ladder-arrow"></div>
+                <div class="ladder-connector"></div>
+
+                <!-- 2級：半技 -->
+                <div class="ladder-step">
+                    <div class="ladder-card">
+                        <div class="ladder-level ladder-level-2">2</div>
+                        <div class="ladder-info">
+                            <div class="ladder-title">半技</div>
+                            <div class="ladder-subtitle">技術成長期</div>
+                        </div>
+                        <div class="ladder-desc">部分工法獨立</div>
+                    </div>
+                </div>
+                <div class="ladder-arrow"></div>
+                <div class="ladder-connector"></div>
+
+                <!-- 1級：學徒 -->
+                <div class="ladder-step">
+                    <div class="ladder-card">
+                        <div class="ladder-level ladder-level-1">1</div>
+                        <div class="ladder-info">
+                            <div class="ladder-title">學徒</div>
+                            <div class="ladder-subtitle">基礎養成期</div>
+                        </div>
+                        <div class="ladder-desc">跟隨師傅學習</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>各職級詳細定義</h2>
+
+        <!-- 職級分頁標籤 -->
+        <div class="level-tabs">
+            <button class="level-tab level-tab-1 active" onclick="showLevel(1)">
+                <span class="tab-num">1</span>學徒
+            </button>
+            <button class="level-tab level-tab-2" onclick="showLevel(2)">
+                <span class="tab-num">2</span>半技
+            </button>
+            <button class="level-tab level-tab-3" onclick="showLevel(3)">
+                <span class="tab-num">3</span>師傅
+            </button>
+            <button class="level-tab level-tab-4" onclick="showLevel(4)">
+                <span class="tab-num">4</span>領班
+            </button>
+            <button class="level-tab level-tab-5" onclick="showLevel(5)">
+                <span class="tab-num">5</span>分潤
+            </button>
+            <button class="level-tab level-tab-6" onclick="showLevel(6)">
+                <span class="tab-num">6</span>加盟
+            </button>
+        </div>
+
+        <!-- 1級：學徒 -->
+        <div class="level-content active" id="level-1">
+        <div class="job-card">
+            <div class="job-header level-1">
+                <span class="job-level">1級</span>
+                <h3>學徒</h3>
+            </div>
+            <div class="job-body">
+                <table>
+                    <tr><th>項目</th><th>內容</th></tr>
+                    <tr><td><strong>技能分數</strong></td><td>0 - 160 分</td></tr>
+                    <tr><td><strong>技能等級</strong></td><td>F級、E級</td></tr>
+                    <tr><td><strong>日薪範圍</strong></td><td>$1,500 - $2,000</td></tr>
+                    <tr><td><strong>外地加給</strong></td><td>底薪 × 0.125</td></tr>
+                    <tr><td><strong>試用期</strong></td><td>3 個月</td></tr>
+                    <tr><td><strong>保險啟動</strong></td><td>到職滿 3 個月</td></tr>
+                    <tr><td><strong>升級條件</strong></td><td>技能分數 ≥ 161、考核通過、出勤率 ≥ 90%</td></tr>
+                </table>
+
+                <div class="job-grid">
+                    <div class="job-section">
+                        <h4>職責範圍</h4>
+                        <ul>
+                            <li>協助師傅搬運材料</li>
+                            <li>基本工具操作</li>
+                            <li>現場清潔維護</li>
+                            <li>學習基本木作技術</li>
+                        </ul>
+                    </div>
+                    <div class="job-section">
+                        <h4>考核重點</h4>
+                        <ul>
+                            <li>學習態度（20%）</li>
+                            <li>出勤狀況（20%）</li>
+                            <li>基本技能（40%）</li>
+                            <li>團隊配合（20%）</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- 2級：半技 -->
+        <div class="level-content" id="level-2">
+        <div class="job-card">
+            <div class="job-header level-2">
+                <span class="job-level">2級</span>
+                <h3>半技</h3>
+            </div>
+            <div class="job-body">
+                <table>
+                    <tr><th>項目</th><th>內容</th></tr>
+                    <tr><td><strong>技能分數</strong></td><td>161 - 280 分</td></tr>
+                    <tr><td><strong>技能等級</strong></td><td>D級、C級</td></tr>
+                    <tr><td><strong>日薪範圍</strong></td><td>$2,200 - $3,200</td></tr>
+                    <tr><td><strong>外地加給</strong></td><td>底薪 × 0.125</td></tr>
+                    <tr><td><strong>年資要求</strong></td><td>學徒滿 6 個月以上</td></tr>
+                    <tr><td><strong>保險狀態</strong></td><td>已啟動</td></tr>
+                    <tr><td><strong>升級條件</strong></td><td>技能分數 ≥ 281、考核通過、可獨立完成基礎工項</td></tr>
+                </table>
+
+                <div class="job-grid">
+                    <div class="job-section">
+                        <h4>職責範圍</h4>
+                        <ul>
+                            <li>獨立完成簡易天花板</li>
+                            <li>基本隔間施作</li>
+                            <li>輔助複雜工項</li>
+                            <li>指導新進學徒</li>
+                        </ul>
+                    </div>
+                    <div class="job-section">
+                        <h4>考核重點</h4>
+                        <ul>
+                            <li>技術能力（40%）</li>
+                            <li>獨立作業（20%）</li>
+                            <li>品質控管（20%）</li>
+                            <li>學習進度（20%）</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- 3級：師傅 -->
+        <div class="level-content" id="level-3">
+        <div class="job-card">
+            <div class="job-header level-3">
+                <span class="job-level">3級</span>
+                <h3>師傅</h3>
+            </div>
+            <div class="job-body">
+                <table>
+                    <tr><th>項目</th><th>內容</th></tr>
+                    <tr><td><strong>技能分數</strong></td><td>281 - 380 分</td></tr>
+                    <tr><td><strong>技能等級</strong></td><td>B級、A級</td></tr>
+                    <tr><td><strong>日薪範圍</strong></td><td>$3,300 - $3,700</td></tr>
+                    <tr><td><strong>外地加給</strong></td><td>底薪 × 0.125</td></tr>
+                    <tr><td><strong>年資要求</strong></td><td>半技滿 1 年以上</td></tr>
+                    <tr><td><strong>升級條件</strong></td><td>技能分數 ≥ 341、領班考核通過、案場管理實習合格</td></tr>
+                </table>
+
+                <div class="job-grid">
+                    <div class="job-section">
+                        <h4>職責範圍</h4>
+                        <ul>
+                            <li>各類木作工法獨立施作</li>
+                            <li>指導半技與學徒</li>
+                            <li>圖面判讀與施工規劃</li>
+                            <li>材料估算與叫料</li>
+                        </ul>
+                    </div>
+                    <div class="job-section">
+                        <h4>考核重點</h4>
+                        <ul>
+                            <li>技術專精（30%）</li>
+                            <li>品質標準（25%）</li>
+                            <li>教導能力（20%）</li>
+                            <li>問題解決（25%）</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <blockquote>
+                    <strong>可申請：</strong>職務津貼（案場負責人）：$400/天
+                </blockquote>
+            </div>
+        </div>
+        </div>
+
+        <!-- 4級：領班 -->
+        <div class="level-content" id="level-4">
+        <div class="job-card">
+            <div class="job-header level-4">
+                <span class="job-level">4級</span>
+                <h3>領班</h3>
+            </div>
+            <div class="job-body">
+                <table>
+                    <tr><th>項目</th><th>內容</th></tr>
+                    <tr><td><strong>技能分數</strong></td><td>≥ 381 分</td></tr>
+                    <tr><td><strong>技能等級</strong></td><td>A級（顧場）</td></tr>
+                    <tr><td><strong>日薪範圍</strong></td><td>$3,800 + 職務津貼</td></tr>
+                    <tr><td><strong>職務津貼</strong></td><td>$400/天（固定）</td></tr>
+                    <tr><td><strong>年資要求</strong></td><td>師傅滿 2 年以上</td></tr>
+                    <tr><td><strong>升級條件</strong></td><td>案件獨立管理達 5 案、業主評價優良、團隊帶領實績</td></tr>
+                </table>
+
+                <div class="job-grid">
+                    <div class="job-section">
+                        <h4>職責範圍</h4>
+                        <ul>
+                            <li>案場進度管理</li>
+                            <li>人員調度安排</li>
+                            <li>品質驗收把關</li>
+                            <li>業主溝通協調</li>
+                            <li>安全管理監督</li>
+                        </ul>
+                    </div>
+                    <div class="job-section">
+                        <h4>考核重點</h4>
+                        <ul>
+                            <li>案場管理（30%）</li>
+                            <li>團隊領導（25%）</li>
+                            <li>業主滿意度（25%）</li>
+                            <li>成本控管（20%）</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="job-section" style="margin-top: 20px;">
+                    <h4>福利項目</h4>
+                    <ul>
+                        <li>案場獎金資格（利潤 4-10%）</li>
+                        <li>交通補助</li>
+                        <li>電話補助</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- 5級：分潤 -->
+        <div class="level-content" id="level-5">
+        <div class="job-card">
+            <div class="job-header level-5">
+                <span class="job-level">5級</span>
+                <h3>分潤（精英合夥夥伴制）</h3>
+            </div>
+            <div class="job-body">
+                <blockquote>
+                    <strong>品牌願景：</strong>「摩研出品，必屬精品」<br>
+                    從個人工作室轉向「摩研精英小組」合作模式
+                </blockquote>
+
+                <table>
+                    <tr><th>項目</th><th>內容</th></tr>
+                    <tr><td><strong>分潤比例</strong></td><td>利潤 20-35%（新進夥伴起步 10%）</td></tr>
+                    <tr><td><strong>年資要求</strong></td><td>領班滿 3 年以上</td></tr>
+                    <tr><td><strong>團隊規模</strong></td><td>至少帶領 3 人以上</td></tr>
+                    <tr><td><strong>升級條件</strong></td><td>年度業績達標、團隊穩定、獨立承接能力</td></tr>
+                </table>
+
+                <h4>GAINS 人才篩選框架</h4>
+                <p style="margin-bottom: 15px;">晉升分潤前，須通過 GAINS 面談評估：</p>
+
+                <table class="gains-table">
+                    <tr><th style="width:60px">面向</th><th style="width:100px">英文</th><th>評估重點</th></tr>
+                    <tr><td class="rating-5">G</td><td>Goals</td><td>未來三年的財務與職涯目標</td></tr>
+                    <tr><td class="rating-4">A</td><td>Achievements</td><td>過去代表性的案場與技術強項</td></tr>
+                    <tr><td class="rating-3">I</td><td>Interests</td><td>對木作、裝修的興趣與專精方向</td></tr>
+                    <tr><td class="rating-2">N</td><td>Networks</td><td>人際網路、是否有介紹案源能力</td></tr>
+                    <tr><td class="rating-1">S</td><td>Skills</td><td>具體技能項目與熟練程度</td></tr>
+                </table>
+
+                <h4>識人金句（核心防呆）</h4>
+                <blockquote>
+                    「如果你現在手上有 100 萬，你會選擇自立門戶扛風險，還是選擇加入一個強大分紅團隊，穩健拿走專案毛利的 10%？」
+                </blockquote>
+                <ul style="margin: 15px 0 15px 20px;">
+                    <li><strong>選擇自立門戶</strong>：創業型人才，適合發展為分潤夥伴或加盟</li>
+                    <li><strong>選擇加入團隊</strong>：穩定型人才，適合培養為核心師傅</li>
+                </ul>
+
+                <div class="job-grid">
+                    <div class="job-section">
+                        <h4>職責範圍</h4>
+                        <ul>
+                            <li>案件獨立承接</li>
+                            <li>自組施工團隊</li>
+                            <li>業務開發</li>
+                            <li>財務管理</li>
+                            <li>工具維護與損耗控管</li>
+                        </ul>
+                    </div>
+                    <div class="job-section">
+                        <h4>權利義務</h4>
+                        <ul>
+                            <li>分享案件利潤</li>
+                            <li>自負團隊人事成本</li>
+                            <li>共用公司資源（工具、材料採購）</li>
+                            <li>遵守品牌規範</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h4>激勵邏輯</h4>
+                <div class="flow-diagram">
+                    <div class="flow-step">工具維護好 + 材料損耗低</div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-step">提升摩研工法效率</div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-step">減少隱形成本</div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-step">夥伴獎金實質增加</div>
+                </div>
+
+                <h4>分潤計算</h4>
+                <div class="formula-box">
+                    <code>分潤金額 = (案件收入 - 材料成本 - 其他成本) × 分潤比例</code>
+                    <code>公司抽成 = 利潤 × (1 - 分潤比例)</code>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- 6級：加盟 -->
+        <div class="level-content" id="level-6">
+        <div class="job-card">
+            <div class="job-header level-6">
+                <span class="job-level">6級</span>
+                <h3>加盟</h3>
+            </div>
+            <div class="job-body">
+                <table>
+                    <tr><th>項目</th><th>內容</th></tr>
+                    <tr><td><strong>加盟金</strong></td><td>另議</td></tr>
+                    <tr><td><strong>年資要求</strong></td><td>分潤滿 2 年以上</td></tr>
+                    <tr><td><strong>團隊規模</strong></td><td>至少 5 人以上</td></tr>
+                    <tr><td><strong>年營收門檻</strong></td><td>≥ 500 萬</td></tr>
+                </table>
+
+                <div class="job-grid">
+                    <div class="job-section">
+                        <h4>加盟條件</h4>
+                        <ul>
+                            <li>獨立法人登記</li>
+                            <li>完整團隊編制</li>
+                            <li>財務獨立運作</li>
+                            <li>品牌授權使用</li>
+                        </ul>
+                    </div>
+                    <div class="job-section">
+                        <h4>加盟權益</h4>
+                        <ul>
+                            <li>品牌使用權</li>
+                            <li>技術支援</li>
+                            <li>材料採購優惠</li>
+                            <li>案件轉介</li>
+                            <li>教育訓練資源</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="job-section" style="margin-top: 20px;">
+                    <h4>加盟義務</h4>
+                    <ul>
+                        <li>品質標準維護</li>
+                        <li>品牌形象維護</li>
+                        <li>年度考核配合</li>
+                        <li>加盟費繳納</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <hr>
+
+        <h2>考核系統</h2>
+
+        <!-- 考核分頁標籤 -->
+        <div class="level-tabs">
+            <button class="level-tab level-tab-2 active" onclick="showReview(1)" id="review-tab-1">
+                <span class="tab-num">1</span>週期方式
+            </button>
+            <button class="level-tab level-tab-3" onclick="showReview(2)" id="review-tab-2">
+                <span class="tab-num">2</span>評分標準
+            </button>
+            <button class="level-tab level-tab-4" onclick="showReview(3)" id="review-tab-3">
+                <span class="tab-num">3</span>考核結果
+            </button>
+            <button class="level-tab level-tab-5" onclick="showReview(4)" id="review-tab-4">
+                <span class="tab-num">4</span>升級條件
+            </button>
+        </div>
+
+        <div class="level-content active" id="review-1">
+        <div class="card">
+            <h3>考核週期與方式</h3>
+            <table>
+                <tr><th>職級</th><th>考核週期</th><th>考核方式</th><th>評核者</th></tr>
+                <tr><td><span class="level-badge level-1">學徒</span></td><td>每月</td><td>技能評核 + 自評</td><td>直屬師傅</td></tr>
+                <tr><td><span class="level-badge level-2">半技</span></td><td>每季</td><td>技能評核 + 自評</td><td>領班</td></tr>
+                <tr><td><span class="level-badge level-3">師傅</span></td><td>每半年</td><td>綜合評核 + 業主回饋</td><td>領班 + 業主</td></tr>
+                <tr><td><span class="level-badge level-4">領班</span></td><td>每年</td><td>360度評核</td><td>公司 + 團隊 + 業主</td></tr>
+                <tr><td><span class="level-badge level-5">分潤</span></td><td>每年</td><td>年度績效考核</td><td>公司</td></tr>
+            </table>
+        </div>
+        </div>
+
+        <div class="level-content" id="review-2">
+        <div class="card">
+            <h3>考核項目與配分</h3>
+            <p style="margin-bottom: 20px; color: var(--secondary);">綜合評分表：各項目依評分標準給予 1-5 分，加權計算總分</p>
+
+            <div style="overflow-x: auto;">
+                <table style="min-width: 900px;">
+                    <tr>
+                        <th style="width:140px">項目</th>
+                        <th style="width:60px; text-align:center">配分</th>
+                        <th class="rating-5" style="text-align:center">5分</th>
+                        <th class="rating-4" style="text-align:center">4分</th>
+                        <th class="rating-3" style="text-align:center">3分</th>
+                        <th class="rating-2" style="text-align:center">2分</th>
+                        <th class="rating-1" style="text-align:center">1分</th>
+                    </tr>
+                    <tr>
+                        <td><strong>技術能力</strong></td>
+                        <td style="text-align:center; font-weight:600; color:var(--accent);">40%</td>
+                        <td>卓越，可創新工法</td>
+                        <td>純熟，獨立完成</td>
+                        <td>合格，偶需指導</td>
+                        <td>不足，常需協助</td>
+                        <td>欠缺，需重新培訓</td>
+                    </tr>
+                    <tr>
+                        <td><strong>工作態度</strong></td>
+                        <td style="text-align:center; font-weight:600; color:var(--accent);">20%</td>
+                        <td>積極主動</td>
+                        <td>認真負責</td>
+                        <td>態度正常</td>
+                        <td>消極被動</td>
+                        <td>態度不佳</td>
+                    </tr>
+                    <tr>
+                        <td><strong>出勤狀況</strong></td>
+                        <td style="text-align:center; font-weight:600; color:var(--accent);">15%</td>
+                        <td>≥98%</td>
+                        <td>95-97%</td>
+                        <td>90-94%</td>
+                        <td>80-89%</td>
+                        <td>&lt;80%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>團隊合作</strong></td>
+                        <td style="text-align:center; font-weight:600; color:var(--accent);">15%</td>
+                        <td>團隊核心</td>
+                        <td>配合良好</td>
+                        <td>正常互動</td>
+                        <td>偶有摩擦</td>
+                        <td>難以合作</td>
+                    </tr>
+                    <tr>
+                        <td><strong>學習成長</strong></td>
+                        <td style="text-align:center; font-weight:600; color:var(--accent);">10%</td>
+                        <td>主動快速</td>
+                        <td>積極穩定</td>
+                        <td>配合正常</td>
+                        <td>緩慢需督促</td>
+                        <td>拒絕學習</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3 style="margin-top: 35px;">各職級考核重點</h3>
+            <table>
+                <tr>
+                    <th>職級</th>
+                    <th>考核週期</th>
+                    <th>重點配分</th>
+                </tr>
+                <tr>
+                    <td><span class="level-badge level-1">學徒</span></td>
+                    <td>每月</td>
+                    <td>學習態度 20%、出勤 20%、基本技能 40%、團隊配合 20%</td>
+                </tr>
+                <tr>
+                    <td><span class="level-badge level-2">半技</span></td>
+                    <td>每季</td>
+                    <td>技術能力 40%、獨立作業 20%、品質控管 20%、學習進度 20%</td>
+                </tr>
+                <tr>
+                    <td><span class="level-badge level-3">師傅</span></td>
+                    <td>每半年</td>
+                    <td>技術專精 30%、品質標準 25%、教導能力 20%、問題解決 25%</td>
+                </tr>
+                <tr>
+                    <td><span class="level-badge level-4">領班</span></td>
+                    <td>每年</td>
+                    <td>案場管理 30%、團隊領導 25%、業主滿意度 25%、成本控管 20%</td>
+                </tr>
+            </table>
+        </div>
+        </div>
+
+        <div class="level-content" id="review-3">
+        <div class="card">
+            <h3>考核結果</h3>
+            <table>
+                <tr><th>總分</th><th>等第</th><th>後續處理</th></tr>
+                <tr><td>4.5-5.0</td><td><span class="level-badge level-5">優等</span></td><td>優先升級、獎金加成</td></tr>
+                <tr><td>4.0-4.4</td><td><span class="level-badge level-3">甲等</span></td><td>正常升級</td></tr>
+                <tr><td>3.0-3.9</td><td><span class="level-badge level-2">乙等</span></td><td>暫緩升級</td></tr>
+                <tr><td>2.0-2.9</td><td><span class="level-badge level-4">丙等</span></td><td>列入觀察</td></tr>
+                <tr><td>< 2.0</td><td><span class="level-badge level-1">丁等</span></td><td>輔導改善或淘汰</td></tr>
+            </table>
+        </div>
+        </div>
+
+        <div class="level-content" id="review-4">
+        <div class="card">
+            <h3>升級條件速查表</h3>
+            <table>
+                <tr>
+                    <th>升級路徑</th>
+                    <th style="text-align:center">技能分數</th>
+                    <th style="text-align:center">年資</th>
+                    <th>其他條件</th>
+                </tr>
+                <tr>
+                    <td><span class="level-badge level-1">學徒</span> → <span class="level-badge level-2">半技</span></td>
+                    <td style="text-align:center">≥ 161</td>
+                    <td style="text-align:center">6 個月</td>
+                    <td>考核通過、出勤率 ≥ 90%</td>
+                </tr>
+                <tr>
+                    <td><span class="level-badge level-2">半技</span> → <span class="level-badge level-3">師傅</span></td>
+                    <td style="text-align:center">≥ 281</td>
+                    <td style="text-align:center">1 年</td>
+                    <td>可獨立完成基礎工項</td>
+                </tr>
+                <tr>
+                    <td><span class="level-badge level-3">師傅</span> → <span class="level-badge level-4">領班</span></td>
+                    <td style="text-align:center">≥ 381</td>
+                    <td style="text-align:center">2 年</td>
+                    <td>案場管理實習合格、管理達 5 案</td>
+                </tr>
+                <tr>
+                    <td><span class="level-badge level-4">領班</span> → <span class="level-badge level-5">分潤</span></td>
+                    <td style="text-align:center">-</td>
+                    <td style="text-align:center">3 年</td>
+                    <td>GAINS 面談通過、團隊 ≥ 3 人、業績達標</td>
+                </tr>
+                <tr>
+                    <td><span class="level-badge level-5">分潤</span> → <span class="level-badge level-6">加盟</span></td>
+                    <td style="text-align:center">-</td>
+                    <td style="text-align:center">2 年</td>
+                    <td>團隊 ≥ 5 人、年營收 ≥ 500 萬、獨立法人</td>
+                </tr>
+            </table>
+        </div>
+        </div>
+
+        <hr>
+
+        <h2>升級流程</h2>
+
+        <div class="dual-cycle-container">
+            <!-- 職級升等考核迴圈 -->
+            <div class="cycle-box cycle-promotion">
+                <div class="cycle-header">
+                    <span class="cycle-icon">🎯</span>
+                    <h3>職級升等考核</h3>
+                    <span class="cycle-badge">跨級晉升</span>
+                </div>
+                <div class="cycle-desc">學徒 → 半技 → 師傅 → 領班 → 分潤 → 加盟</div>
+                <div class="cycle-ring">
+                    <div class="cycle-step">
+                        <span class="step-num">1</span>
+                        <span class="step-text">技能分數達標</span>
+                    </div>
+                    <div class="cycle-arrow">→</div>
+                    <div class="cycle-step">
+                        <span class="step-num">2</span>
+                        <span class="step-text">年資條件符合</span>
+                    </div>
+                    <div class="cycle-arrow">→</div>
+                    <div class="cycle-step">
+                        <span class="step-num">3</span>
+                        <span class="step-text">考核成績合格</span>
+                    </div>
+                    <div class="cycle-arrow-down">↓</div>
+                    <div class="cycle-step">
+                        <span class="step-num">6</span>
+                        <span class="step-text">次月生效</span>
+                    </div>
+                    <div class="cycle-arrow">←</div>
+                    <div class="cycle-step">
+                        <span class="step-num">5</span>
+                        <span class="step-text">核准公告</span>
+                    </div>
+                    <div class="cycle-arrow">←</div>
+                    <div class="cycle-step">
+                        <span class="step-num">4</span>
+                        <span class="step-text">升級面談</span>
+                    </div>
+                </div>
+                <div class="cycle-footer">
+                    <div class="cycle-info">
+                        <strong>週期：</strong>依職級（每月/每季/每半年/每年）
+                    </div>
+                    <div class="cycle-info">
+                        <strong>條件：</strong>技能分數 + 年資 + 考核乙等以上
+                    </div>
+                </div>
+            </div>
+
+            <!-- 週期性調薪迴圈 -->
+            <div class="cycle-box cycle-salary">
+                <div class="cycle-header">
+                    <span class="cycle-icon">💰</span>
+                    <h3>週期性調薪</h3>
+                    <span class="cycle-badge">同級內調薪</span>
+                </div>
+                <div class="cycle-desc">技能分數每 +20 分，日薪 +$100~$200</div>
+                <div class="cycle-ring">
+                    <div class="cycle-step">
+                        <span class="step-num">1</span>
+                        <span class="step-text">技能評核</span>
+                    </div>
+                    <div class="cycle-arrow">→</div>
+                    <div class="cycle-step">
+                        <span class="step-num">2</span>
+                        <span class="step-text">分數更新</span>
+                    </div>
+                    <div class="cycle-arrow">→</div>
+                    <div class="cycle-step">
+                        <span class="step-num">3</span>
+                        <span class="step-text">查對照表</span>
+                    </div>
+                    <div class="cycle-arrow-down">↓</div>
+                    <div class="cycle-step highlight-step">
+                        <span class="step-num">⟳</span>
+                        <span class="step-text">持續累積</span>
+                    </div>
+                    <div class="cycle-arrow">←</div>
+                    <div class="cycle-step">
+                        <span class="step-num">5</span>
+                        <span class="step-text">公告調整</span>
+                    </div>
+                    <div class="cycle-arrow">←</div>
+                    <div class="cycle-step">
+                        <span class="step-num">4</span>
+                        <span class="step-text">次月生效</span>
+                    </div>
+                </div>
+                <div class="cycle-footer">
+                    <div class="cycle-info">
+                        <strong>週期：</strong>每月評核（隨考核更新）
+                    </div>
+                    <div class="cycle-info">
+                        <strong>條件：</strong>技能分數達到下一薪級門檻
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 25px;">
+            <h3>兩種調薪差異</h3>
+            <table>
+                <tr>
+                    <th>項目</th>
+                    <th>職級升等考核</th>
+                    <th>週期性調薪</th>
+                </tr>
+                <tr>
+                    <td><strong>性質</strong></td>
+                    <td>職級變更（如：學徒→半技）</td>
+                    <td>同職級內薪資調整</td>
+                </tr>
+                <tr>
+                    <td><strong>觸發條件</strong></td>
+                    <td>技能分數 + 年資 + 考核</td>
+                    <td>技能分數達門檻</td>
+                </tr>
+                <tr>
+                    <td><strong>審核流程</strong></td>
+                    <td>主管推薦 → 面談 → 核准</td>
+                    <td>自動依對照表調整</td>
+                </tr>
+                <tr>
+                    <td><strong>調整幅度</strong></td>
+                    <td>較大（含福利變更）</td>
+                    <td>$100~$200/次</td>
+                </tr>
+                <tr>
+                    <td><strong>生效時間</strong></td>
+                    <td>核准後次月</td>
+                    <td>評核後次月</td>
+                </tr>
+            </table>
+        </div>
+
+        <hr>
+
+        <h2>附錄：薪資對照表</h2>
+
+        <div class="card">
+            <blockquote>
+                2026-02-15 調整，起薪調整為 $1,500
+            </blockquote>
+
+            <table class="salary-table">
+                <tr><th>技能分數</th><th>日薪</th><th>職級</th><th>備註</th></tr>
+                <tr><td>0-60</td><td>$1,500</td><td><span class="level-badge level-1">學徒</span></td><td>試用期</td></tr>
+                <tr><td>61-80</td><td>$1,600</td><td><span class="level-badge level-1">學徒</span></td><td></td></tr>
+                <tr><td>81-100</td><td>$1,700</td><td><span class="level-badge level-1">學徒</span></td><td></td></tr>
+                <tr><td>101-120</td><td>$1,800</td><td><span class="level-badge level-1">學徒</span></td><td></td></tr>
+                <tr><td>121-140</td><td>$1,900</td><td><span class="level-badge level-1">學徒/半技</span></td><td></td></tr>
+                <tr><td>141-160</td><td>$2,000</td><td><span class="level-badge level-2">半技</span></td><td></td></tr>
+                <tr><td>161-180</td><td>$2,200</td><td><span class="level-badge level-2">半技</span></td><td></td></tr>
+                <tr><td>181-200</td><td>$2,400</td><td><span class="level-badge level-2">半技</span></td><td></td></tr>
+                <tr><td>201-220</td><td>$2,600</td><td><span class="level-badge level-2">半技</span></td><td></td></tr>
+                <tr><td>221-240</td><td>$2,800</td><td><span class="level-badge level-2">半技</span></td><td></td></tr>
+                <tr><td>241-260</td><td>$3,000</td><td><span class="level-badge level-2">半技/師傅</span></td><td></td></tr>
+                <tr><td>261-280</td><td>$3,200</td><td><span class="level-badge level-3">師傅</span></td><td></td></tr>
+                <tr><td>281-300</td><td>$3,300</td><td><span class="level-badge level-3">師傅</span></td><td></td></tr>
+                <tr><td>301-320</td><td>$3,400</td><td><span class="level-badge level-3">師傅</span></td><td></td></tr>
+                <tr><td>321-340</td><td>$3,500</td><td><span class="level-badge level-3">師傅</span></td><td></td></tr>
+                <tr><td>341-360</td><td>$3,600</td><td><span class="level-badge level-3">師傅</span></td><td></td></tr>
+                <tr><td>361-380</td><td>$3,700</td><td><span class="level-badge level-3">師傅/領班</span></td><td></td></tr>
+                <tr><td>381-431</td><td>$3,800</td><td><span class="level-badge level-4">領班</span></td><td>+ 職務津貼</td></tr>
+            </table>
+        </div>
+
+        <footer>
+            <p><em>本架構自 2026-02-15 起實施</em></p>
+            <p style="margin-top: 10px;">摩研裝修 &copy; 2026</p>
+        </footer>
+    </div>
+
+    <script>
+        function showLevel(level) {
+            // 只處理職級分頁（level-1 到 level-6）
+            for (let i = 1; i <= 6; i++) {
+                const tab = document.querySelector('.level-tabs:first-of-type .level-tab-' + i);
+                const content = document.getElementById('level-' + i);
+                if (tab) tab.classList.remove('active');
+                if (content) content.classList.remove('active');
+            }
+            // 啟用選中的標籤與內容
+            const activeTab = document.querySelector('.level-tabs:first-of-type .level-tab-' + level);
+            if (activeTab) activeTab.classList.add('active');
+            document.getElementById('level-' + level).classList.add('active');
+        }
+
+        function showReview(num) {
+            // 只處理考核分頁（review-1 到 review-4）
+            for (let i = 1; i <= 4; i++) {
+                const tab = document.getElementById('review-tab-' + i);
+                const content = document.getElementById('review-' + i);
+                if (tab) tab.classList.remove('active');
+                if (content) content.classList.remove('active');
+            }
+            // 啟用選中的標籤與內容
+            document.getElementById('review-tab-' + num).classList.add('active');
+            document.getElementById('review-' + num).classList.add('active');
+        }
+    </script>
+</body>
+</html>

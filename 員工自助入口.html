@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>摩研裝修 員工入口</title>
+    <style>
+        :root {
+            --primary: #2C3E50;
+            --secondary: #3498DB;
+            --success: #27AE60;
+            --warning: #F39C12;
+            --danger: #E74C3C;
+            --bg: #F5F7FA;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #2C3E50;
+            line-height: 1.6;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* 登入頁面 */
+        .login-container {
+            width: 100%;
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .login-logo { font-size: 3rem; margin-bottom: 10px; }
+        .login-title { font-size: 1.5rem; color: var(--primary); margin-bottom: 8px; }
+        .login-subtitle { color: #7F8C8D; margin-bottom: 30px; font-size: 0.9rem; }
+
+        .login-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        .login-input:focus { outline: none; border-color: var(--secondary); }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--secondary), #2980B9);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(52,152,219,0.4); }
+        .login-btn:disabled { background: #BDC3C7; cursor: wait; }
+
+        .login-error { color: var(--danger); margin-top: 15px; font-size: 0.9rem; display: none; }
+        .login-loading { color: var(--secondary); margin-top: 15px; font-size: 0.9rem; display: none; }
+
+        .quick-login { margin-top: 25px; padding-top: 25px; border-top: 1px solid #E0E0E0; }
+        .quick-login-title { font-size: 0.85rem; color: #7F8C8D; margin-bottom: 12px; }
+        .quick-login-list { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+        .quick-login-btn {
+            padding: 8px 16px;
+            background: #F8F9FA;
+            border: 1px solid #E0E0E0;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .quick-login-btn:hover { background: var(--secondary); color: white; border-color: var(--secondary); }
+
+        /* 主頁面 */
+        .main-container {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            min-height: 100%;
+            background: linear-gradient(180deg, var(--bg) 0%, #E8EDF2 100%);
+            padding-bottom: 40px;
+        }
+        .main-container.active {
+            display: flex;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), #34495E);
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-content { max-width: 800px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .user-avatar {
+            width: 45px; height: 45px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+        }
+        .user-name { font-size: 1.1rem; font-weight: 600; }
+        .user-rank { font-size: 0.85rem; opacity: 0.9; }
+        .logout-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .content { max-width: 800px; margin: 0 auto; padding: 20px; flex: 1; }
+
+        .quick-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 25px; }
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .stat-icon { font-size: 2rem; margin-bottom: 8px; }
+        .stat-value { font-size: 1.8rem; font-weight: bold; color: var(--primary); }
+        .stat-label { font-size: 0.85rem; color: #7F8C8D; margin-top: 4px; }
+
+        .menu-grid { display: grid; gap: 15px; margin-bottom: 25px; }
+        .menu-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .menu-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
+        .menu-icon {
+            width: 50px; height: 50px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+        }
+        .menu-icon.blue { background: #E3F2FD; }
+        .menu-icon.green { background: #E8F5E9; }
+        .menu-icon.orange { background: #FFF3E0; }
+        .menu-icon.purple { background: #F3E5F5; }
+        .menu-content { flex: 1; }
+        .menu-title { font-size: 1.1rem; font-weight: 600; color: var(--primary); }
+        .menu-desc { font-size: 0.85rem; color: #7F8C8D; margin-top: 2px; }
+        .menu-arrow { color: #BDC3C7; font-size: 1.2rem; }
+
+        .panel { display: none; background: white; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); overflow: hidden; }
+        .panel.active { display: block; }
+        .panel-header {
+            background: linear-gradient(135deg, var(--primary), #34495E);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .panel-title { font-size: 1.2rem; font-weight: 600; }
+        .panel-close { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+        .panel-body { padding: 20px; }
+
+        .rank-display {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+        .rank-badge-large {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .rank-score { font-size: 2.5rem; font-weight: bold; }
+        .rank-score-label { font-size: 0.9rem; opacity: 0.9; }
+
+        .progress-section { margin: 20px 0; }
+        .progress-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; }
+        .progress-bar { height: 12px; background: #E0E0E0; border-radius: 6px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--secondary), var(--success)); border-radius: 6px; }
+
+        .upgrade-requirements { background: #F8F9FA; border-radius: 12px; padding: 20px; }
+        .upgrade-title { font-weight: 600; color: var(--primary); margin-bottom: 15px; }
+        .requirement-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #E0E0E0; }
+        .requirement-item:last-child { border-bottom: none; }
+        .requirement-status { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 0.8rem; }
+        .requirement-status.pass { background: #D5F5E3; color: var(--success); }
+        .requirement-status.fail { background: #FADBD8; color: var(--danger); }
+
+        /* 薪資階梯總覽 */
+        .salary-ladder { background: white; border: 1px solid #E0E0E0; border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+        .salary-ladder-title { background: linear-gradient(135deg, #27AE60, #2ECC71); color: white; padding: 12px 20px; font-weight: 600; }
+        .salary-ladder-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-bottom: 1px solid #EEE; }
+        .salary-ladder-row:last-child { border-bottom: none; }
+        .salary-ladder-row.current { background: #E8F5E9; }
+        .salary-ladder-rank { font-weight: 500; }
+        .salary-ladder-score { font-size: 0.85rem; color: #666; }
+        .salary-ladder-amount { font-weight: bold; color: var(--primary); }
+        .salary-ladder-badge { background: var(--success); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; margin-left: 8px; }
+
+        /* 加薪進度 */
+        .salary-progress { background: linear-gradient(135deg, #E8F5E9, #C8E6C9); border: 2px solid var(--success); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .salary-progress-title { font-weight: 600; color: var(--success); margin-bottom: 12px; }
+        .salary-current { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .salary-current-label { font-size: 0.9rem; color: #555; }
+        .salary-current-value { font-size: 1.5rem; font-weight: bold; color: var(--success); }
+        .salary-next { background: white; border-radius: 10px; padding: 15px; }
+        .salary-next-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .salary-next-label { font-size: 0.85rem; color: #666; }
+        .salary-next-value { font-weight: bold; color: var(--primary); }
+        .salary-next-bar { height: 8px; background: #E0E0E0; border-radius: 4px; overflow: hidden; }
+        .salary-next-fill { height: 100%; background: linear-gradient(90deg, var(--success), #4CAF50); border-radius: 4px; }
+        .salary-next-hint { font-size: 0.85rem; color: #666; margin-top: 8px; text-align: center; }
+        .salary-increase { background: var(--success); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; margin-left: 5px; }
+
+        /* 職級說明 */
+        .level-info { background: #FFF9E6; border: 2px solid var(--warning); border-radius: 12px; padding: 15px; margin-bottom: 20px; }
+        .level-info-title { font-weight: 600; color: #9A7D0A; margin-bottom: 8px; }
+        .level-info-text { font-size: 0.9rem; color: #7D6608; }
+
+        /* 技能清單 */
+        .skill-section { margin-top: 20px; }
+        .skill-section-title { background: linear-gradient(135deg, var(--warning), #E67E22); color: white; padding: 15px 20px; border-radius: 12px 12px 0 0; font-weight: 600; }
+        .skill-category { border: 1px solid #E0E0E0; border-top: none; background: white; }
+        .skill-category:last-child { border-radius: 0 0 12px 12px; }
+        .skill-category-header { padding: 15px 20px; background: #F8F9FA; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 500; border-bottom: 1px solid #E0E0E0; }
+        .skill-category-header:hover { background: #F0F0F0; }
+        .skill-category-header .badge { background: var(--secondary); color: white; padding: 4px 12px; border-radius: 15px; font-size: 0.8rem; }
+        .skill-category-header .arrow { transition: transform 0.3s; font-size: 0.8rem; color: #999; }
+        .skill-category.collapsed .arrow { transform: rotate(-90deg); }
+        .skill-category.collapsed .skill-items { display: none; }
+        .skill-items { padding: 0; }
+        .skill-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-bottom: 1px dashed #EEE; font-size: 0.9rem; }
+        .skill-item:last-child { border-bottom: none; }
+        .skill-item-name { flex: 1; color: #555; }
+        .skill-item-points { background: #E8F5E9; color: var(--success); padding: 3px 10px; border-radius: 10px; font-weight: 600; font-size: 0.85rem; }
+
+        .salary-card { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; border-radius: 16px; padding: 25px; margin-bottom: 20px; }
+        .salary-period { font-size: 0.9rem; opacity: 0.9; margin-bottom: 10px; }
+        .salary-total { font-size: 2.5rem; font-weight: bold; }
+
+        .salary-detail { background: white; border-radius: 12px; padding: 20px; }
+        .salary-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #E0E0E0; }
+        .salary-row:last-child { border-bottom: none; }
+        .salary-row.total { font-weight: bold; font-size: 1.1rem; color: var(--success); border-top: 2px solid #E0E0E0; margin-top: 10px; padding-top: 15px; }
+
+        /* 薪資明細 */
+        .period-select { width: 100%; padding: 12px 15px; border: 2px solid #E0E0E0; border-radius: 10px; font-size: 1rem; margin-bottom: 20px; cursor: pointer; }
+        .period-select:focus { outline: none; border-color: var(--secondary); }
+        .salary-detail-card { background: white; border: 1px solid #E0E0E0; border-radius: 12px; overflow: hidden; margin-bottom: 15px; }
+        .salary-detail-header { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 12px 16px; font-weight: 600; }
+        .salary-detail-header.upper { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .salary-detail-header.lower { background: linear-gradient(135deg, #f7971e, #ffd200); color: #333; }
+        .salary-detail-row { display: flex; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #EEE; }
+        .salary-detail-row:last-child { border-bottom: none; }
+        .salary-detail-row.subtotal { background: #F8F9FA; font-weight: 600; }
+        .salary-detail-row .label { color: #555; }
+        .salary-detail-row .value { font-weight: 500; }
+        .salary-no-data { text-align: center; padding: 40px 20px; color: #999; }
+
+        /* 簽章確認 */
+        .confirm-section { margin-top: 20px; padding: 20px; background: #FFF9E6; border: 2px solid var(--warning); border-radius: 12px; }
+        .confirm-section.confirmed { background: #D5F5E3; border-color: var(--success); }
+        .confirm-title { font-weight: 600; color: #9A7D0A; margin-bottom: 12px; }
+        .confirm-section.confirmed .confirm-title { color: var(--success); }
+        .confirm-checkbox { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .confirm-checkbox input { width: 22px; height: 22px; cursor: pointer; }
+        .confirm-checkbox label { font-size: 0.95rem; cursor: pointer; }
+        .confirm-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--warning), #D68910); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; }
+        .confirm-btn:disabled { background: #BDC3C7; cursor: not-allowed; }
+        .confirm-btn:not(:disabled):hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(243,156,18,0.4); }
+        .confirm-result { text-align: center; padding: 15px; }
+        .confirm-result .icon { font-size: 3rem; margin-bottom: 10px; }
+        .confirm-result .text { font-weight: 600; color: var(--success); font-size: 1.1rem; margin-bottom: 8px; }
+        .confirm-result .timestamp { font-size: 0.9rem; color: #666; }
+        .confirm-result .signature { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ccc; }
+        .confirm-result .signature-label { font-size: 0.85rem; color: #999; margin-bottom: 5px; }
+        .confirm-result .signature-name { font-size: 1.5rem; font-weight: bold; color: var(--primary); font-family: "Noto Serif TC", serif; }
+
+        .eval-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+        .eval-item { background: #F8F9FA; border-radius: 12px; padding: 15px; text-align: center; }
+        .eval-item-name { font-size: 0.85rem; color: #7F8C8D; margin-bottom: 5px; }
+        .eval-item-score { font-size: 1.8rem; font-weight: bold; color: var(--primary); }
+
+        .eval-total-card { background: var(--primary); color: white; border-radius: 12px; padding: 20px; text-align: center; }
+        .eval-total-score { font-size: 2.5rem; font-weight: bold; }
+        .eval-total-grade { font-size: 1.1rem; margin-top: 5px; }
+
+        .apply-section { background: #FFF9E6; border: 2px solid #F39C12; border-radius: 12px; padding: 20px; margin-top: 20px; }
+        .apply-title { color: #9A7D0A; font-weight: 600; margin-bottom: 10px; }
+        .apply-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--warning), #D68910); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 15px; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-weight: 500; margin-bottom: 8px; color: var(--primary); }
+        .form-input, .form-select, .form-textarea { width: 100%; padding: 12px 15px; border: 2px solid #E0E0E0; border-radius: 10px; font-size: 1rem; font-family: inherit; }
+        .form-textarea { resize: vertical; min-height: 100px; }
+
+        .resource-card { display: flex; align-items: center; padding: 15px; background: #F8F9FA; border-radius: 12px; margin-bottom: 12px; cursor: pointer; }
+        .resource-card:hover { background: #E8E8E8; }
+        .resource-icon { width: 45px; height: 45px; background: var(--secondary); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-right: 15px; }
+        .resource-content { flex: 1; }
+        .resource-title { font-weight: 500; }
+        .resource-desc { font-size: 0.85rem; color: #7F8C8D; }
+
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 15px 30px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); display: none; z-index: 1000; }
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+        .toast.show { display: block; animation: slideUp 0.3s; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translate(-50%, 20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 登入頁面 -->
+    <div class="login-container" id="loginPage">
+        <div class="login-box">
+            <div class="login-logo">🏠</div>
+            <h1 class="login-title">摩研裝修</h1>
+            <p class="login-subtitle">員工自助入口</p>
+
+            <input type="tel" class="login-input" id="loginPhone"
+                   placeholder="手機號碼" maxlength="10"
+                   onkeypress="if(event.key==='Enter') document.getElementById('loginPassword').focus()">
+
+            <input type="password" class="login-input" id="loginPassword"
+                   placeholder="密碼（預設：手機末4碼）" maxlength="10"
+                   onkeypress="if(event.key==='Enter') login()">
+
+            <button class="login-btn" id="loginBtn" onclick="login()">登入</button>
+
+            <p class="login-loading" id="loginLoading">載入中...</p>
+            <p class="login-error" id="loginError">手機號碼或密碼錯誤</p>
+
+            <p style="margin-top: 20px; color: #7F8C8D; font-size: 0.85rem;">
+                首次登入密碼為手機末4碼<br>
+                如需修改密碼請聯繫主管
+            </p>
+        </div>
+    </div>
+
+    <!-- 主頁面 -->
+    <div class="main-container" id="mainPage">
+        <div class="header">
+            <div class="header-content">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">👷</div>
+                    <div>
+                        <div class="user-name" id="userName">員工姓名</div>
+                        <div class="user-rank" id="userRank">職級</div>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">登出</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-value" id="statScore">0</div>
+                    <div class="stat-label">技能分數</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value" id="statSalary">$0</div>
+                    <div class="stat-label">日薪</div>
+                </div>
+            </div>
+
+            <div class="menu-grid" id="menuGrid">
+                <div class="menu-card" onclick="showPanel('rank')">
+                    <div class="menu-icon blue">📈</div>
+                    <div class="menu-content">
+                        <div class="menu-title">我的職等</div>
+                        <div class="menu-desc">查看職級、技能分數、升級進度</div>
+                    </div>
+                    <div class="menu-arrow">›</div>
+                </div>
+                <div class="menu-card" onclick="showPanel('salary')">
+                    <div class="menu-icon green">💵</div>
+                    <div class="menu-content">
+                        <div class="menu-title">薪資確認</div>
+                        <div class="menu-desc">查看本期薪資明細</div>
+                    </div>
+                    <div class="menu-arrow">›</div>
+                </div>
+                <div class="menu-card" onclick="showPanel('evaluation')">
+                    <div class="menu-icon orange">📋</div>
+                    <div class="menu-content">
+                        <div class="menu-title">考核資訊</div>
+                        <div class="menu-desc">查看考核成績、申請考核</div>
+                    </div>
+                    <div class="menu-arrow">›</div>
+                </div>
+                <div class="menu-card" onclick="showPanel('learning')">
+                    <div class="menu-icon purple">📚</div>
+                    <div class="menu-content">
+                        <div class="menu-title">學習資源</div>
+                        <div class="menu-desc">升職階梯、技能說明</div>
+                    </div>
+                    <div class="menu-arrow">›</div>
+                </div>
+                <div class="menu-card" onclick="showPanel('password')">
+                    <div class="menu-icon" style="background: #FFEBEE;">🔒</div>
+                    <div class="menu-content">
+                        <div class="menu-title">修改密碼</div>
+                        <div class="menu-desc">更改登入密碼</div>
+                    </div>
+                    <div class="menu-arrow">›</div>
+                </div>
+            </div>
+
+            <!-- 職等面板 -->
+            <div class="panel" id="rankPanel">
+                <div class="panel-header">
+                    <span class="panel-title">我的職等</span>
+                    <button class="panel-close" onclick="hidePanel('rank')">&times;</button>
+                </div>
+                <div class="panel-body">
+                    <div class="rank-display">
+                        <div class="rank-badge-large" id="rankBadge">3級 師傅</div>
+                        <div class="rank-score" id="rankScore">360</div>
+                        <div class="rank-score-label">技能分數</div>
+                    </div>
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <span>升級進度</span>
+                            <span id="progressText">360 / 381</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                        </div>
+                        <p style="text-align: center; margin-top: 10px; color: #7F8C8D; font-size: 0.9rem;" id="progressHint"></p>
+                    </div>
+
+                    <!-- 加薪進度 -->
+                    <div class="salary-progress" id="salaryProgress"></div>
+
+                    <!-- 職級說明 -->
+                    <div class="level-info" id="levelInfo"></div>
+
+                    <!-- 升級條件 -->
+                    <div class="upgrade-requirements" id="upgradeRequirements"></div>
+
+                    <!-- 薪資階梯總覽 -->
+                    <div class="salary-ladder" id="salaryLadder"></div>
+
+                    <!-- 技能清單 -->
+                    <div class="skill-section" id="skillSection"></div>
+                </div>
+            </div>
+
+            <!-- 薪資面板 -->
+            <div class="panel" id="salaryPanel">
+                <div class="panel-header">
+                    <span class="panel-title">薪資確認</span>
+                    <button class="panel-close" onclick="hidePanel('salary')">&times;</button>
+                </div>
+                <div class="panel-body">
+                    <select class="period-select" id="salaryPeriodSelect" onchange="loadSalaryDetail()">
+                        <option value="">載入中...</option>
+                    </select>
+                    <div class="salary-card">
+                        <div class="salary-period">本期薪資</div>
+                        <div class="salary-total" id="salaryTotal">$0</div>
+                    </div>
+                    <div id="salaryDetailContainer">
+                        <p class="salary-no-data">請選擇薪資期間</p>
+                    </div>
+                    <div id="confirmSection"></div>
+                    <p style="margin-top: 15px; color: #7F8C8D; font-size: 0.85rem; text-align: center;">
+                        如有疑問請聯繫主管確認
+                    </p>
+                </div>
+            </div>
+
+            <!-- 考核面板 -->
+            <div class="panel" id="evaluationPanel">
+                <div class="panel-header">
+                    <span class="panel-title">考核資訊</span>
+                    <button class="panel-close" onclick="hidePanel('evaluation')">&times;</button>
+                </div>
+                <div class="panel-body">
+                    <h4 style="margin-bottom: 15px; color: var(--primary);">最近考核成績</h4>
+                    <div class="eval-grid">
+                        <div class="eval-item">
+                            <div class="eval-item-name">技術能力</div>
+                            <div class="eval-item-score" id="evalTech">-</div>
+                        </div>
+                        <div class="eval-item">
+                            <div class="eval-item-name">工作態度</div>
+                            <div class="eval-item-score" id="evalAttitude">-</div>
+                        </div>
+                        <div class="eval-item">
+                            <div class="eval-item-name">出勤狀況</div>
+                            <div class="eval-item-score" id="evalAttend">-</div>
+                        </div>
+                        <div class="eval-item">
+                            <div class="eval-item-name">團隊合作</div>
+                            <div class="eval-item-score" id="evalTeam">-</div>
+                        </div>
+                        <div class="eval-item">
+                            <div class="eval-item-name">學習成長</div>
+                            <div class="eval-item-score" id="evalLearn">-</div>
+                        </div>
+                    </div>
+                    <div class="eval-total-card">
+                        <div class="eval-total-score" id="evalTotal">-</div>
+                        <div class="eval-total-grade" id="evalGrade">尚無考核</div>
+                    </div>
+
+                    <div class="apply-section">
+                        <div class="apply-title">申請升級考核</div>
+                        <p style="font-size: 0.9rem; color: #7D6608;">符合升級條件時，可填寫表單申請考核。</p>
+                        <button class="apply-btn" onclick="window.open('https://forms.gle/nTHruXr1Yfc64CJG7', '_blank')">填寫申請表單</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 修改密碼面板 -->
+            <div class="panel" id="passwordPanel">
+                <div class="panel-header">
+                    <span class="panel-title">修改密碼</span>
+                    <button class="panel-close" onclick="hidePanel('password')">&times;</button>
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="form-label">目前密碼</label>
+                        <input type="password" class="form-input" id="oldPassword" placeholder="請輸入目前密碼">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">新密碼</label>
+                        <input type="password" class="form-input" id="newPassword" placeholder="請輸入新密碼（4-10位）" maxlength="10">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">確認新密碼</label>
+                        <input type="password" class="form-input" id="confirmPassword" placeholder="請再次輸入新密碼" maxlength="10">
+                    </div>
+                    <button class="apply-btn" style="background: linear-gradient(135deg, #E74C3C, #C0392B);" onclick="changePassword()">確認修改</button>
+                    <p style="margin-top: 15px; color: #7F8C8D; font-size: 0.85rem; text-align: center;">
+                        密碼長度 4-10 位，可使用數字或英文
+                    </p>
+                </div>
+            </div>
+
+            <!-- 學習資源面板 -->
+            <div class="panel" id="learningPanel">
+                <div class="panel-header">
+                    <span class="panel-title">學習資源</span>
+                    <button class="panel-close" onclick="hidePanel('learning')">&times;</button>
+                </div>
+                <div class="panel-body">
+                    <div class="resource-card" onclick="openResource('ladder')">
+                        <div class="resource-icon">📊</div>
+                        <div class="resource-content">
+                            <div class="resource-title">升職階梯架構</div>
+                            <div class="resource-desc">各職級定義、升級條件、薪資對照</div>
+                        </div>
+                    </div>
+                    <div class="resource-card" onclick="openResource('passport')">
+                        <div class="resource-icon">📖</div>
+                        <div class="resource-content">
+                            <div class="resource-title">木工學習護照</div>
+                            <div class="resource-desc">技能認證、學習進度</div>
+                        </div>
+                    </div>
+                    <div class="resource-card" onclick="openResource('elite')">
+                        <div class="resource-icon">⭐</div>
+                        <div class="resource-content">
+                            <div class="resource-title">精英合夥計畫</div>
+                            <div class="resource-desc">分潤制度說明</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ===== API 設定 =====
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyUrV13hSqnlzF2onPzZE3S32oxLUwo8Gyj5J-rboomHfI8n-djdD8SVn7iIqbfLiB6PA/exec';
+
+        // 職級資料
+        const RANKS = {
+            1: { name: '學徒', minScore: 0, maxScore: 160, nextScore: 161, salaryRange: { min: 1300, max: 1800 } },
+            2: { name: '半技', minScore: 161, maxScore: 280, nextScore: 281, salaryRange: { min: 2000, max: 3000 } },
+            3: { name: '師傅', minScore: 281, maxScore: 380, nextScore: 381, salaryRange: { min: 3100, max: 3500 } },
+            4: { name: '領班', minScore: 381, maxScore: 431, nextScore: 431, salaryRange: { min: 3600, max: 3600 } }
+        };
+
+        // 薪資級距表
+        const SALARY_TABLE = [
+            { min: 0, max: 60, salary: 1300 },
+            { min: 61, max: 80, salary: 1400 },
+            { min: 81, max: 100, salary: 1500 },
+            { min: 101, max: 120, salary: 1600 },
+            { min: 121, max: 140, salary: 1700 },
+            { min: 141, max: 160, salary: 1800 },
+            { min: 161, max: 180, salary: 2000 },
+            { min: 181, max: 200, salary: 2200 },
+            { min: 201, max: 220, salary: 2400 },
+            { min: 221, max: 240, salary: 2600 },
+            { min: 241, max: 260, salary: 2800 },
+            { min: 261, max: 280, salary: 3000 },
+            { min: 281, max: 300, salary: 3100 },
+            { min: 301, max: 320, salary: 3200 },
+            { min: 321, max: 340, salary: 3300 },
+            { min: 341, max: 360, salary: 3400 },
+            { min: 361, max: 380, salary: 3500 },
+            { min: 381, max: 431, salary: 3600 }
+        ];
+
+        // 各職等技能分類
+        const LEVEL_SKILLS = {
+            2: { title: "升級至 2級 半技（需達 161 分）", desc: "掌握基本工具認識與操作，能獨立完成簡單天地壁施作",
+                 categories: ["基本材料認識", "手工具", "電動工具", "氣動工具", "膠合劑", "五金/配件", "工具操作", "輔助工具"] },
+            3: { title: "升級至 3級 師傅（需達 281 分）", desc: "熟練天花板、地板、隔間施作，會基本系統櫃與門片安裝",
+                 categories: ["水電配置", "系統櫃", "天花板施作", "地板施作", "隔間與壁板", "門片/門框"] },
+            4: { title: "升級至 4級 領班（需達 381 分）", desc: "精通櫥櫃製作，具備場勘與工作安排能力",
+                 categories: ["櫥櫃與床組", "態度與出勤", "系統應用"] }
+        };
+
+        // 技能清單資料
+        const SKILL_DATA = {
+            "基本材料認識": [{ name: "骨料辨別與板材", points: 1 }],
+            "手工具": [
+                { name: "鐵鎚", points: 1 }, { name: "鋸子", points: 1 }, { name: "角尺", points: 1 },
+                { name: "捲尺", points: 1 }, { name: "鉋刀", points: 1 }, { name: "鑿刀", points: 1 },
+                { name: "美工刀", points: 1 }, { name: "墨斗", points: 1 }, { name: "雷射", points: 1 },
+                { name: "水線", points: 1 }, { name: "老虎鉗", points: 1 }, { name: "螺絲起子", points: 1 },
+                { name: "肉路阿", points: 1 }, { name: "竹竿槍", points: 1 }, { name: "剪刀", points: 1 }
+            ],
+            "電動工具": [
+                { name: "電鋸", points: 1 }, { name: "彎鋸", points: 1 }, { name: "壓台", points: 1 },
+                { name: "電鑽", points: 1 }, { name: "電動起子", points: 1 }, { name: "修邊機", points: 1 },
+                { name: "砂磨機", points: 1 }, { name: "空壓機", points: 1 }, { name: "噴槍", points: 1 },
+                { name: "大路打", points: 1 }, { name: "電動刨刀", points: 1 }, { name: "磁磚切勾機", points: 1 },
+                { name: "砂輪切斷機", points: 1 }, { name: "砂輪機", points: 1 }, { name: "切割機(板材)", points: 1 }
+            ],
+            "氣動工具": [
+                { name: "小鋼炮", points: 1 }, { name: "鋼樑槍", points: 1 }, { name: "風管", points: 1 },
+                { name: "大砲", points: 1 }, { name: "中T", points: 1 }, { name: "單腳", points: 1 },
+                { name: "雙腳", points: 1 }, { name: "寬腳", points: 1 }, { name: "蚊釘", points: 1 }
+            ],
+            "膠合劑": [
+                { name: "白膠", points: 1 }, { name: "強力膠", points: 1 }, { name: "噴膠", points: 1 },
+                { name: "AB膠", points: 1 }, { name: "免釘膠", points: 1 }, { name: "矽利康", points: 1 }
+            ],
+            "五金/配件": [
+                { name: "釘子種類", points: 1 }, { name: "螺絲", points: 1 }, { name: "絞鍊", points: 1 },
+                { name: "鎖", points: 1 }, { name: "滑軌", points: 1 }, { name: "把手", points: 1 },
+                { name: "掛鉤器、吊筋", points: 1 }
+            ],
+            "工具操作": [
+                { name: "切割機", points: 1 }, { name: "砂輪切斷機", points: 1 }, { name: "竹竿槍", points: 1 },
+                { name: "材料計算", points: 1 }, { name: "鉋刀", points: 1 }, { name: "鋸子", points: 1 },
+                { name: "美工刀", points: 1 }, { name: "墨斗", points: 1 }, { name: "鐵鎚", points: 1 },
+                { name: "雷射", points: 1 }, { name: "電鋸工作台", points: 1 }, { name: "修邊機", points: 1 },
+                { name: "電鑽", points: 1 }, { name: "彎鋸", points: 1 }, { name: "大路打", points: 1 }
+            ],
+            "輔助工具": [
+                { name: "工作鋸台校正", points: 3 }, { name: "木工梯製作", points: 3 },
+                { name: "線板裁切盒", points: 3 }, { name: "斜倒版", points: 1 }
+            ],
+            "水電配置": [
+                { name: "插座", points: 1 }, { name: "單切", points: 2 },
+                { name: "雙切", points: 2 }, { name: "專插", points: 5 }
+            ],
+            "系統櫃": [
+                { name: "系統櫃認識", points: 1 }, { name: "系統櫃組合", points: 2 },
+                { name: "系統櫃設立", points: 3 }, { name: "系統櫃調門", points: 4 },
+                { name: "系統櫃抽頭安裝", points: 4 }, { name: "系統櫃收尾", points: 3 },
+                { name: "系統櫃特殊五金安裝", points: 6 }
+            ],
+            "天花板施作": [
+                { name: "水平放樣", points: 3 }, { name: "窗簾盒", points: 4 }, { name: "包管/樑", points: 4 },
+                { name: "維修孔", points: 2 }, { name: "特殊維修孔", points: 4 }, { name: "下吹出風口", points: 3 },
+                { name: "側吹出風口", points: 4 }, { name: "間接照明", points: 3 }, { name: "塑膠天花板", points: 3 },
+                { name: "矽酸天花板", points: 3 }, { name: "線板", points: 3 }, { name: "造型天花板", points: 9 },
+                { name: "輕鋼架-水平放樣", points: 1 }, { name: "輕鋼架-修邊條", points: 2 },
+                { name: "輕鋼架-主副支安裝", points: 2 }, { name: "輕鋼架-板材裁切", points: 3 },
+                { name: "暗架-水平放樣", points: 1 }, { name: "暗架-主副支安裝", points: 2 }
+            ],
+            "地板施作": [
+                { name: "平鋪", points: 3 }, { name: "直鋪", points: 2 }, { name: "架高", points: 4 }
+            ],
+            "隔間與壁板": [
+                { name: "隔間施作", points: 3 }, { name: "乾式隔間", points: 3 }, { name: "濕式隔間", points: 5 },
+                { name: "隔間開窗/門", points: 4 }, { name: "造型開口", points: 9 }, { name: "木格柵", points: 3 },
+                { name: "壁板施作", points: 3 }, { name: "貓道", points: 3 }, { name: "造型", points: 9 },
+                { name: "床頭板", points: 3 }, { name: "方柱", points: 3 }, { name: "圓柱", points: 5 }, { name: "弧形", points: 5 }
+            ],
+            "門片/門框": [
+                { name: "房間門", points: 5 }, { name: "櫥櫃門", points: 4 }, { name: "櫥櫃拉門", points: 4 },
+                { name: "百頁門", points: 5 }, { name: "懸吊拉門", points: 5 }, { name: "實木障子門", points: 5 },
+                { name: "門鎖安裝", points: 3 }, { name: "崁入式拉門把手", points: 4 }, { name: "崁入式拉門鎖", points: 6 },
+                { name: "隱藏鎖安裝", points: 4 }, { name: "特殊鎖安裝", points: 8 }, { name: "特殊門片", points: 9 }
+            ],
+            "櫥櫃與床組": [
+                { name: "櫃體", points: 6 }, { name: "三節式滑軌抽屜", points: 4 }, { name: "座式滑軌抽屜", points: 4 },
+                { name: "床架", points: 3 }, { name: "床頭櫃", points: 4 }, { name: "半高櫃", points: 5 },
+                { name: "造型櫃", points: 9 }, { name: "書桌", points: 4 }, { name: "書櫃", points: 3 },
+                { name: "上下櫃", points: 3 }, { name: "拉門櫃", points: 7 }, { name: "衣櫃", points: 6 }
+            ],
+            "態度與出勤": [
+                { name: "配合夜間與假日加班", points: 10 }, { name: "會開貨車", points: 10 },
+                { name: "場勘與工作安排", points: 20 }
+            ],
+            "系統應用": [
+                { name: "On!track-工具領用/歸還", points: 5 }, { name: "On!track-工具維修/保養", points: 2 },
+                { name: "On!track-數量項目", points: 1 }, { name: "Asana-每日照片上傳", points: 1 },
+                { name: "Asana-專案照片上傳", points: 5 }, { name: "Asana-追加/改善項目登入", points: 5 },
+                { name: "Asana-訂貨系統使用", points: 3 }, { name: "TimeThree-領班工作時程安排", points: 5 },
+                { name: "TimeThree-學徒工作時間確認", points: 1 }
+            ]
+        };
+
+        let currentUser = null;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            checkSavedLogin();
+        });
+
+        // 檢查已儲存的登入
+        function checkSavedLogin() {
+            const saved = localStorage.getItem('moreyanUserLogin');
+            if (saved) {
+                try {
+                    currentUser = JSON.parse(saved);
+                    showMainPage();
+                } catch (e) {
+                    localStorage.removeItem('moreyanUserLogin');
+                }
+            }
+        }
+
+        // 登入
+        async function login() {
+            const phone = document.getElementById('loginPhone').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            const errorEl = document.getElementById('loginError');
+            const loadingEl = document.getElementById('loginLoading');
+            const loginBtn = document.getElementById('loginBtn');
+
+            // 驗證輸入
+            if (!phone) {
+                errorEl.textContent = '請輸入手機號碼';
+                errorEl.style.display = 'block';
+                return;
+            }
+            if (!password) {
+                errorEl.textContent = '請輸入密碼';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            // 顯示載入中
+            errorEl.style.display = 'none';
+            loadingEl.style.display = 'block';
+            loginBtn.disabled = true;
+
+            try {
+                const response = await fetch(API_URL + '?action=login&phone=' + encodeURIComponent(phone) + '&password=' + encodeURIComponent(password));
+                const result = await response.json();
+
+                if (result.success) {
+                    currentUser = result.data;
+                    localStorage.setItem('moreyanUserLogin', JSON.stringify(currentUser));
+                    showMainPage();
+                    errorEl.style.display = 'none';
+                } else {
+                    errorEl.textContent = result.error || '手機號碼或密碼錯誤';
+                    errorEl.style.display = 'block';
+                }
+            } catch (e) {
+                errorEl.textContent = '網路連線錯誤，請稍後再試';
+                errorEl.style.display = 'block';
+            } finally {
+                loadingEl.style.display = 'none';
+                loginBtn.disabled = false;
+            }
+        }
+
+        // 登出
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('moreyanUserLogin');
+            document.body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('mainPage').classList.remove('active');
+            document.getElementById('loginPhone').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        // 顯示主頁面
+        function showMainPage() {
+            document.body.style.background = 'linear-gradient(180deg, #F5F7FA 0%, #E8EDF2 100%)';
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainPage').classList.add('active');
+
+            // 支援兩種資料格式（API回傳用中文key）
+            const name = currentUser['姓名'] || currentUser.name || '員工';
+            const rank = currentUser['職級'] || currentUser.rank || 1;
+            const skillScore = currentUser['技能分數'] || currentUser.skillScore || 0;
+            const dailySalary = currentUser['日薪'] || currentUser.dailySalary || 0;
+            const remoteAllowance = currentUser['外地加給'] || currentUser.remoteAllowance || 0;
+
+            const rankName = RANKS[rank]?.name || '員工';
+            document.getElementById('userName').textContent = name;
+            document.getElementById('userRank').textContent = `${rank}級 ${rankName}`;
+            document.getElementById('userAvatar').textContent = name.charAt(0);
+
+            document.getElementById('statScore').textContent = skillScore;
+            document.getElementById('statSalary').textContent = '$' + Number(dailySalary).toLocaleString();
+
+            // 標準化 currentUser 資料
+            currentUser.name = name;
+            currentUser.rank = rank;
+            currentUser.skillScore = skillScore;
+            currentUser.dailySalary = dailySalary;
+            currentUser.remoteAllowance = remoteAllowance;
+            currentUser.evaluation = {
+                technical: currentUser['技術能力'] || 0,
+                attitude: currentUser['工作態度'] || 0,
+                attendance: currentUser['出勤狀況'] || 0,
+                teamwork: currentUser['團隊合作'] || 0,
+                learning: currentUser['學習成長'] || 0
+            };
+
+            updateRankPanel();
+            updateSalaryPanel();
+            updateEvaluationPanel();
+        }
+
+        // 顯示/隱藏面板
+        function showPanel(name) {
+            document.getElementById('menuGrid').style.display = 'none';
+            document.querySelectorAll('.quick-stats').forEach(el => el.style.display = 'none');
+            document.getElementById(name + 'Panel').classList.add('active');
+            if (name === 'salary') {
+                updateSalaryPanel();
+            }
+        }
+
+        function hidePanel(name) {
+            document.getElementById(name + 'Panel').classList.remove('active');
+            document.getElementById('menuGrid').style.display = 'grid';
+            document.querySelectorAll('.quick-stats').forEach(el => el.style.display = 'grid');
+        }
+
+        // 更新職等面板
+        function updateRankPanel() {
+            const rank = currentUser.rank || 1;
+            const score = currentUser.skillScore || 0;
+            const rankName = RANKS[rank]?.name || '員工';
+
+            document.getElementById('rankBadge').textContent = `${rank}級 ${rankName}`;
+            document.getElementById('rankScore').textContent = score;
+
+            // 計算進度
+            const nextRank = rank < 4 ? rank + 1 : rank;
+            const nextScore = RANKS[rank]?.nextScore || 431;
+
+            let progress = rank >= 4 ? 100 : Math.round((score / nextScore) * 100);
+            let hint = rank >= 4 ? '已達最高職級！' : `距離 ${nextRank}級 ${RANKS[nextRank].name} 還差 ${Math.max(0, nextScore - score)} 分`;
+
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `${score} / ${nextScore}`;
+            document.getElementById('progressHint').textContent = hint;
+
+            // 加薪進度
+            renderSalaryProgress(score);
+
+            // 職級說明
+            renderLevelInfo(rank);
+
+            // 升級條件
+            renderUpgradeRequirements(rank, score);
+
+            // 薪資階梯
+            renderSalaryLadder(rank);
+
+            // 技能清單
+            renderSkillList(rank);
+        }
+
+        // 加薪進度
+        function renderSalaryProgress(score) {
+            const container = document.getElementById('salaryProgress');
+            let currentTier = SALARY_TABLE[0];
+            let nextTier = null;
+
+            for (let i = 0; i < SALARY_TABLE.length; i++) {
+                if (score >= SALARY_TABLE[i].min && score <= SALARY_TABLE[i].max) {
+                    currentTier = SALARY_TABLE[i];
+                    nextTier = SALARY_TABLE[i + 1] || null;
+                    break;
+                }
+            }
+
+            if (!nextTier) {
+                container.innerHTML = `
+                    <div class="salary-progress-title">💰 薪資進度</div>
+                    <div class="salary-current">
+                        <span class="salary-current-label">目前日薪</span>
+                        <span class="salary-current-value">$${currentTier.salary.toLocaleString()}</span>
+                    </div>
+                    <div class="salary-next" style="text-align:center;color:#666;">🎉 已達最高薪資級距！</div>
+                `;
+                return;
+            }
+
+            const pointsInTier = score - currentTier.min;
+            const tierRange = currentTier.max - currentTier.min + 1;
+            const progress = Math.round((pointsInTier / tierRange) * 100);
+            const pointsToNext = nextTier.min - score;
+            const salaryIncrease = nextTier.salary - currentTier.salary;
+
+            container.innerHTML = `
+                <div class="salary-progress-title">💰 加薪進度</div>
+                <div class="salary-current">
+                    <span class="salary-current-label">目前日薪</span>
+                    <span class="salary-current-value">$${currentTier.salary.toLocaleString()}</span>
+                </div>
+                <div class="salary-next">
+                    <div class="salary-next-header">
+                        <span class="salary-next-label">下一級薪資</span>
+                        <span class="salary-next-value">$${nextTier.salary.toLocaleString()}<span class="salary-increase">+$${salaryIncrease.toLocaleString()}</span></span>
+                    </div>
+                    <div class="salary-next-bar"><div class="salary-next-fill" style="width: ${progress}%"></div></div>
+                    <div class="salary-next-hint">再取得 <strong>${pointsToNext} 分</strong> 即可加薪（需達 ${nextTier.min} 分）</div>
+                </div>
+            `;
+        }
+
+        // 職級說明
+        function renderLevelInfo(rank) {
+            const container = document.getElementById('levelInfo');
+            if (rank >= 4) {
+                container.innerHTML = `
+                    <div class="level-info-title">🎉 恭喜！已達最高職級</div>
+                    <div class="level-info-text">您已是領班級師傅，可開始挑戰分潤合夥制度</div>
+                `;
+            } else {
+                const nextRank = rank + 1;
+                const levelData = LEVEL_SKILLS[nextRank];
+                const salaryRange = RANKS[nextRank].salaryRange;
+                const salaryText = salaryRange.min === salaryRange.max
+                    ? `$${salaryRange.min.toLocaleString()}`
+                    : `$${salaryRange.min.toLocaleString()} ~ $${salaryRange.max.toLocaleString()}`;
+                container.innerHTML = `
+                    <div class="level-info-title">🎯 ${levelData.title}</div>
+                    <div class="level-info-text">${levelData.desc}</div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed #D4AC0D;">
+                        <span style="font-weight: 600; color: #27AE60;">💵 升級後日薪：</span>
+                        <span style="font-size: 1.1rem; font-weight: bold; color: #27AE60;">${salaryText}</span>
+                    </div>
+                `;
+            }
+        }
+
+        // 升級條件
+        function renderUpgradeRequirements(rank, score) {
+            const container = document.getElementById('upgradeRequirements');
+            if (rank >= 4) {
+                container.style.display = 'none';
+                return;
+            }
+            container.style.display = 'block';
+
+            const nextScore = RANKS[rank].nextScore;
+            const evalTotal = calculateEvalTotal();
+            const evalGrade = currentUser['考核等第'] || (evalTotal >= 4.5 ? '優等' : evalTotal >= 4 ? '甲等' : evalTotal >= 3 ? '乙等' : evalTotal >= 2 ? '丙等' : '尚無考核');
+
+            const scorePass = score >= nextScore;
+            const evalPass = evalTotal >= 3;
+            const allPass = scorePass && evalPass;
+
+            let html = `<div class="upgrade-title">升級條件（申請制）</div>`;
+            html += `<div class="requirement-item">
+                <div class="requirement-status ${scorePass ? 'pass' : 'fail'}">${scorePass ? '✓' : '✗'}</div>
+                <span style="flex:1">技能分數達 ${nextScore} 分</span>
+                <span style="font-size:0.85rem;color:${scorePass ? '#27AE60' : '#E74C3C'}">${score} 分</span>
+            </div>`;
+            html += `<div class="requirement-item">
+                <div class="requirement-status ${evalPass ? 'pass' : 'fail'}">${evalPass ? '✓' : '✗'}</div>
+                <span style="flex:1">考核成績乙等以上</span>
+                <span style="font-size:0.85rem;color:${evalPass ? '#27AE60' : '#E74C3C'}">${evalGrade}（${evalTotal || '-'}分）</span>
+            </div>`;
+            html += `<div style="margin-top:15px;padding:12px;background:${allPass ? '#D5F5E3' : '#FEF9E7'};border-radius:8px;text-align:center;">
+                ${allPass ? '<span style="color:#27AE60;font-weight:600;">✓ 已符合升級條件，可申請考核</span>' : '<span style="color:#9A7D0A;">尚未達成所有升級條件</span>'}
+            </div>`;
+
+            container.innerHTML = html;
+        }
+
+        // 薪資階梯
+        function renderSalaryLadder(currentRank) {
+            const container = document.getElementById('salaryLadder');
+            const ladderData = [
+                { rank: 1, name: '學徒', score: '0-160', min: 1300, max: 1800 },
+                { rank: 2, name: '半技', score: '161-280', min: 2000, max: 3000 },
+                { rank: 3, name: '師傅', score: '281-380', min: 3100, max: 3500 },
+                { rank: 4, name: '領班', score: '381-431', min: 3600, max: 3600 }
+            ];
+
+            let html = `<div class="salary-ladder-title">📊 各職級薪資對照</div>`;
+            ladderData.forEach(item => {
+                const isCurrent = item.rank === currentRank;
+                const salaryText = item.min === item.max ? `$${item.min.toLocaleString()}` : `$${item.min.toLocaleString()} ~ $${item.max.toLocaleString()}`;
+                html += `<div class="salary-ladder-row ${isCurrent ? 'current' : ''}">
+                    <div>
+                        <span class="salary-ladder-rank">${item.rank}級 ${item.name}</span>
+                        ${isCurrent ? '<span class="salary-ladder-badge">目前</span>' : ''}
+                        <div class="salary-ladder-score">${item.score} 分</div>
+                    </div>
+                    <span class="salary-ladder-amount">${salaryText}</span>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // 技能清單
+        function renderSkillList(currentRank) {
+            const container = document.getElementById('skillSection');
+            if (currentRank >= 4) {
+                container.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">已達最高職級</p>';
+                return;
+            }
+
+            const nextRank = currentRank + 1;
+            const levelData = LEVEL_SKILLS[nextRank];
+
+            let html = `<div class="skill-section-title">📚 ${levelData.title}</div>`;
+            levelData.categories.forEach((catName, index) => {
+                const skills = SKILL_DATA[catName];
+                if (!skills) return;
+                const totalPoints = skills.reduce((sum, s) => sum + s.points, 0);
+
+                html += `<div class="skill-category ${index > 0 ? 'collapsed' : ''}" id="cat-${index}">
+                    <div class="skill-category-header" onclick="toggleCategory(${index})">
+                        <span>${catName}</span>
+                        <div><span class="badge">${totalPoints} 分</span> <span class="arrow">▼</span></div>
+                    </div>
+                    <div class="skill-items">`;
+                skills.forEach(skill => {
+                    html += `<div class="skill-item"><span class="skill-item-name">${skill.name}</span><span class="skill-item-points">+${skill.points}</span></div>`;
+                });
+                html += '</div></div>';
+            });
+            container.innerHTML = html;
+        }
+
+        function toggleCategory(index) {
+            document.getElementById(`cat-${index}`).classList.toggle('collapsed');
+        }
+
+        // 更新薪資面板
+        function updateSalaryPanel() {
+            // 初始化期間選單
+            const select = document.getElementById('salaryPeriodSelect');
+            const periods = getSalaryPeriods();
+            select.innerHTML = periods.map(p =>
+                `<option value="${p.value}">${p.label}</option>`
+            ).join('');
+
+            // 載入第一個期間的資料
+            if (periods.length > 0) {
+                loadSalaryDetail();
+            }
+        }
+
+        // 取得薪資期間列表
+        function getSalaryPeriods() {
+            // 動態產生最近3個期間
+            const now = new Date();
+            const periods = [];
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+
+            // 當前期間
+            if (day >= 16) {
+                periods.push({ value: `${year}-${String(month).padStart(2,'0')}-上`, label: `${year}年${month}月 上半月（${month}/16領）` });
+            }
+            if (day >= 1) {
+                const prevMonth = month === 1 ? 12 : month - 1;
+                const prevYear = month === 1 ? year - 1 : year;
+                periods.push({ value: `${prevYear}-${String(prevMonth).padStart(2,'0')}-下`, label: `${prevYear}年${prevMonth}月 下半月（${month}/1領）` });
+            }
+            // 再往前一期
+            const prevMonth2 = month === 1 ? 12 : month - 1;
+            const prevYear2 = month === 1 ? year - 1 : year;
+            periods.push({ value: `${prevYear2}-${String(prevMonth2).padStart(2,'0')}-上`, label: `${prevYear2}年${prevMonth2}月 上半月（${prevMonth2}/16領）` });
+
+            return periods;
+        }
+
+        // 載入薪資明細（從 API）
+        async function loadSalaryDetail() {
+            const period = document.getElementById('salaryPeriodSelect').value;
+            const container = document.getElementById('salaryDetailContainer');
+            const confirmSection = document.getElementById('confirmSection');
+
+            container.innerHTML = '<p class="salary-no-data">載入中...</p>';
+            confirmSection.innerHTML = '';
+
+            try {
+                // 呼叫 API 取得薪資資料
+                const response = await fetch(API_URL + '?action=getSalary&name=' + encodeURIComponent(currentUser.name) + '&period=' + encodeURIComponent(period));
+                const result = await response.json();
+
+                if (result.success && result.data && result.data.length > 0) {
+                    renderSalaryDetail(result.data, period);
+                } else {
+                    container.innerHTML = '<p class="salary-no-data">此期間無薪資資料</p>';
+                    document.getElementById('salaryTotal').textContent = '$0';
+                }
+            } catch (error) {
+                container.innerHTML = '<p class="salary-no-data">載入失敗，請稍後再試</p>';
+            }
+        }
+
+        // 渲染薪資明細
+        function renderSalaryDetail(records, period) {
+            const container = document.getElementById('salaryDetailContainer');
+            let totalSalary = 0, totalRemote = 0, totalDinner = 0;
+
+            records.forEach(r => {
+                totalSalary += r.salary || 0;
+                totalRemote += r.remote || 0;
+                totalDinner += r.dinner || 0;
+            });
+
+            const grandTotal = totalSalary + totalRemote + totalDinner;
+            document.getElementById('salaryTotal').textContent = '$' + grandTotal.toLocaleString();
+
+            let html = `
+                <div class="salary-detail-card">
+                    <div class="salary-detail-header">出勤明細</div>
+            `;
+
+            records.forEach(r => {
+                const rowTotal = (r.salary || 0) + (r.remote || 0) + (r.dinner || 0);
+                html += `
+                    <div class="salary-detail-row">
+                        <span class="label">${r.date} ${r.project}</span>
+                        <span class="value">${r.hours}天 $${rowTotal.toLocaleString()}</span>
+                    </div>
+                `;
+            });
+
+            html += `
+                    <div class="salary-detail-row subtotal">
+                        <span class="label">小計</span>
+                        <span class="value">$${totalSalary.toLocaleString()}</span>
+                    </div>
+                </div>
+            `;
+
+            if (totalRemote > 0 || totalDinner > 0) {
+                html += `
+                    <div class="salary-detail-card">
+                        <div class="salary-detail-header lower">加給明細</div>
+                `;
+                if (totalRemote > 0) {
+                    html += `<div class="salary-detail-row"><span class="label">外地加給</span><span class="value">$${totalRemote.toLocaleString()}</span></div>`;
+                }
+                if (totalDinner > 0) {
+                    html += `<div class="salary-detail-row"><span class="label">晚餐補貼</span><span class="value">$${totalDinner.toLocaleString()}</span></div>`;
+                }
+                html += `
+                        <div class="salary-detail-row subtotal">
+                            <span class="label">加給小計</span>
+                            <span class="value">$${(totalRemote + totalDinner).toLocaleString()}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 16px; border-radius: 12px; display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: bold;">
+                    <span>本期應領</span>
+                    <span>$${grandTotal.toLocaleString()}</span>
+                </div>
+            `;
+
+            container.innerHTML = html;
+            renderConfirmSection(period, grandTotal);
+        }
+
+        // 簽章確認區
+        function renderConfirmSection(period, amount) {
+            const container = document.getElementById('confirmSection');
+            const userName = currentUser.name;
+            const confirmKey = `salary_confirm_${userName}_${period}`;
+            const savedConfirm = localStorage.getItem(confirmKey);
+
+            if (savedConfirm) {
+                const confirmData = JSON.parse(savedConfirm);
+                const offlineNote = confirmData.offline ? '<div style="color:#F39C12;font-size:0.85rem;margin-top:8px;">⚠ 離線確認，待同步</div>' : '';
+                const confirmIdNote = confirmData.confirmId ? `<div style="font-size:0.8rem;color:#999;margin-top:5px;">確認編號：${confirmData.confirmId}</div>` : '';
+                container.innerHTML = `
+                    <div class="confirm-section confirmed">
+                        <div class="confirm-result">
+                            <div class="icon">✓</div>
+                            <div class="text">已確認無誤</div>
+                            <div class="timestamp">確認時間：${confirmData.timestamp}</div>
+                            ${confirmIdNote}
+                            ${offlineNote}
+                            <div class="signature">
+                                <div class="signature-label">電子簽章</div>
+                                <div class="signature-name">${confirmData.name}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="confirm-section" id="confirmBox">
+                        <div class="confirm-title">薪資確認</div>
+                        <div class="confirm-checkbox">
+                            <input type="checkbox" id="confirmCheck" onchange="toggleConfirmBtn()">
+                            <label for="confirmCheck">我已核對本期薪資明細，確認金額 <b>$${amount.toLocaleString()}</b> 無誤</label>
+                        </div>
+                        <button class="confirm-btn" id="confirmBtn" disabled onclick="submitConfirm('${period}', ${amount})">
+                            確認簽章
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function toggleConfirmBtn() {
+            const checkbox = document.getElementById('confirmCheck');
+            const btn = document.getElementById('confirmBtn');
+            btn.disabled = !checkbox.checked;
+        }
+
+        async function submitConfirm(period, amount) {
+            const userName = currentUser.name;
+            const confirmKey = `salary_confirm_${userName}_${period}`;
+            const btn = document.getElementById('confirmBtn');
+            btn.disabled = true;
+            btn.textContent = '處理中...';
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'confirmSalary',
+                        name: userName,
+                        period: period,
+                        amount: amount,
+                        device: navigator.userAgent
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const confirmData = {
+                        name: userName,
+                        period: period,
+                        amount: amount,
+                        timestamp: result.timestamp,
+                        confirmId: result.confirmId,
+                        confirmed: true
+                    };
+                    localStorage.setItem(confirmKey, JSON.stringify(confirmData));
+                    showToast(result.alreadyConfirmed ? '此期間已確認過' : '簽章確認成功！');
+                    renderConfirmSection(period, amount);
+                } else {
+                    showToast(result.error || '確認失敗');
+                    btn.disabled = false;
+                    btn.textContent = '確認簽章';
+                }
+            } catch (error) {
+                const timestamp = new Date().toLocaleString('zh-TW');
+                const confirmData = { name: userName, period, amount, timestamp, confirmed: true, offline: true };
+                localStorage.setItem(confirmKey, JSON.stringify(confirmData));
+                showToast('已離線確認（稍後將同步）');
+                renderConfirmSection(period, amount);
+            }
+        }
+
+        // 計算考核總分
+        function calculateEvalTotal() {
+            const e = currentUser.evaluation;
+            if (!e || !e.technical) return 0;
+            return Math.round((e.technical * 0.4 + e.attitude * 0.2 + e.attendance * 0.15 + e.teamwork * 0.15 + e.learning * 0.1) * 10) / 10;
+        }
+
+        // 更新考核面板
+        function updateEvaluationPanel() {
+            const e = currentUser.evaluation || {};
+
+            document.getElementById('evalTech').textContent = e.technical || '-';
+            document.getElementById('evalAttitude').textContent = e.attitude || '-';
+            document.getElementById('evalAttend').textContent = e.attendance || '-';
+            document.getElementById('evalTeam').textContent = e.teamwork || '-';
+            document.getElementById('evalLearn').textContent = e.learning || '-';
+
+            const total = calculateEvalTotal();
+            let grade = '尚無考核';
+            if (total > 0) {
+                if (total >= 4.5) grade = '優等';
+                else if (total >= 4) grade = '甲等';
+                else if (total >= 3) grade = '乙等';
+                else if (total >= 2) grade = '丙等';
+                else grade = '丁等';
+            }
+
+            document.getElementById('evalTotal').textContent = total || '-';
+            document.getElementById('evalGrade').textContent = grade;
+        }
+
+        // 顯示申請表單
+        function showApplyForm() {
+            document.getElementById('applyForm').style.display = 'block';
+            document.getElementById('applyBtn').style.display = 'none';
+        }
+
+        function hideApplyForm() {
+            document.getElementById('applyForm').style.display = 'none';
+            document.getElementById('applyBtn').style.display = 'block';
+        }
+
+        // 提交申請
+        async function submitApply() {
+            const type = document.getElementById('applyType').value;
+            const reason = document.getElementById('applyReason').value.trim();
+            const project = document.getElementById('applyProject').value.trim();
+
+            if (!reason) {
+                showToast('請填寫申請原因', 'error');
+                return;
+            }
+
+            showToast('提交中...');
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'applyEvaluation',
+                        empId: currentUser.id,
+                        empName: currentUser.name,
+                        type: type,
+                        reason: reason,
+                        project: project
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast('申請已提交！', 'success');
+                    hideApplyForm();
+                    document.getElementById('applyStatus').innerHTML = `<p style="color: var(--success); margin-top: 10px;">✓ 申請已提交，等待主管審核</p>`;
+                    document.getElementById('applyReason').value = '';
+                    document.getElementById('applyProject').value = '';
+                } else {
+                    showToast(result.error || '申請失敗', 'error');
+                }
+            } catch (e) {
+                showToast('網路錯誤，請稍後再試', 'error');
+            }
+        }
+
+        // 修改密碼
+        async function changePassword() {
+            const oldPwd = document.getElementById('oldPassword').value;
+            const newPwd = document.getElementById('newPassword').value;
+            const confirmPwd = document.getElementById('confirmPassword').value;
+
+            if (!oldPwd) {
+                showToast('請輸入目前密碼', 'error');
+                return;
+            }
+            if (!newPwd || newPwd.length < 4) {
+                showToast('新密碼至少需要 4 位', 'error');
+                return;
+            }
+            if (newPwd !== confirmPwd) {
+                showToast('兩次輸入的新密碼不一致', 'error');
+                return;
+            }
+
+            showToast('處理中...');
+
+            try {
+                const phone = currentUser['手機號碼'] || currentUser.phone;
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'changePassword',
+                        phone: phone,
+                        oldPassword: oldPwd,
+                        newPassword: newPwd
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast('密碼修改成功！', 'success');
+                    document.getElementById('oldPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+                    hidePanel('password');
+                } else {
+                    showToast(result.error || '修改失敗', 'error');
+                }
+            } catch (e) {
+                showToast('網路錯誤，請稍後再試', 'error');
+            }
+        }
+
+        // 開啟資源（Google Apps Script 部署）
+        function openResource(type) {
+            const baseUrl = 'https://script.google.com/macros/s/AKfycbxXEr3YXxT8Dkn3u1pb26TcvwRkEx8LKiWNdwuTMbp_aErIODR3jQqm-ip4EzLJUJyLhg/exec';
+            const urls = {
+                ladder: baseUrl + '?page=ladder',
+                passport: baseUrl + '?page=passport',
+                elite: baseUrl + '?page=elite'
+            };
+            if (urls[type]) window.open(urls[type], '_blank');
+        }
+
+        // Toast
+        function showToast(msg, type = '') {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = 'toast show ' + type;
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+</html>

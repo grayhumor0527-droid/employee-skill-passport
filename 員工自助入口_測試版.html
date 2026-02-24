@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>摩研裝修 員工入口（測試版）</title>
+    <style>
+        :root {
+            --primary: #2C3E50;
+            --secondary: #3498DB;
+            --success: #27AE60;
+            --warning: #F39C12;
+            --danger: #E74C3C;
+            --bg: #F5F7FA;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #2C3E50;
+            line-height: 1.6;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .login-container {
+            width: 100%;
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .login-logo { font-size: 3rem; margin-bottom: 10px; }
+        .login-title { font-size: 1.5rem; color: var(--primary); margin-bottom: 8px; }
+        .login-subtitle { color: #7F8C8D; margin-bottom: 30px; font-size: 0.9rem; }
+
+        .login-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--secondary), #2980B9);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .login-error { color: var(--danger); margin-top: 15px; font-size: 0.9rem; display: none; }
+
+        .main-container {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            min-height: 100%;
+            background: linear-gradient(180deg, var(--bg) 0%, #E8EDF2 100%);
+            padding-bottom: 40px;
+        }
+        .main-container.active { display: flex; }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), #34495E);
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-content { max-width: 800px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .user-avatar {
+            width: 45px; height: 45px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+        }
+        .user-name { font-size: 1.1rem; font-weight: 600; }
+        .user-rank { font-size: 0.85rem; opacity: 0.9; }
+        .logout-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .content { max-width: 800px; margin: 0 auto; padding: 20px; flex: 1; }
+
+        .quick-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 25px; }
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .stat-icon { font-size: 2rem; margin-bottom: 8px; }
+        .stat-value { font-size: 1.8rem; font-weight: bold; color: var(--primary); }
+        .stat-label { font-size: 0.85rem; color: #7F8C8D; margin-top: 4px; }
+
+        .menu-grid {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .menu-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .menu-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+        .menu-icon {
+            width: 50px; height: 50px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            background: #E3F2FD;
+        }
+        .menu-content { flex: 1; }
+        .menu-title { font-size: 1.1rem; font-weight: 600; color: var(--primary); }
+        .menu-desc { font-size: 0.85rem; color: #7F8C8D; margin-top: 2px; }
+        .menu-arrow { color: #BDC3C7; font-size: 1.2rem; }
+
+        .panel { display: none; background: white; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); overflow: hidden; }
+        .panel.active { display: block; }
+        .panel-header {
+            background: linear-gradient(135deg, var(--primary), #34495E);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .panel-title { font-size: 1.2rem; font-weight: 600; }
+        .panel-close { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+        .panel-body { padding: 20px; }
+
+        .rank-display {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+        .rank-badge-large {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .rank-score { font-size: 2.5rem; font-weight: bold; }
+        .rank-score-label { font-size: 0.9rem; opacity: 0.9; }
+
+        .progress-section { margin: 20px 0; }
+        .progress-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; }
+        .progress-bar { height: 12px; background: #E0E0E0; border-radius: 6px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--secondary), var(--success)); border-radius: 6px; transition: width 0.3s; }
+
+        /* 技能清單樣式 */
+        .skill-section {
+            margin-top: 20px;
+        }
+        .skill-section-title {
+            background: linear-gradient(135deg, var(--warning), #E67E22);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 12px 12px 0 0;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .skill-category {
+            border: 1px solid #E0E0E0;
+            border-top: none;
+            background: white;
+        }
+        .skill-category:last-child {
+            border-radius: 0 0 12px 12px;
+        }
+        .skill-category-header {
+            padding: 15px 20px;
+            background: #F8F9FA;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+            border-bottom: 1px solid #E0E0E0;
+        }
+        .skill-category-header:hover {
+            background: #F0F0F0;
+        }
+        .skill-category-header .badge {
+            background: var(--secondary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+        .skill-category-header .arrow {
+            transition: transform 0.3s;
+            font-size: 0.8rem;
+            color: #999;
+        }
+        .skill-category.collapsed .arrow {
+            transform: rotate(-90deg);
+        }
+        .skill-category.collapsed .skill-items {
+            display: none;
+        }
+        .skill-items {
+            padding: 0;
+        }
+        .skill-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            border-bottom: 1px dashed #EEE;
+            font-size: 0.9rem;
+        }
+        .skill-item:last-child {
+            border-bottom: none;
+        }
+        .skill-item-name {
+            flex: 1;
+            color: #555;
+        }
+        .skill-item-points {
+            background: #E8F5E9;
+            color: var(--success);
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-left: 10px;
+        }
+
+        /* 加薪進度區塊 */
+        .salary-progress {
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+            border: 2px solid var(--success);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .salary-progress-title {
+            font-weight: 600;
+            color: var(--success);
+            margin-bottom: 12px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .salary-current {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .salary-current-label {
+            font-size: 0.9rem;
+            color: #555;
+        }
+        .salary-current-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--success);
+        }
+        .salary-next {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        .salary-next-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .salary-next-label {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        .salary-next-value {
+            font-weight: bold;
+            color: var(--primary);
+        }
+        .salary-next-bar {
+            height: 8px;
+            background: #E0E0E0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .salary-next-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), #4CAF50);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        .salary-next-hint {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 8px;
+            text-align: center;
+        }
+        .salary-increase {
+            display: inline-block;
+            background: var(--success);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+
+        .level-info {
+            background: #FFF9E6;
+            border: 2px solid var(--warning);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        /* 升級條件檢核 */
+        .upgrade-check {
+            background: #F8F9FA;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .upgrade-check-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        .upgrade-check-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #E0E0E0;
+        }
+        .upgrade-check-item:last-child { border-bottom: none; }
+        .upgrade-check-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .upgrade-check-icon.pass { background: #D5F5E3; color: var(--success); }
+        .upgrade-check-icon.fail { background: #FADBD8; color: var(--danger); }
+        .upgrade-check-text { flex: 1; font-size: 0.95rem; }
+        .upgrade-check-status {
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 3px 10px;
+            border-radius: 12px;
+        }
+        .upgrade-check-status.pass { background: #D5F5E3; color: var(--success); }
+        .upgrade-check-status.fail { background: #FADBD8; color: var(--danger); }
+
+        /* 薪資階梯總覽 */
+        .salary-ladder {
+            background: white;
+            border: 1px solid #E0E0E0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .salary-ladder-title {
+            background: linear-gradient(135deg, #27AE60, #2ECC71);
+            color: white;
+            padding: 12px 20px;
+            font-weight: 600;
+        }
+        .salary-ladder-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            border-bottom: 1px solid #EEE;
+        }
+        .salary-ladder-row:last-child {
+            border-bottom: none;
+        }
+        .salary-ladder-row.current {
+            background: #E8F5E9;
+        }
+        .salary-ladder-rank {
+            font-weight: 500;
+        }
+        .salary-ladder-score {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        .salary-ladder-amount {
+            font-weight: bold;
+            color: var(--primary);
+        }
+        .salary-ladder-current-badge {
+            background: var(--success);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 8px;
+        }
+        .level-info-title {
+            font-weight: 600;
+            color: #9A7D0A;
+            margin-bottom: 8px;
+        }
+        .level-info-text {
+            font-size: 0.9rem;
+            color: #7D6608;
+        }
+
+        /* 薪資確認面板 */
+        .period-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #E0E0E0;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        .period-select:focus { outline: none; border-color: var(--secondary); }
+        .salary-summary {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .salary-summary-label { font-size: 0.9rem; opacity: 0.9; margin-bottom: 8px; }
+        .salary-summary-amount { font-size: 2.5rem; font-weight: bold; }
+        .salary-detail-card {
+            background: white;
+            border: 1px solid #E0E0E0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        .salary-detail-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 16px;
+            font-weight: 600;
+        }
+        .salary-detail-header.upper { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .salary-detail-header.lower { background: linear-gradient(135deg, #f7971e, #ffd200); color: #333; }
+        .salary-detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-bottom: 1px solid #EEE;
+        }
+        .salary-detail-row:last-child { border-bottom: none; }
+        .salary-detail-row.subtotal { background: #F8F9FA; font-weight: 600; }
+        .salary-detail-row .label { color: #555; }
+        .salary-detail-row .value { font-weight: 500; }
+        .salary-no-data {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        /* 簽章確認 */
+        .confirm-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #FFF9E6;
+            border: 2px solid var(--warning);
+            border-radius: 12px;
+        }
+        .confirm-section.confirmed {
+            background: #D5F5E3;
+            border-color: var(--success);
+        }
+        .confirm-title {
+            font-weight: 600;
+            color: #9A7D0A;
+            margin-bottom: 12px;
+        }
+        .confirm-section.confirmed .confirm-title {
+            color: var(--success);
+        }
+        .confirm-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .confirm-checkbox input {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+        }
+        .confirm-checkbox label {
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+        .confirm-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--warning), #D68910);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .confirm-btn:disabled {
+            background: #BDC3C7;
+            cursor: not-allowed;
+        }
+        .confirm-btn:not(:disabled):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(243,156,18,0.4);
+        }
+        .confirm-result {
+            text-align: center;
+            padding: 15px;
+        }
+        .confirm-result .icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        .confirm-result .text {
+            font-weight: 600;
+            color: var(--success);
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        .confirm-result .timestamp {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .confirm-result .signature {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #ccc;
+        }
+        .confirm-result .signature-label {
+            font-size: 0.85rem;
+            color: #999;
+            margin-bottom: 5px;
+        }
+        .confirm-result .signature-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            font-family: "Noto Serif TC", serif;
+        }
+
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 15px 30px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); display: none; z-index: 1000; }
+        .toast.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="login-container" id="loginPage">
+        <div class="login-box">
+            <div class="login-logo">🏠</div>
+            <h1 class="login-title">摩研裝修</h1>
+            <p class="login-subtitle">員工自助入口（技能清單測試）</p>
+
+            <input type="tel" class="login-input" id="loginPhone" placeholder="手機號碼" maxlength="10">
+            <input type="password" class="login-input" id="loginPassword" placeholder="密碼（手機末4碼）" maxlength="10"
+                   onkeypress="if(event.key==='Enter') login()">
+
+            <button class="login-btn" onclick="login()">登入</button>
+            <p class="login-error" id="loginError"></p>
+
+            <div style="margin-top: 20px; padding: 15px; background: #F8F9FA; border-radius: 10px; text-align: left;">
+                <p style="color: #2C3E50; font-weight: 600; margin-bottom: 10px; text-align: center;">測試帳號</p>
+                <table style="width: 100%; font-size: 0.85rem; color: #555;">
+                    <tr><td>學徒</td><td><b>1111</b> / <b>1111</b></td></tr>
+                    <tr><td>半技</td><td><b>2222</b> / <b>2222</b></td></tr>
+                    <tr><td>師傅</td><td><b>3333</b> / <b>3333</b></td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container" id="mainPage">
+        <div class="header">
+            <div class="header-content">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">👷</div>
+                    <div>
+                        <div class="user-name" id="userName">員工</div>
+                        <div class="user-rank" id="userRank">職級</div>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">登出</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-value" id="statScore">0</div>
+                    <div class="stat-label">技能分數</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value" id="statSalary">$0</div>
+                    <div class="stat-label">日薪</div>
+                </div>
+            </div>
+
+            <div class="menu-grid" id="menuGrid">
+                <div class="menu-card" onclick="showPanel('rank')">
+                    <div class="menu-icon" style="background:#E3F2FD;">📈</div>
+                    <div class="menu-content">
+                        <div class="menu-title">我的職等</div>
+                        <div class="menu-desc">技能清單、升級進度</div>
+                    </div>
+                    <div class="menu-arrow">›</div>
+                </div>
+                <div class="menu-card" onclick="showPanel('salary')">
+                    <div class="menu-icon" style="background:#E8F5E9;">💵</div>
+                    <div class="menu-content">
+                        <div class="menu-title">薪資確認</div>
+                        <div class="menu-desc">查看歷史薪資明細</div>
+                    </div>
+                    <div class="menu-arrow">›</div>
+                </div>
+            </div>
+
+            <div class="panel" id="rankPanel">
+                <div class="panel-header">
+                    <span class="panel-title">我的職等</span>
+                    <button class="panel-close" onclick="hidePanel('rank')">&times;</button>
+                </div>
+                <div class="panel-body">
+                    <div class="rank-display">
+                        <div class="rank-badge-large" id="rankBadge">1級 學徒</div>
+                        <div class="rank-score" id="rankScore">120</div>
+                        <div class="rank-score-label">技能分數（滿分 431）</div>
+                    </div>
+
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <span>升級進度</span>
+                            <span id="progressText">120 / 161</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                        </div>
+                        <p style="text-align: center; margin-top: 10px; color: #7F8C8D; font-size: 0.9rem;" id="progressHint"></p>
+                    </div>
+
+                    <!-- 加薪進度 -->
+                    <div class="salary-progress" id="salaryProgress"></div>
+
+                    <div class="level-info" id="levelInfo"></div>
+
+                    <!-- 升級條件檢核 -->
+                    <div class="upgrade-check" id="upgradeCheck"></div>
+
+                    <!-- 薪資階梯總覽 -->
+                    <div class="salary-ladder" id="salaryLadder"></div>
+
+                    <div class="skill-section" id="skillSection"></div>
+                </div>
+            </div>
+
+            <!-- 薪資確認面板 -->
+            <div class="panel" id="salaryPanel">
+                <div class="panel-header">
+                    <span class="panel-title">薪資確認</span>
+                    <button class="panel-close" onclick="hidePanel('salary')">&times;</button>
+                </div>
+                <div class="panel-body">
+                    <select class="period-select" id="salaryPeriodSelect" onchange="renderSalaryDetail()">
+                        <option value="2026-02-上">2026年2月 上半月（2/16領）</option>
+                        <option value="2026-01-下">2026年1月 下半月（2/1領）</option>
+                        <option value="2026-01-上">2026年1月 上半月（1/16領）</option>
+                    </select>
+                    <div class="salary-summary" id="salarySummary">
+                        <div class="salary-summary-label">本期薪資</div>
+                        <div class="salary-summary-amount">$0</div>
+                    </div>
+                    <div id="salaryDetailContainer"></div>
+
+                    <!-- 簽章確認區 -->
+                    <div id="confirmSection"></div>
+
+                    <p style="margin-top: 15px; color: #7F8C8D; font-size: 0.85rem; text-align: center;">
+                        如有疑問請聯繫主管確認
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const RANKS = {
+            1: { name: '學徒', minScore: 0, maxScore: 160, nextScore: 161 },
+            2: { name: '半技', minScore: 161, maxScore: 280, nextScore: 281 },
+            3: { name: '師傅', minScore: 281, maxScore: 380, nextScore: 381 },
+            4: { name: '領班', minScore: 381, maxScore: 431, nextScore: 431 }
+        };
+
+        // 薪資級距表（不需升職也能加薪）
+        const SALARY_TABLE = [
+            { min: 0, max: 60, salary: 1300 },
+            { min: 61, max: 80, salary: 1400 },
+            { min: 81, max: 100, salary: 1500 },
+            { min: 101, max: 120, salary: 1600 },
+            { min: 121, max: 140, salary: 1700 },
+            { min: 141, max: 160, salary: 1800 },
+            { min: 161, max: 180, salary: 2000 },
+            { min: 181, max: 200, salary: 2200 },
+            { min: 201, max: 220, salary: 2400 },
+            { min: 221, max: 240, salary: 2600 },
+            { min: 241, max: 260, salary: 2800 },
+            { min: 261, max: 280, salary: 3000 },
+            { min: 281, max: 300, salary: 3100 },
+            { min: 301, max: 320, salary: 3200 },
+            { min: 321, max: 340, salary: 3300 },
+            { min: 341, max: 360, salary: 3400 },
+            { min: 361, max: 380, salary: 3500 },
+            { min: 381, max: 431, salary: 3600 }
+        ];
+
+        // 學習護照完整技能清單
+        const SKILL_DATA = {
+            "基本材料認識": [
+                { name: "骨料辨別與板材", points: 1 }
+            ],
+            "手工具": [
+                { name: "鐵鎚", points: 1 },
+                { name: "鋸子", points: 1 },
+                { name: "角尺", points: 1 },
+                { name: "捲尺", points: 1 },
+                { name: "鉋刀", points: 1 },
+                { name: "鑿刀", points: 1 },
+                { name: "美工刀", points: 1 },
+                { name: "墨斗", points: 1 },
+                { name: "雷射", points: 1 },
+                { name: "水線", points: 1 },
+                { name: "老虎鉗", points: 1 },
+                { name: "螺絲起子", points: 1 },
+                { name: "肉路阿", points: 1 },
+                { name: "竹竿槍", points: 1 },
+                { name: "剪刀", points: 1 }
+            ],
+            "電動工具": [
+                { name: "電鋸", points: 1 },
+                { name: "彎鋸", points: 1 },
+                { name: "壓台", points: 1 },
+                { name: "電鑽", points: 1 },
+                { name: "電動起子", points: 1 },
+                { name: "修邊機", points: 1 },
+                { name: "砂磨機", points: 1 },
+                { name: "空壓機", points: 1 },
+                { name: "噴槍", points: 1 },
+                { name: "大路打", points: 1 },
+                { name: "電動刨刀", points: 1 },
+                { name: "磁磚切勾機", points: 1 },
+                { name: "砂輪切斷機", points: 1 },
+                { name: "砂輪機", points: 1 },
+                { name: "切割機(板材)", points: 1 }
+            ],
+            "氣動工具": [
+                { name: "小鋼炮", points: 1 },
+                { name: "鋼樑槍", points: 1 },
+                { name: "風管", points: 1 },
+                { name: "大砲", points: 1 },
+                { name: "中T", points: 1 },
+                { name: "單腳", points: 1 },
+                { name: "雙腳", points: 1 },
+                { name: "寬腳", points: 1 },
+                { name: "蚊釘", points: 1 }
+            ],
+            "膠合劑": [
+                { name: "白膠", points: 1 },
+                { name: "強力膠", points: 1 },
+                { name: "噴膠", points: 1 },
+                { name: "AB膠", points: 1 },
+                { name: "免釘膠", points: 1 },
+                { name: "矽利康", points: 1 }
+            ],
+            "五金/配件": [
+                { name: "釘子種類 (ST、T、SF、F、J、I)", points: 1 },
+                { name: "螺絲 (木螺絲、鐵板牙、自攻等)", points: 1 },
+                { name: "絞鍊 (西德、蝴蝶、剪刀等)", points: 1 },
+                { name: "鎖 (喇叭、水平、肚臍等)", points: 1 },
+                { name: "滑軌 (二節式、三節式、座式等)", points: 1 },
+                { name: "把手 (單孔、雙孔、崁入)", points: 1 },
+                { name: "掛鉤器、全牙吊筋、鐵線吊筋", points: 1 }
+            ],
+            "工具操作": [
+                { name: "切割機", points: 1 },
+                { name: "砂輪切斷機", points: 1 },
+                { name: "竹竿槍", points: 1 },
+                { name: "材料計算 (尺、坪、m²)", points: 1 },
+                { name: "鉋刀", points: 1 },
+                { name: "鋸子", points: 1 },
+                { name: "美工刀", points: 1 },
+                { name: "墨斗", points: 1 },
+                { name: "鐵鎚", points: 1 },
+                { name: "雷射", points: 1 },
+                { name: "電鋸工作台", points: 1 },
+                { name: "修邊機", points: 1 },
+                { name: "電鑽", points: 1 },
+                { name: "彎鋸", points: 1 },
+                { name: "大路打", points: 1 }
+            ],
+            "輔助工具": [
+                { name: "工作鋸台校正", points: 3 },
+                { name: "木工梯製作", points: 3 },
+                { name: "線板裁切盒", points: 3 },
+                { name: "斜倒版", points: 1 }
+            ],
+            "水電配置": [
+                { name: "插座", points: 1 },
+                { name: "單切", points: 2 },
+                { name: "雙切", points: 2 },
+                { name: "專插", points: 5 }
+            ],
+            "系統櫃": [
+                { name: "系統櫃認識 (五金、材料)", points: 1 },
+                { name: "系統櫃組合", points: 2 },
+                { name: "系統櫃設立", points: 3 },
+                { name: "系統櫃調門", points: 4 },
+                { name: "系統櫃抽頭安裝", points: 4 },
+                { name: "系統櫃收尾 (填縫及矽利康)", points: 3 },
+                { name: "系統櫃特殊五金安裝", points: 6 }
+            ],
+            "天花板施作": [
+                { name: "水平放樣 (吊巾、格柵角料)", points: 3 },
+                { name: "窗簾盒", points: 4 },
+                { name: "包管/樑", points: 4 },
+                { name: "維修孔", points: 2 },
+                { name: "特殊維修孔", points: 4 },
+                { name: "下吹出風口 (有框無框)", points: 3 },
+                { name: "側吹出風口 (無框)", points: 4 },
+                { name: "間接照明", points: 3 },
+                { name: "塑膠天花板", points: 3 },
+                { name: "矽酸天花板", points: 3 },
+                { name: "線板", points: 3 },
+                { name: "造型天花板", points: 9 },
+                { name: "輕鋼架 - 水平放樣", points: 1 },
+                { name: "輕鋼架 - 修邊條定位.插角", points: 2 },
+                { name: "輕鋼架 - 主副支安裝", points: 2 },
+                { name: "輕鋼架 - 板材裁切", points: 3 },
+                { name: "暗架 - 水平放樣", points: 1 },
+                { name: "暗架 - 主副支安裝", points: 2 }
+            ],
+            "地板施作": [
+                { name: "平鋪", points: 3 },
+                { name: "直鋪", points: 2 },
+                { name: "架高 (面板、底板、軌道)", points: 4 }
+            ],
+            "隔間與壁板": [
+                { name: "隔間施作", points: 3 },
+                { name: "乾式隔間 (上下槽、立柱)", points: 3 },
+                { name: "濕式隔間 (上下槽、立柱)", points: 5 },
+                { name: "隔間開窗/門", points: 4 },
+                { name: "造型開口", points: 9 },
+                { name: "木格柵", points: 3 },
+                { name: "壁板施作", points: 3 },
+                { name: "貓道", points: 3 },
+                { name: "造型", points: 9 },
+                { name: "床頭板", points: 3 },
+                { name: "方柱", points: 3 },
+                { name: "圓柱", points: 5 },
+                { name: "弧形", points: 5 }
+            ],
+            "門片/門框": [
+                { name: "房間門 (合門及安裝)", points: 5 },
+                { name: "櫥櫃門 (合門及安裝)", points: 4 },
+                { name: "櫥櫃拉門 (合門及安裝)", points: 4 },
+                { name: "百頁門 (合門及安裝)", points: 5 },
+                { name: "懸吊拉門 (合門及安裝)", points: 5 },
+                { name: "實木障子門 (合門及安裝)", points: 5 },
+                { name: "門鎖安裝 (喇叭/水平鎖)", points: 3 },
+                { name: "崁入式拉門把手", points: 4 },
+                { name: "崁入式拉門鎖", points: 6 },
+                { name: "隱藏鎖安裝", points: 4 },
+                { name: "特殊鎖安裝", points: 8 },
+                { name: "特殊門片 (合門及安裝)", points: 9 }
+            ],
+            "櫥櫃與床組": [
+                { name: "櫃體", points: 6 },
+                { name: "三節式滑軌抽屜製作安裝", points: 4 },
+                { name: "座式滑軌抽屜製作安裝", points: 4 },
+                { name: "床架", points: 3 },
+                { name: "床頭櫃", points: 4 },
+                { name: "半高櫃", points: 5 },
+                { name: "造型櫃", points: 9 },
+                { name: "書桌", points: 4 },
+                { name: "書櫃", points: 3 },
+                { name: "上下櫃", points: 3 },
+                { name: "拉門櫃", points: 7 },
+                { name: "衣櫃", points: 6 }
+            ],
+            "態度與出勤": [
+                { name: "偶而配合夜間與假日加班", points: 10 },
+                { name: "是否會開貨車", points: 10 },
+                { name: "能夠場勘與工作安排", points: 20 }
+            ],
+            "系統應用": [
+                { name: "On!track - 工具領用/歸還", points: 5 },
+                { name: "On!track - 工具維修/保養", points: 2 },
+                { name: "On!track - 數量項目", points: 1 },
+                { name: "Asana - 每日照片上傳", points: 1 },
+                { name: "Asana - 專案照片上傳並打勾", points: 5 },
+                { name: "Asana - 追加/改善項目登入", points: 5 },
+                { name: "Asana - 訂貨系統使用", points: 3 },
+                { name: "TimeThree - 領班工作時程安排", points: 5 },
+                { name: "TimeThree - 學徒工作時間確認", points: 1 }
+            ]
+        };
+
+        // 各職等需要學習的技能分類
+        const LEVEL_SKILLS = {
+            2: { // 升到半技需要的技能
+                title: "升級至 2級 半技（需達 161 分）",
+                desc: "掌握基本工具認識與操作，能獨立完成簡單天地壁施作",
+                categories: ["基本材料認識", "手工具", "電動工具", "氣動工具", "膠合劑", "五金/配件", "工具操作", "輔助工具"],
+                salaryRange: { min: 2000, max: 3000 }
+            },
+            3: { // 升到師傅需要的技能
+                title: "升級至 3級 師傅（需達 281 分）",
+                desc: "熟練天花板、地板、隔間施作，會基本系統櫃與門片安裝",
+                categories: ["水電配置", "系統櫃", "天花板施作", "地板施作", "隔間與壁板", "門片/門框"],
+                salaryRange: { min: 3100, max: 3500 }
+            },
+            4: { // 升到領班需要的技能
+                title: "升級至 4級 領班（需達 381 分）",
+                desc: "精通櫥櫃製作，具備場勘與工作安排能力",
+                categories: ["櫥櫃與床組", "態度與出勤", "系統應用"],
+                salaryRange: { min: 3600, max: 3600 }
+            }
+        };
+
+        // 測試用員工資料（含考核成績）
+        const TEST_USERS = [
+            // === 簡易測試帳號 ===
+            { name: '測試學徒', rank: 1, skillScore: 100, dailySalary: 1500, phone: '1111',
+              evalTotal: 3.5, evalGrade: '乙等', lastEvalDate: '2026-01-15' },
+            { name: '測試半技', rank: 2, skillScore: 200, dailySalary: 2400, phone: '2222',
+              evalTotal: 4.0, evalGrade: '甲等', lastEvalDate: '2026-01-15' },
+            { name: '測試師傅', rank: 3, skillScore: 320, dailySalary: 3200, phone: '3333',
+              evalTotal: 4.5, evalGrade: '優等', lastEvalDate: '2026-01-15' },
+            // === 原有員工資料 ===
+            { name: '許子軒', rank: 1, skillScore: 120, dailySalary: 1600, phone: '0968836108',
+              evalTotal: 3.3, evalGrade: '乙等', lastEvalDate: '2026-01-15' },
+            { name: '劉哲林', rank: 1, skillScore: 155, dailySalary: 2000, phone: '0984262633',
+              evalTotal: 3.7, evalGrade: '乙等', lastEvalDate: '2026-01-15' },
+            { name: '陳冠興', rank: 2, skillScore: 185, dailySalary: 2300, phone: '0925326917',
+              evalTotal: 3.9, evalGrade: '乙等', lastEvalDate: '2026-01-15' },
+            { name: '陳瑋鑫', rank: 4, skillScore: 380, dailySalary: 3600, phone: '0988139317',
+              evalTotal: 4.6, evalGrade: '優等', lastEvalDate: '2026-01-15' }
+        ];
+
+        // 測試用薪資資料
+        const SALARY_DATA = {
+            '測試學徒': {
+                '2026-02-上': {
+                    records: [
+                        { date: '2/3', project: '德富2期', hours: 1, salary: 1500, remote: 188, dinner: 0 },
+                        { date: '2/4', project: '德富2期', hours: 1, salary: 1500, remote: 188, dinner: 0 },
+                        { date: '2/5', project: '瑞典湖濱', hours: 1, salary: 1500, remote: 0, dinner: 0 },
+                        { date: '2/6', project: '瑞典湖濱', hours: 1.5, salary: 2250, remote: 0, dinner: 100 },
+                        { date: '2/7', project: '瑞典湖濱', hours: 1, salary: 1500, remote: 0, dinner: 0 }
+                    ]
+                },
+                '2026-01-下': {
+                    records: [
+                        { date: '1/17', project: '君鼎', hours: 1, salary: 1500, remote: 0, dinner: 0 },
+                        { date: '1/18', project: '君鼎', hours: 1, salary: 1500, remote: 0, dinner: 0 },
+                        { date: '1/20', project: '德富2期', hours: 1, salary: 1500, remote: 188, dinner: 0 },
+                        { date: '1/21', project: '德富2期', hours: 1, salary: 1500, remote: 188, dinner: 0 }
+                    ]
+                },
+                '2026-01-上': {
+                    records: [
+                        { date: '1/2', project: '青年路', hours: 1, salary: 1500, remote: 0, dinner: 0 },
+                        { date: '1/3', project: '青年路', hours: 1, salary: 1500, remote: 0, dinner: 0 },
+                        { date: '1/6', project: '青年路', hours: 1.5, salary: 2250, remote: 0, dinner: 100 }
+                    ]
+                }
+            },
+            '測試半技': {
+                '2026-02-上': {
+                    records: [
+                        { date: '2/3', project: '瑞典湖濱', hours: 1, salary: 2400, remote: 0, dinner: 0 },
+                        { date: '2/4', project: '瑞典湖濱', hours: 1, salary: 2400, remote: 0, dinner: 0 },
+                        { date: '2/5', project: '瑞典湖濱', hours: 1.5, salary: 3600, remote: 0, dinner: 100 },
+                        { date: '2/6', project: '德富2期', hours: 1, salary: 2400, remote: 300, dinner: 0 },
+                        { date: '2/7', project: '德富2期', hours: 1, salary: 2400, remote: 300, dinner: 0 }
+                    ]
+                },
+                '2026-01-下': {
+                    records: [
+                        { date: '1/17', project: '君鼎', hours: 1, salary: 2400, remote: 0, dinner: 0 },
+                        { date: '1/18', project: '君鼎', hours: 1.5, salary: 3600, remote: 0, dinner: 100 },
+                        { date: '1/20', project: '君鼎', hours: 1, salary: 2400, remote: 0, dinner: 0 }
+                    ]
+                },
+                '2026-01-上': {
+                    records: [
+                        { date: '1/2', project: '大和安縵', hours: 1, salary: 2400, remote: 0, dinner: 0 },
+                        { date: '1/3', project: '大和安縵', hours: 1, salary: 2400, remote: 0, dinner: 0 }
+                    ]
+                }
+            },
+            '測試師傅': {
+                '2026-02-上': {
+                    records: [
+                        { date: '2/3', project: '德富2期', hours: 1, salary: 3200, remote: 400, dinner: 0 },
+                        { date: '2/4', project: '德富2期', hours: 1, salary: 3200, remote: 400, dinner: 0 },
+                        { date: '2/5', project: '德富2期', hours: 1.5, salary: 4800, remote: 400, dinner: 100 },
+                        { date: '2/6', project: '瑞典湖濱', hours: 1, salary: 3200, remote: 0, dinner: 0 },
+                        { date: '2/7', project: '瑞典湖濱', hours: 1, salary: 3200, remote: 0, dinner: 0 },
+                        { date: '2/10', project: '瑞典湖濱', hours: 1, salary: 3200, remote: 0, dinner: 0 }
+                    ]
+                },
+                '2026-01-下': {
+                    records: [
+                        { date: '1/17', project: '君鼎', hours: 1, salary: 3200, remote: 0, dinner: 0 },
+                        { date: '1/18', project: '君鼎', hours: 1, salary: 3200, remote: 0, dinner: 0 },
+                        { date: '1/20', project: '德富2期', hours: 1.5, salary: 4800, remote: 400, dinner: 100 },
+                        { date: '1/21', project: '德富2期', hours: 1, salary: 3200, remote: 400, dinner: 0 }
+                    ]
+                },
+                '2026-01-上': {
+                    records: [
+                        { date: '1/2', project: '青年路', hours: 1, salary: 3200, remote: 0, dinner: 0 },
+                        { date: '1/3', project: '青年路', hours: 1.5, salary: 4800, remote: 0, dinner: 100 },
+                        { date: '1/6', project: '青年路', hours: 1, salary: 3200, remote: 0, dinner: 0 },
+                        { date: '1/7', project: '大和安縵', hours: 1, salary: 3200, remote: 0, dinner: 0 }
+                    ]
+                }
+            }
+        };
+
+        let currentUser = null;
+
+        document.addEventListener('DOMContentLoaded', checkSavedLogin);
+
+        function checkSavedLogin() {
+            const saved = localStorage.getItem('moreyanTestLogin');
+            if (saved) {
+                currentUser = JSON.parse(saved);
+                showMainPage();
+            }
+        }
+
+        function login() {
+            const phone = document.getElementById('loginPhone').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            const errorEl = document.getElementById('loginError');
+
+            const user = TEST_USERS.find(u => u.phone === phone);
+            if (user && password === phone.slice(-4)) {
+                currentUser = user;
+                localStorage.setItem('moreyanTestLogin', JSON.stringify(currentUser));
+                showMainPage();
+            } else {
+                errorEl.textContent = '手機號碼或密碼錯誤';
+                errorEl.style.display = 'block';
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('moreyanTestLogin');
+            document.body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('mainPage').classList.remove('active');
+        }
+
+        function showMainPage() {
+            document.body.style.background = 'linear-gradient(180deg, #F5F7FA 0%, #E8EDF2 100%)';
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainPage').classList.add('active');
+
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userRank').textContent = `${currentUser.rank}級 ${RANKS[currentUser.rank].name}`;
+            document.getElementById('userAvatar').textContent = currentUser.name.charAt(0);
+            document.getElementById('statScore').textContent = currentUser.skillScore;
+            document.getElementById('statSalary').textContent = '$' + currentUser.dailySalary.toLocaleString();
+
+            updateRankPanel();
+        }
+
+        function showPanel(name) {
+            document.getElementById('menuGrid').style.display = 'none';
+            document.querySelectorAll('.quick-stats').forEach(el => el.style.display = 'none');
+            document.getElementById(name + 'Panel').classList.add('active');
+            if (name === 'salary') {
+                renderSalaryDetail();
+            }
+        }
+
+        function hidePanel(name) {
+            document.getElementById(name + 'Panel').classList.remove('active');
+            document.getElementById('menuGrid').style.display = 'grid';
+            document.querySelectorAll('.quick-stats').forEach(el => el.style.display = 'grid');
+        }
+
+        // 薪資確認
+        function renderSalaryDetail() {
+            const period = document.getElementById('salaryPeriodSelect').value;
+            const container = document.getElementById('salaryDetailContainer');
+            const summary = document.getElementById('salarySummary');
+
+            const userName = currentUser.name;
+            const userData = SALARY_DATA[userName];
+
+            if (!userData || !userData[period]) {
+                container.innerHTML = '<div class="salary-no-data">此期間無薪資資料</div>';
+                summary.querySelector('.salary-summary-amount').textContent = '$0';
+                return;
+            }
+
+            const records = userData[period].records;
+            let totalSalary = 0, totalRemote = 0, totalDinner = 0;
+
+            records.forEach(r => {
+                totalSalary += r.salary;
+                totalRemote += r.remote;
+                totalDinner += r.dinner;
+            });
+
+            const grandTotal = totalSalary + totalRemote + totalDinner;
+            summary.querySelector('.salary-summary-amount').textContent = '$' + grandTotal.toLocaleString();
+
+            let html = `
+                <div class="salary-detail-card">
+                    <div class="salary-detail-header">出勤明細</div>
+            `;
+
+            records.forEach(r => {
+                const rowTotal = r.salary + r.remote + r.dinner;
+                html += `
+                    <div class="salary-detail-row">
+                        <span class="label">${r.date} ${r.project}</span>
+                        <span class="value">${r.hours}天 $${rowTotal.toLocaleString()}</span>
+                    </div>
+                `;
+            });
+
+            html += `
+                    <div class="salary-detail-row subtotal">
+                        <span class="label">小計</span>
+                        <span class="value">$${totalSalary.toLocaleString()}</span>
+                    </div>
+                </div>
+            `;
+
+            if (totalRemote > 0 || totalDinner > 0) {
+                html += `
+                    <div class="salary-detail-card">
+                        <div class="salary-detail-header lower">加給明細</div>
+                `;
+                if (totalRemote > 0) {
+                    html += `
+                        <div class="salary-detail-row">
+                            <span class="label">外地加給</span>
+                            <span class="value">$${totalRemote.toLocaleString()}</span>
+                        </div>
+                    `;
+                }
+                if (totalDinner > 0) {
+                    html += `
+                        <div class="salary-detail-row">
+                            <span class="label">晚餐補貼</span>
+                            <span class="value">$${totalDinner.toLocaleString()}</span>
+                        </div>
+                    `;
+                }
+                html += `
+                        <div class="salary-detail-row subtotal">
+                            <span class="label">加給小計</span>
+                            <span class="value">$${(totalRemote + totalDinner).toLocaleString()}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 16px; border-radius: 12px; display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: bold;">
+                    <span>本期應領</span>
+                    <span>$${grandTotal.toLocaleString()}</span>
+                </div>
+            `;
+
+            container.innerHTML = html;
+
+            // 渲染簽章確認區
+            renderConfirmSection(period, grandTotal);
+        }
+
+        // 簽章確認
+        function renderConfirmSection(period, amount) {
+            const container = document.getElementById('confirmSection');
+            const userName = currentUser.name;
+            const confirmKey = `salary_confirm_${userName}_${period}`;
+            const savedConfirm = localStorage.getItem(confirmKey);
+
+            if (savedConfirm) {
+                // 已確認
+                const confirmData = JSON.parse(savedConfirm);
+                const offlineNote = confirmData.offline ? '<div style="color:#F39C12;font-size:0.85rem;margin-top:8px;">⚠ 離線確認，待同步</div>' : '';
+                const confirmIdNote = confirmData.confirmId ? `<div style="font-size:0.8rem;color:#999;margin-top:5px;">確認編號：${confirmData.confirmId}</div>` : '';
+                container.innerHTML = `
+                    <div class="confirm-section confirmed">
+                        <div class="confirm-result">
+                            <div class="icon">✓</div>
+                            <div class="text">已確認無誤</div>
+                            <div class="timestamp">確認時間：${confirmData.timestamp}</div>
+                            ${confirmIdNote}
+                            ${offlineNote}
+                            <div class="signature">
+                                <div class="signature-label">電子簽章</div>
+                                <div class="signature-name">${confirmData.name}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // 未確認
+                container.innerHTML = `
+                    <div class="confirm-section" id="confirmBox">
+                        <div class="confirm-title">薪資確認</div>
+                        <div class="confirm-checkbox">
+                            <input type="checkbox" id="confirmCheck" onchange="toggleConfirmBtn()">
+                            <label for="confirmCheck">我已核對本期薪資明細，確認金額 <b>$${amount.toLocaleString()}</b> 無誤</label>
+                        </div>
+                        <button class="confirm-btn" id="confirmBtn" disabled onclick="submitConfirm('${period}', ${amount})">
+                            確認簽章
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function toggleConfirmBtn() {
+            const checkbox = document.getElementById('confirmCheck');
+            const btn = document.getElementById('confirmBtn');
+            btn.disabled = !checkbox.checked;
+        }
+
+        // API 設定（測試版使用，正式版需更換為實際 API URL）
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyUrV13hSqnlzF2onPzZE3S32oxLUwo8Gyj5J-rboomHfI8n-djdD8SVn7iIqbfLiB6PA/exec';
+
+        async function submitConfirm(period, amount) {
+            const userName = currentUser.name;
+            const confirmKey = `salary_confirm_${userName}_${period}`;
+
+            // 停用按鈕防止重複點擊
+            const btn = document.getElementById('confirmBtn');
+            btn.disabled = true;
+            btn.textContent = '處理中...';
+
+            try {
+                // 同步到 Google Sheets
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'confirmSalary',
+                        name: userName,
+                        period: period,
+                        amount: amount,
+                        device: navigator.userAgent
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // 儲存到本地
+                    const confirmData = {
+                        name: userName,
+                        period: period,
+                        amount: amount,
+                        timestamp: result.timestamp,
+                        confirmId: result.confirmId,
+                        confirmed: true
+                    };
+
+                    localStorage.setItem(confirmKey, JSON.stringify(confirmData));
+
+                    // 顯示成功訊息
+                    if (result.alreadyConfirmed) {
+                        showToast('此期間已確認過');
+                    } else {
+                        showToast('簽章確認成功！');
+                    }
+
+                    // 重新渲染確認區
+                    renderConfirmSection(period, amount);
+                } else {
+                    showToast(result.error || '確認失敗，請稍後再試');
+                    btn.disabled = false;
+                    btn.textContent = '確認簽章';
+                }
+            } catch (error) {
+                // API 失敗時，仍儲存到本地（離線模式）
+                const now = new Date();
+                const timestamp = now.toLocaleString('zh-TW', {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit'
+                });
+
+                const confirmData = {
+                    name: userName,
+                    period: period,
+                    amount: amount,
+                    timestamp: timestamp,
+                    confirmed: true,
+                    offline: true  // 標記為離線確認
+                };
+
+                localStorage.setItem(confirmKey, JSON.stringify(confirmData));
+                showToast('已離線確認（稍後將同步）');
+                renderConfirmSection(period, amount);
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function updateRankPanel() {
+            const rank = currentUser.rank;
+            const score = currentUser.skillScore;
+
+            document.getElementById('rankBadge').textContent = `${rank}級 ${RANKS[rank].name}`;
+            document.getElementById('rankScore').textContent = score;
+
+            const nextRank = rank < 4 ? rank + 1 : 4;
+            const nextScore = RANKS[rank].nextScore;
+
+            let progress = rank >= 4 ? 100 : Math.round((score / nextScore) * 100);
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `${score} / ${nextScore}`;
+            document.getElementById('progressHint').textContent = rank >= 4
+                ? '已達最高職級！'
+                : `距離 ${nextRank}級 ${RANKS[nextRank].name} 還差 ${nextScore - score} 分`;
+
+            // 更新加薪進度
+            renderSalaryProgress(score);
+
+            // 更新職級說明
+            const levelInfo = document.getElementById('levelInfo');
+            if (rank >= 4) {
+                levelInfo.innerHTML = `
+                    <div class="level-info-title">🎉 恭喜！已達最高職級</div>
+                    <div class="level-info-text">您已是領班級師傅，可開始挑戰分潤合夥制度</div>
+                `;
+            } else {
+                const nextLevelData = LEVEL_SKILLS[nextRank];
+                const salaryRange = nextLevelData.salaryRange;
+                const salaryRangeText = salaryRange.min === salaryRange.max
+                    ? `$${salaryRange.min.toLocaleString()}`
+                    : `$${salaryRange.min.toLocaleString()} ~ $${salaryRange.max.toLocaleString()}`;
+                levelInfo.innerHTML = `
+                    <div class="level-info-title">🎯 ${nextLevelData.title}</div>
+                    <div class="level-info-text">${nextLevelData.desc}</div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed #D4AC0D;">
+                        <span style="font-weight: 600; color: #27AE60;">💵 升級後日薪：</span>
+                        <span style="font-size: 1.1rem; font-weight: bold; color: #27AE60;">${salaryRangeText}</span>
+                    </div>
+                `;
+            }
+
+            // 渲染升級條件
+            renderUpgradeCheck(rank, score);
+
+            // 渲染薪資階梯
+            renderSalaryLadder(rank);
+
+            // 渲染技能清單
+            renderSkillList(rank);
+        }
+
+        function renderUpgradeCheck(rank, score) {
+            const container = document.getElementById('upgradeCheck');
+
+            if (rank >= 4) {
+                container.style.display = 'none';
+                return;
+            }
+            container.style.display = 'block';
+
+            const nextRank = rank + 1;
+            const nextScore = RANKS[rank].nextScore;
+            const evalTotal = currentUser.evalTotal || 0;
+            const evalGrade = currentUser.evalGrade || '尚無考核';
+
+            const scorePass = score >= nextScore;
+            const evalPass = evalTotal >= 3; // 乙等以上
+
+            let html = `<div class="upgrade-check-title">升級條件檢核</div>`;
+
+            // 技能分數檢核
+            html += `
+                <div class="upgrade-check-item">
+                    <div class="upgrade-check-icon ${scorePass ? 'pass' : 'fail'}">${scorePass ? '✓' : '✗'}</div>
+                    <span class="upgrade-check-text">技能分數達 ${nextScore} 分</span>
+                    <span class="upgrade-check-status ${scorePass ? 'pass' : 'fail'}">
+                        ${score} 分 ${scorePass ? '✓' : `差 ${nextScore - score} 分`}
+                    </span>
+                </div>
+            `;
+
+            // 考核成績檢核
+            html += `
+                <div class="upgrade-check-item">
+                    <div class="upgrade-check-icon ${evalPass ? 'pass' : 'fail'}">${evalPass ? '✓' : '✗'}</div>
+                    <span class="upgrade-check-text">考核成績乙等以上</span>
+                    <span class="upgrade-check-status ${evalPass ? 'pass' : 'fail'}">
+                        ${evalGrade}（${evalTotal}分）
+                    </span>
+                </div>
+            `;
+
+            // 總結
+            const allPass = scorePass && evalPass;
+            html += `
+                <div style="margin-top: 15px; padding: 12px; background: ${allPass ? '#D5F5E3' : '#FEF9E7'}; border-radius: 8px; text-align: center;">
+                    ${allPass
+                        ? '<span style="color: #27AE60; font-weight: 600;">✓ 已符合升級條件，可申請考核</span>'
+                        : '<span style="color: #9A7D0A;">尚未達成所有升級條件</span>'
+                    }
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function renderSalaryLadder(currentRank) {
+            const container = document.getElementById('salaryLadder');
+            const ladderData = [
+                { rank: 1, name: '學徒', score: '0-160', min: 1300, max: 1800 },
+                { rank: 2, name: '半技', score: '161-280', min: 2000, max: 3000 },
+                { rank: 3, name: '師傅', score: '281-380', min: 3100, max: 3500 },
+                { rank: 4, name: '領班', score: '381-431', min: 3600, max: 3600 }
+            ];
+
+            let html = `<div class="salary-ladder-title">📊 各職級薪資對照</div>`;
+
+            ladderData.forEach(item => {
+                const isCurrent = item.rank === currentRank;
+                const salaryText = item.min === item.max
+                    ? `$${item.min.toLocaleString()}`
+                    : `$${item.min.toLocaleString()} ~ $${item.max.toLocaleString()}`;
+
+                html += `
+                    <div class="salary-ladder-row ${isCurrent ? 'current' : ''}">
+                        <div>
+                            <span class="salary-ladder-rank">${item.rank}級 ${item.name}</span>
+                            ${isCurrent ? '<span class="salary-ladder-current-badge">目前</span>' : ''}
+                            <div class="salary-ladder-score">${item.score} 分</div>
+                        </div>
+                        <span class="salary-ladder-amount">${salaryText}</span>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderSkillList(currentRank) {
+            const container = document.getElementById('skillSection');
+
+            if (currentRank >= 4) {
+                container.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">已達最高職級，無需學習更多技能</p>';
+                return;
+            }
+
+            const nextRank = currentRank + 1;
+            const levelData = LEVEL_SKILLS[nextRank];
+
+            let html = `<div class="skill-section-title">📚 ${levelData.title}</div>`;
+
+            levelData.categories.forEach((catName, index) => {
+                const skills = SKILL_DATA[catName];
+                if (!skills) return;
+
+                const totalPoints = skills.reduce((sum, s) => sum + s.points, 0);
+
+                html += `
+                    <div class="skill-category ${index > 0 ? 'collapsed' : ''}" id="cat-${index}">
+                        <div class="skill-category-header" onclick="toggleCategory(${index})">
+                            <span>${catName}</span>
+                            <div>
+                                <span class="badge">${totalPoints} 分</span>
+                                <span class="arrow">▼</span>
+                            </div>
+                        </div>
+                        <div class="skill-items">
+                `;
+
+                skills.forEach(skill => {
+                    html += `
+                        <div class="skill-item">
+                            <span class="skill-item-name">${skill.name}</span>
+                            <span class="skill-item-points">+${skill.points}</span>
+                        </div>
+                    `;
+                });
+
+                html += '</div></div>';
+            });
+
+            container.innerHTML = html;
+        }
+
+        function toggleCategory(index) {
+            document.getElementById(`cat-${index}`).classList.toggle('collapsed');
+        }
+
+        function renderSalaryProgress(score) {
+            const container = document.getElementById('salaryProgress');
+
+            // 找到目前薪資級距
+            let currentTier = SALARY_TABLE[0];
+            let nextTier = null;
+
+            for (let i = 0; i < SALARY_TABLE.length; i++) {
+                if (score >= SALARY_TABLE[i].min && score <= SALARY_TABLE[i].max) {
+                    currentTier = SALARY_TABLE[i];
+                    nextTier = SALARY_TABLE[i + 1] || null;
+                    break;
+                }
+            }
+
+            // 已達最高薪資
+            if (!nextTier) {
+                container.innerHTML = `
+                    <div class="salary-progress-title">💰 薪資進度</div>
+                    <div class="salary-current">
+                        <span class="salary-current-label">目前日薪</span>
+                        <span class="salary-current-value">$${currentTier.salary.toLocaleString()}</span>
+                    </div>
+                    <div class="salary-next" style="text-align:center;color:#666;">
+                        🎉 已達最高薪資級距！
+                    </div>
+                `;
+                return;
+            }
+
+            // 計算進度
+            const pointsInTier = score - currentTier.min;
+            const tierRange = currentTier.max - currentTier.min + 1;
+            const progress = Math.round((pointsInTier / tierRange) * 100);
+            const pointsToNext = nextTier.min - score;
+            const salaryIncrease = nextTier.salary - currentTier.salary;
+
+            container.innerHTML = `
+                <div class="salary-progress-title">💰 加薪進度</div>
+                <div class="salary-current">
+                    <span class="salary-current-label">目前日薪</span>
+                    <span class="salary-current-value">$${currentTier.salary.toLocaleString()}</span>
+                </div>
+                <div class="salary-next">
+                    <div class="salary-next-header">
+                        <span class="salary-next-label">下一級薪資</span>
+                        <span class="salary-next-value">
+                            $${nextTier.salary.toLocaleString()}
+                            <span class="salary-increase">+$${salaryIncrease.toLocaleString()}</span>
+                        </span>
+                    </div>
+                    <div class="salary-next-bar">
+                        <div class="salary-next-fill" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="salary-next-hint">
+                        再取得 <strong>${pointsToNext} 分</strong> 即可加薪
+                        （需達 ${nextTier.min} 分）
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

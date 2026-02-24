@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>木工裝潢技能學習護照</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap');
+  :root {
+    --bg: #f8f4ee;
+    --bg2: #ede8de;
+    --card: #ffffff;
+    --border: #ddd6c8;
+    --text: #1c1812;
+    --muted: #8a7d6a;
+    --shadow: rgba(70,45,10,0.10);
+    --c-tools: #8b4a14; --c-tools-l: #fdf0e2;
+    --c-mat: #2f6637; --c-mat-l: #e7f4e9;
+    --c-tech: #1a508a; --c-tech-l: #e2eef9;
+    --c-design: #6e3a8c; --c-design-l: #f2e8f8;
+    --c-system: #c45a1a; --c-system-l: #fff3e8;
+    --c-ceiling: #2a7ab8; --c-ceiling-l: #e6f3fc;
+    --c-floor: #5d8a3a; --c-floor-l: #eef6e8;
+    --c-wall: #8b5a8c; --c-wall-l: #f5eaf5;
+    --c-door: #b87333; --c-door-l: #fdf5ec;
+    --c-cabinet: #4a6b8a; --c-cabinet-l: #eaf1f7;
+    --c-attitude: #c44a4a; --c-attitude-l: #fceaea;
+    --c-app: #3a8a8a; --c-app-l: #e8f5f5;
+    --star-off: #e0d8cc;
+    --star-on: #e6a030;
+    --done: #2a6634;
+    --done-bg: #e7f4e9;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif;
+    min-height: 100vh;
+  }
+  header {
+    position: relative; z-index: 10;
+    background: var(--text);
+  }
+  .header-top {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 26px 48px; flex-wrap: wrap; gap: 20px;
+  }
+  .brand { display: flex; align-items: center; gap: 18px; }
+  .passport-cover {
+    width: 54px; height: 70px;
+    background: linear-gradient(160deg, #a05820 0%, #7a3e0e 100%);
+    border-radius: 6px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 5px;
+    box-shadow: 3px 4px 0 rgba(0,0,0,0.30);
+  }
+  .passport-cover .pc-icon { font-size: 22px; }
+  .passport-cover .pc-text {
+    font-size: 6.5px; letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.70); text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+  .brand-text h1 {
+    font-size: 22px; font-weight: 900;
+    color: #f5f0e8; letter-spacing: -0.5px;
+  }
+  .brand-text p {
+    font-size: 10.5px; color: rgba(245,240,232,0.38);
+    letter-spacing: 2.5px; text-transform: uppercase;
+    margin-top: 4px; font-family: 'DM Mono', monospace;
+  }
+  .header-kpis { display: flex; gap: 32px; align-items: center; }
+  .kpi { text-align: center; }
+  .kpi-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 28px; color: #f5f0e8; line-height: 1;
+  }
+  .kpi-label {
+    font-size: 9.5px; color: rgba(245,240,232,0.38);
+    text-transform: uppercase; letter-spacing: 1.5px; margin-top: 5px;
+  }
+  .overall-bar {
+    display: flex; align-items: center; gap: 14px;
+    padding: 11px 48px;
+    background: rgba(255,255,255,0.03);
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .ob-label {
+    font-size: 9px; font-family: 'DM Mono', monospace;
+    color: rgba(245,240,232,0.30); text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  .ob-track {
+    flex: 1; height: 5px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 99px; overflow: hidden;
+  }
+  .ob-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--c-tools), var(--c-design));
+    border-radius: 99px; width: 0%; transition: width 1s ease;
+  }
+  .ob-pct {
+    font-size: 11px; font-family: 'DM Mono', monospace;
+    color: rgba(245,240,232,0.50); min-width: 56px; text-align: right;
+  }
+  .cat-nav {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--bg2);
+    border-bottom: 2px solid var(--border);
+    display: flex; overflow-x: auto; scrollbar-width: none;
+  }
+  .cat-nav::-webkit-scrollbar { display: none; }
+  .cat-tab {
+    display: flex; align-items: center; gap: 8px;
+    padding: 13px 20px;
+    font-size: 12px; font-weight: 500; color: var(--muted);
+    cursor: pointer; border: none; background: transparent;
+    border-bottom: 3px solid transparent; margin-bottom: -2px;
+    transition: color 0.18s, background 0.18s;
+    white-space: nowrap;
+  }
+  .cat-tab:hover { color: var(--text); background: rgba(0,0,0,0.04); }
+  .cat-tab.active { color: var(--text); border-bottom-color: var(--tab-c); }
+  .tab-badge {
+    font-size: 10px; font-family: 'DM Mono', monospace;
+    padding: 1.5px 7px; border-radius: 99px;
+    background: var(--border); color: var(--muted);
+  }
+  .cat-tab.active .tab-badge { background: var(--tab-c); color: #fff; }
+  .content {
+    position: relative; z-index: 1;
+    max-width: 1180px; margin: 0 auto;
+    padding: 36px 48px 80px;
+  }
+  .cat-section { display: none; }
+  .cat-section.active { display: block; }
+  .cat-header {
+    display: flex; align-items: center; gap: 16px; margin-bottom: 28px;
+  }
+  .cat-header-icon {
+    width: 50px; height: 50px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+  .cat-header-text h2 { font-size: 19px; font-weight: 800; }
+  .cat-header-text p { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 14px;
+  }
+  .skill-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 18px; overflow: hidden;
+    box-shadow: 0 2px 10px var(--shadow);
+    transition: box-shadow 0.2s, transform 0.2s;
+    position: relative;
+  }
+  .skill-card:hover { box-shadow: 0 8px 28px var(--shadow); transform: translateY(-3px); }
+  .skill-card.done { border-color: var(--done); background: var(--done-bg); }
+  .card-stripe { height: 4px; }
+  .card-main { padding: 15px 16px 0; }
+  .card-top-row {
+    display: flex; align-items: flex-start;
+    justify-content: space-between; gap: 8px; margin-bottom: 10px;
+  }
+  .card-left { display: flex; align-items: center; gap: 9px; }
+  .card-no {
+    font-size: 11px; font-family: 'DM Mono', monospace;
+    color: var(--muted); min-width: 28px;
+  }
+  .card-check {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 2.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; cursor: pointer;
+    transition: all 0.2s;
+    color: transparent; background: transparent;
+  }
+  .card-check:hover { border-color: var(--done); color: var(--done); }
+  .done .card-check {
+    background: var(--done); border-color: var(--done); color: #fff;
+  }
+  .card-title { font-size: 14.5px; font-weight: 700; line-height: 1.35; margin-bottom: 5px; }
+  .card-desc { font-size: 11.5px; color: var(--muted); line-height: 1.6; }
+  .card-detail {
+    margin-top: 13px; padding: 13px 16px 15px;
+    background: rgba(0,0,0,0.024);
+    border-top: 1px solid var(--border);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px;
+  }
+  .done .card-detail {
+    background: rgba(42,102,52,0.05);
+  }
+  .detail-field { display: flex; flex-direction: column; gap: 5px; }
+  .detail-label {
+    font-size: 8.5px; font-family: 'DM Mono', monospace;
+    text-transform: uppercase; letter-spacing: 1.8px; color: var(--muted);
+  }
+  .date-input {
+    font-size: 12px; font-family: 'DM Mono', monospace;
+    color: var(--text); border: none; outline: none;
+    background: transparent; width: 100%; cursor: pointer; padding: 0;
+  }
+  .pts-val {
+    font-size: 14px; font-family: 'DM Mono', monospace;
+    font-weight: 500; color: var(--muted);
+  }
+  .done .pts-val { color: var(--done); }
+  .star-row { grid-column: 1 / -1; }
+  .stars { display: flex; gap: 4px; align-items: center; margin-top: 1px; }
+  .star {
+    font-size: 20px; cursor: pointer;
+    color: var(--star-off);
+    transition: color 0.15s, transform 0.12s;
+    user-select: none;
+  }
+  .star:hover { transform: scale(1.18); }
+  .star.lit { color: var(--star-on); }
+  .star-desc {
+    font-size: 10.5px; color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-left: 6px; min-width: 70px;
+  }
+  .star-desc.has-val { color: var(--star-on); }
+  .done-stamp {
+    position: absolute; top: 13px; right: 13px;
+    font-size: 10px; font-family: 'DM Mono', monospace;
+    letter-spacing: 2px; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 4px;
+    border: 2px solid var(--done); color: var(--done);
+    background: rgba(232,245,234,0.88);
+    transform: rotate(-8deg);
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .done .done-stamp { opacity: 0.82; }
+  @media (max-width: 768px) {
+    .header-top { padding: 20px; }
+    .content { padding: 20px; }
+    .skills-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-top">
+    <div class="brand">
+      <div class="passport-cover">
+        <span class="pc-icon">🪵</span>
+        <span class="pc-text">Skill Pass</span>
+      </div>
+      <div class="brand-text">
+        <h1>木工裝潢技能學習護照</h1>
+        <p>Carpentry &amp; Interior · Skill Tree</p>
+      </div>
+    </div>
+    <div class="header-kpis">
+      <div class="kpi"><div class="kpi-val" id="kpi-done">0</div><div class="kpi-label">已完成</div></div>
+      <div class="kpi"><div class="kpi-val" id="kpi-total">—</div><div class="kpi-label">總技能</div></div>
+      <div class="kpi"><div class="kpi-val" id="kpi-pts">0</div><div class="kpi-label">學習點數</div></div>
+    </div>
+  </div>
+  <div class="overall-bar">
+    <span class="ob-label">整體完成度</span>
+    <div class="ob-track"><div class="ob-fill" id="ob-fill"></div></div>
+    <span class="ob-pct" id="ob-pct">0 / 0 項</span>
+  </div>
+</header>
+<nav class="cat-nav" id="cat-nav"></nav>
+<div class="content" id="content"></div>
+
+<script>
+const CATEGORIES = [
+  { id:'basic-mat', name:'基本材料認識', icon:'🪵', desc:'骨料、板材的辨識', color:'#8b4a14', colorL:'#fdf0e2' },
+  { id:'basic-tool', name:'基本的認識', icon:'🔧', desc:'手工具、電動工具、氣動工具、膠合劑、五金配件', color:'#2f6637', colorL:'#e7f4e9' },
+  { id:'basic-op', name:'基本操作', icon:'⚙️', desc:'工具操作、材料計算、輔助工具、水電配置', color:'#1a508a', colorL:'#e2eef9' },
+  { id:'system', name:'系統櫃', icon:'🗄️', desc:'系統櫃認識、組合、設立、調門、收尾', color:'#c45a1a', colorL:'#fff3e8' },
+  { id:'ceiling', name:'天花板施作', icon:'🏠', desc:'水平放樣、窗簾盒、包管樑、出風口、輕鋼架、暗架', color:'#2a7ab8', colorL:'#e6f3fc' },
+  { id:'floor', name:'地板施作', icon:'🟫', desc:'平鋪、直鋪、架高地板', color:'#5d8a3a', colorL:'#eef6e8' },
+  { id:'wall', name:'隔間與壁板', icon:'🧱', desc:'隔間施作、乾濕式隔間、木格柵、造型', color:'#8b5a8c', colorL:'#f5eaf5' },
+  { id:'door', name:'門片/門框', icon:'🚪', desc:'各類門片製作安裝、門鎖安裝', color:'#b87333', colorL:'#fdf5ec' },
+  { id:'cabinet', name:'櫥櫃與床組', icon:'🛏️', desc:'櫃體、抽屜、床架、書桌、衣櫃', color:'#4a6b8a', colorL:'#eaf1f7' },
+  { id:'special', name:'特殊項目', icon:'⭐', desc:'特殊天花板', color:'#6e3a8c', colorL:'#f2e8f8' },
+  { id:'attitude', name:'態度與出勤', icon:'💪', desc:'配合加班、開車、場勘', color:'#c44a4a', colorL:'#fceaea' },
+  { id:'app', name:'系統應用', icon:'📱', desc:'On!track、Asana、TimeThree', color:'#3a8a8a', colorL:'#e8f5f5' },
+];
+
+const SKILLS = [
+  // 基本材料認識
+  { id:1, cat:'basic-mat', title:'骨料辨別與板材', desc:'木料、骨料、板材的辨識與選用', pts:1 },
+
+  // 基本的認識 - 手工具
+  { id:2, cat:'basic-tool', title:'鐵鎚', desc:'手工具', pts:1 },
+  { id:3, cat:'basic-tool', title:'鋸子', desc:'手工具', pts:1 },
+  { id:4, cat:'basic-tool', title:'角尺', desc:'手工具', pts:1 },
+  { id:5, cat:'basic-tool', title:'捲尺', desc:'手工具', pts:1 },
+  { id:6, cat:'basic-tool', title:'鉋刀', desc:'手工具', pts:1 },
+  { id:7, cat:'basic-tool', title:'鑿刀', desc:'手工具', pts:1 },
+  { id:8, cat:'basic-tool', title:'美工刀', desc:'手工具', pts:1 },
+  { id:9, cat:'basic-tool', title:'墨斗', desc:'手工具', pts:1 },
+  { id:10, cat:'basic-tool', title:'雷射', desc:'手工具', pts:1 },
+  { id:11, cat:'basic-tool', title:'水線', desc:'手工具', pts:1 },
+  { id:12, cat:'basic-tool', title:'老虎鉗', desc:'手工具', pts:1 },
+  { id:13, cat:'basic-tool', title:'螺絲起子', desc:'手工具', pts:1 },
+  { id:14, cat:'basic-tool', title:'肉路阿', desc:'手工具', pts:1 },
+  { id:15, cat:'basic-tool', title:'竹竿槍', desc:'手工具', pts:1 },
+  { id:16, cat:'basic-tool', title:'剪刀', desc:'手工具', pts:1 },
+  // 電動工具
+  { id:17, cat:'basic-tool', title:'電鋸', desc:'電動工具', pts:1 },
+  { id:18, cat:'basic-tool', title:'彎鋸', desc:'電動工具', pts:1 },
+  { id:19, cat:'basic-tool', title:'壓台', desc:'電動工具', pts:1 },
+  { id:20, cat:'basic-tool', title:'電鑽', desc:'電動工具', pts:1 },
+  { id:21, cat:'basic-tool', title:'電動起子', desc:'電動工具', pts:1 },
+  { id:22, cat:'basic-tool', title:'修邊機', desc:'電動工具', pts:1 },
+  { id:23, cat:'basic-tool', title:'砂磨機', desc:'電動工具', pts:1 },
+  { id:24, cat:'basic-tool', title:'空壓機', desc:'電動工具', pts:1 },
+  { id:25, cat:'basic-tool', title:'噴槍', desc:'電動工具', pts:1 },
+  { id:26, cat:'basic-tool', title:'大路打', desc:'電動工具', pts:1 },
+  { id:27, cat:'basic-tool', title:'電動刨刀', desc:'電動工具', pts:1 },
+  { id:28, cat:'basic-tool', title:'磁磚切勾機', desc:'電動工具', pts:1 },
+  { id:29, cat:'basic-tool', title:'砂輪切斷機', desc:'電動工具', pts:1 },
+  { id:30, cat:'basic-tool', title:'砂輪機', desc:'電動工具', pts:1 },
+  { id:31, cat:'basic-tool', title:'切割機(板材)', desc:'電動工具', pts:1 },
+  // 氣動工具
+  { id:32, cat:'basic-tool', title:'小鋼炮', desc:'氣動工具', pts:1 },
+  { id:33, cat:'basic-tool', title:'鋼樑槍', desc:'氣動工具', pts:1 },
+  { id:34, cat:'basic-tool', title:'風管', desc:'氣動工具', pts:1 },
+  { id:35, cat:'basic-tool', title:'大砲', desc:'氣動工具', pts:1 },
+  { id:36, cat:'basic-tool', title:'中T', desc:'氣動工具', pts:1 },
+  { id:37, cat:'basic-tool', title:'單腳', desc:'氣動工具', pts:1 },
+  { id:38, cat:'basic-tool', title:'雙腳', desc:'氣動工具', pts:1 },
+  { id:39, cat:'basic-tool', title:'寬腳', desc:'氣動工具', pts:1 },
+  { id:40, cat:'basic-tool', title:'蚊釘', desc:'氣動工具', pts:1 },
+  // 膠合劑
+  { id:41, cat:'basic-tool', title:'白膠', desc:'膠合劑', pts:1 },
+  { id:42, cat:'basic-tool', title:'強力膠', desc:'膠合劑', pts:1 },
+  { id:43, cat:'basic-tool', title:'噴膠', desc:'膠合劑', pts:1 },
+  { id:44, cat:'basic-tool', title:'AB膠', desc:'膠合劑', pts:1 },
+  { id:45, cat:'basic-tool', title:'免釘膠', desc:'膠合劑', pts:1 },
+  { id:46, cat:'basic-tool', title:'矽利康', desc:'膠合劑', pts:1 },
+  // 五金/配件
+  { id:47, cat:'basic-tool', title:'釘子種類', desc:'五金配件', pts:1 },
+  { id:48, cat:'basic-tool', title:'螺絲', desc:'五金配件', pts:1 },
+  { id:49, cat:'basic-tool', title:'絞鍊', desc:'五金配件', pts:1 },
+  { id:50, cat:'basic-tool', title:'鎖', desc:'五金配件', pts:1 },
+  { id:51, cat:'basic-tool', title:'滑軌', desc:'五金配件', pts:1 },
+  { id:52, cat:'basic-tool', title:'把手', desc:'五金配件', pts:1 },
+  { id:53, cat:'basic-tool', title:'掛鉤器/吊筋', desc:'五金配件', pts:1 },
+
+  // 基本操作 - 工具操作
+  { id:54, cat:'basic-op', title:'切割機', desc:'工具操作', pts:1 },
+  { id:55, cat:'basic-op', title:'砂輪切斷機', desc:'工具操作', pts:1 },
+  { id:56, cat:'basic-op', title:'竹竿槍', desc:'工具操作', pts:1 },
+  { id:57, cat:'basic-op', title:'尺/坪/m² 換算', desc:'材料計算', pts:1 },
+  { id:58, cat:'basic-op', title:'鉋刀', desc:'工具操作', pts:1 },
+  { id:59, cat:'basic-op', title:'鋸子', desc:'工具操作', pts:1 },
+  { id:60, cat:'basic-op', title:'美工刀', desc:'工具操作', pts:1 },
+  { id:61, cat:'basic-op', title:'墨斗', desc:'工具操作', pts:1 },
+  { id:62, cat:'basic-op', title:'鐵鎚', desc:'工具操作', pts:1 },
+  { id:63, cat:'basic-op', title:'雷射', desc:'工具操作', pts:1 },
+  { id:64, cat:'basic-op', title:'電鋸工作台', desc:'工具操作', pts:1 },
+  { id:65, cat:'basic-op', title:'修邊機', desc:'工具操作', pts:1 },
+  { id:66, cat:'basic-op', title:'電鑽', desc:'工具操作', pts:1 },
+  { id:67, cat:'basic-op', title:'彎鋸', desc:'工具操作', pts:1 },
+  { id:68, cat:'basic-op', title:'大路打', desc:'工具操作', pts:1 },
+  // 輔助工具
+  { id:69, cat:'basic-op', title:'工作鋸台校正', desc:'輔助工具', pts:3 },
+  { id:70, cat:'basic-op', title:'木工梯製作', desc:'輔助工具', pts:3 },
+  { id:71, cat:'basic-op', title:'線板裁切盒', desc:'輔助工具', pts:3 },
+  { id:72, cat:'basic-op', title:'斜倒版', desc:'輔助工具', pts:1 },
+  // 水電配置
+  { id:73, cat:'basic-op', title:'插座', desc:'水電配置', pts:1 },
+  { id:74, cat:'basic-op', title:'單切', desc:'水電配置', pts:2 },
+  { id:75, cat:'basic-op', title:'雙切', desc:'水電配置', pts:2 },
+  { id:76, cat:'basic-op', title:'專插', desc:'水電配置', pts:5 },
+
+  // 系統櫃
+  { id:77, cat:'system', title:'系統櫃認識', desc:'五金/材料', pts:1 },
+  { id:78, cat:'system', title:'系統櫃組合', desc:'', pts:2 },
+  { id:79, cat:'system', title:'系統櫃設立', desc:'', pts:3 },
+  { id:80, cat:'system', title:'系統櫃調門', desc:'', pts:4 },
+  { id:81, cat:'system', title:'系統櫃抽頭安裝', desc:'', pts:4 },
+  { id:82, cat:'system', title:'系統櫃收尾', desc:'填縫及矽利康', pts:3 },
+  { id:83, cat:'system', title:'系統櫃特殊五金安裝', desc:'', pts:6 },
+
+  // 天花板施作
+  { id:84, cat:'ceiling', title:'水平放樣', desc:'吊筋/格柵角料', pts:3 },
+  { id:85, cat:'ceiling', title:'窗簾盒', desc:'', pts:4 },
+  { id:86, cat:'ceiling', title:'包管/樑', desc:'', pts:4 },
+  { id:87, cat:'ceiling', title:'維修孔', desc:'', pts:2 },
+  { id:88, cat:'ceiling', title:'特殊維修孔', desc:'', pts:4 },
+  { id:89, cat:'ceiling', title:'下吹出風口', desc:'有框無框', pts:3 },
+  { id:90, cat:'ceiling', title:'側吹出風口', desc:'無框', pts:4 },
+  { id:91, cat:'ceiling', title:'間接照明', desc:'', pts:3 },
+  { id:92, cat:'ceiling', title:'塑膠天花板', desc:'', pts:3 },
+  { id:93, cat:'ceiling', title:'矽酸天花板', desc:'', pts:3 },
+  { id:94, cat:'ceiling', title:'線板', desc:'', pts:3 },
+  { id:95, cat:'ceiling', title:'造型天花板', desc:'', pts:9 },
+  { id:96, cat:'ceiling', title:'輕鋼架-水平放樣', desc:'', pts:1 },
+  { id:97, cat:'ceiling', title:'輕鋼架-修邊條', desc:'', pts:2 },
+  { id:98, cat:'ceiling', title:'輕鋼架-主副支', desc:'', pts:2 },
+  { id:99, cat:'ceiling', title:'輕鋼架-板材裁切', desc:'', pts:3 },
+  { id:100, cat:'ceiling', title:'暗架-水平放樣', desc:'', pts:1 },
+  { id:101, cat:'ceiling', title:'暗架-主副支', desc:'', pts:2 },
+
+  // 地板施作
+  { id:102, cat:'floor', title:'平鋪', desc:'', pts:3 },
+  { id:103, cat:'floor', title:'直鋪', desc:'', pts:2 },
+  { id:104, cat:'floor', title:'架高', desc:'面板/底板/軌道', pts:4 },
+
+  // 隔間與壁板
+  { id:105, cat:'wall', title:'隔間施作', desc:'', pts:3 },
+  { id:106, cat:'wall', title:'乾式隔間', desc:'上下槽/立柱', pts:3 },
+  { id:107, cat:'wall', title:'濕式隔間', desc:'上下槽/立柱', pts:5 },
+  { id:108, cat:'wall', title:'隔間開窗/門', desc:'', pts:4 },
+  { id:109, cat:'wall', title:'造型開口', desc:'', pts:9 },
+  { id:110, cat:'wall', title:'木格柵', desc:'', pts:3 },
+  { id:111, cat:'wall', title:'壁板施作', desc:'', pts:3 },
+  { id:112, cat:'wall', title:'貓道', desc:'', pts:3 },
+  { id:113, cat:'wall', title:'造型', desc:'', pts:9 },
+  { id:114, cat:'wall', title:'床頭板', desc:'', pts:3 },
+  { id:115, cat:'wall', title:'方柱', desc:'', pts:3 },
+  { id:116, cat:'wall', title:'圓柱', desc:'', pts:5 },
+  { id:117, cat:'wall', title:'弧形', desc:'', pts:5 },
+
+  // 門片/門框
+  { id:118, cat:'door', title:'房間門', desc:'合門及安裝', pts:5 },
+  { id:119, cat:'door', title:'櫥櫃門', desc:'合門及安裝', pts:4 },
+  { id:120, cat:'door', title:'櫥櫃拉門', desc:'合門及安裝', pts:4 },
+  { id:121, cat:'door', title:'百頁門', desc:'合門及安裝', pts:5 },
+  { id:122, cat:'door', title:'懸吊拉門', desc:'合門及安裝', pts:5 },
+  { id:123, cat:'door', title:'實木障子門', desc:'合門及安裝', pts:5 },
+  { id:124, cat:'door', title:'門鎖安裝', desc:'喇叭/水平鎖', pts:3 },
+  { id:125, cat:'door', title:'崁入式拉門把手', desc:'', pts:4 },
+  { id:126, cat:'door', title:'崁入式拉門鎖', desc:'', pts:6 },
+  { id:127, cat:'door', title:'隱藏鎖安裝', desc:'', pts:4 },
+  { id:128, cat:'door', title:'特殊鎖安裝', desc:'', pts:8 },
+  { id:129, cat:'door', title:'特殊門片', desc:'合門及安裝', pts:9 },
+
+  // 櫥櫃與床組
+  { id:130, cat:'cabinet', title:'櫃體', desc:'', pts:6 },
+  { id:131, cat:'cabinet', title:'三節式滑軌抽屜', desc:'製作安裝', pts:4 },
+  { id:132, cat:'cabinet', title:'座式滑軌抽屜', desc:'製作安裝', pts:4 },
+  { id:133, cat:'cabinet', title:'床架', desc:'', pts:3 },
+  { id:134, cat:'cabinet', title:'床頭櫃', desc:'', pts:4 },
+  { id:135, cat:'cabinet', title:'半高櫃', desc:'', pts:5 },
+  { id:136, cat:'cabinet', title:'造型櫃', desc:'', pts:9 },
+  { id:137, cat:'cabinet', title:'書桌', desc:'', pts:4 },
+  { id:138, cat:'cabinet', title:'書櫃', desc:'', pts:3 },
+  { id:139, cat:'cabinet', title:'上下櫃', desc:'', pts:3 },
+  { id:140, cat:'cabinet', title:'拉門櫃', desc:'', pts:7 },
+  { id:141, cat:'cabinet', title:'衣櫃', desc:'', pts:6 },
+
+  // 特殊項目
+  { id:142, cat:'special', title:'特殊天花板', desc:'', pts:9 },
+
+  // 態度與出勤
+  { id:143, cat:'attitude', title:'配合加班', desc:'夜間與假日', pts:10 },
+  { id:144, cat:'attitude', title:'會開貨車', desc:'', pts:10 },
+  { id:145, cat:'attitude', title:'場勘與工作安排', desc:'', pts:20 },
+
+  // 系統應用
+  { id:146, cat:'app', title:'On!track 工具領用/歸還', desc:'', pts:5 },
+  { id:147, cat:'app', title:'On!track 工具維修/保養', desc:'', pts:2 },
+  { id:148, cat:'app', title:'On!track 數量項目', desc:'', pts:1 },
+  { id:149, cat:'app', title:'Asana 每日照片上傳', desc:'', pts:1 },
+  { id:150, cat:'app', title:'Asana 專案照片上傳', desc:'', pts:5 },
+  { id:151, cat:'app', title:'Asana 追加/改善項目', desc:'', pts:5 },
+  { id:152, cat:'app', title:'Asana 訂貨系統使用', desc:'', pts:3 },
+  { id:153, cat:'app', title:'TimeThree 領班工作時程', desc:'', pts:5 },
+  { id:154, cat:'app', title:'TimeThree 學徒工作時間', desc:'', pts:1 },
+];
+
+const STORE_KEY = 'wood-skill-v3';
+const STAR_DESC = ['', '初步接觸', '基本了解', '能獨立操作', '熟練應用', '精通可教學'];
+let state = {};
+
+function initState() {
+  try { state = JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); } catch(e) {}
+  SKILLS.forEach(s => {
+    if (!state[s.id]) state[s.id] = { done: false, date: '', stars: 0 };
+  });
+}
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+function buildNav() {
+  const nav = document.getElementById('cat-nav');
+  CATEGORIES.forEach((cat, i) => {
+    const catSkills = SKILLS.filter(s => s.cat === cat.id);
+    const btn = document.createElement('button');
+    btn.className = 'cat-tab' + (i===0 ? ' active' : '');
+    btn.dataset.cat = cat.id;
+    btn.style.setProperty('--tab-c', cat.color);
+    btn.innerHTML = `
+      <span>${cat.icon}</span>
+      ${cat.name}
+      <span class="tab-badge" id="tab-badge-${cat.id}">0/${catSkills.length}</span>
+    `;
+    btn.addEventListener('click', () => switchTab(cat.id));
+    nav.appendChild(btn);
+  });
+}
+
+function switchTab(catId) {
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.toggle('active', t.dataset.cat === catId));
+  document.querySelectorAll('.cat-section').forEach(s => s.classList.toggle('active', s.dataset.cat === catId));
+}
+
+function buildContent() {
+  const content = document.getElementById('content');
+  CATEGORIES.forEach((cat, ci) => {
+    const catSkills = SKILLS.filter(s => s.cat === cat.id);
+    const sec = document.createElement('div');
+    sec.className = 'cat-section' + (ci===0 ? ' active' : '');
+    sec.dataset.cat = cat.id;
+    sec.innerHTML = `
+      <div class="cat-header">
+        <div class="cat-header-icon" style="background:${cat.colorL};color:${cat.color}">${cat.icon}</div>
+        <div class="cat-header-text">
+          <h2>${cat.name}</h2>
+          <p>${cat.desc}</p>
+        </div>
+      </div>
+    `;
+    const grid = document.createElement('div');
+    grid.className = 'skills-grid';
+    catSkills.forEach(skill => grid.appendChild(buildCard(skill, cat)));
+    sec.appendChild(grid);
+    content.appendChild(sec);
+  });
+}
+
+function buildCard(skill, cat) {
+  const card = document.createElement('div');
+  card.className = 'skill-card';
+  card.id = `card-${skill.id}`;
+  card.innerHTML = `
+    <div class="done-stamp">完成</div>
+    <div class="card-stripe" style="background:${cat.color}"></div>
+    <div class="card-main">
+      <div class="card-top-row">
+        <div class="card-left">
+          <span class="card-no">#${skill.id}</span>
+        </div>
+        <div class="card-check" id="chk-${skill.id}">✓</div>
+      </div>
+      <div class="card-title">${skill.title}</div>
+      <div class="card-desc">${skill.desc || ''}</div>
+    </div>
+    <div class="card-detail">
+      <div class="detail-field">
+        <span class="detail-label">完成日期</span>
+        <input type="date" class="date-input" id="date-${skill.id}">
+      </div>
+      <div class="detail-field">
+        <span class="detail-label">學習點數</span>
+        <span class="pts-val" id="pts-${skill.id}">${skill.pts} pts</span>
+      </div>
+      <div class="detail-field star-row">
+        <span class="detail-label">掌握程度</span>
+        <div class="stars" id="stars-${skill.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star" data-n="${n}">★</span>`).join('')}
+          <span class="star-desc" id="sdesc-${skill.id}">尚未評分</span>
+        </div>
+      </div>
+    </div>
+  `;
+  refreshCard(skill.id);
+  card.querySelector(`#chk-${skill.id}`).addEventListener('click', () => toggleDone(skill.id));
+  card.querySelector(`#date-${skill.id}`).addEventListener('change', e => {
+    state[skill.id].date = e.target.value; save();
+  });
+  const starsEl = card.querySelector(`#stars-${skill.id}`);
+  starsEl.querySelectorAll('.star').forEach(star => {
+    const n = parseInt(star.dataset.n);
+    star.addEventListener('click', () => {
+      state[skill.id].stars = (state[skill.id].stars === n) ? 0 : n;
+      save(); renderStars(skill.id);
+    });
+  });
+  return card;
+}
+
+function renderStars(id) {
+  const val = state[id].stars;
+  const card = document.getElementById(`card-${id}`);
+  if (!card) return;
+  card.querySelectorAll(`#stars-${id} .star`).forEach(s => {
+    const n = parseInt(s.dataset.n);
+    s.classList.toggle('lit', n <= val);
+  });
+  const desc = card.querySelector(`#sdesc-${id}`);
+  if (desc) {
+    desc.textContent = val > 0 ? STAR_DESC[val] : '尚未評分';
+    desc.classList.toggle('has-val', val > 0);
+  }
+}
+
+function refreshCard(id) {
+  const s = state[id];
+  const card = document.getElementById(`card-${id}`);
+  if (!card) return;
+  card.classList.toggle('done', s.done);
+  const dateEl = card.querySelector(`#date-${id}`);
+  if (dateEl) dateEl.value = s.date || '';
+  renderStars(id);
+}
+
+function toggleDone(id) {
+  const s = state[id];
+  s.done = !s.done;
+  if (s.done && !s.date) s.date = new Date().toISOString().split('T')[0];
+  save(); refreshCard(id);
+  updateStats();
+}
+
+function updateStats() {
+  const done = SKILLS.filter(s => state[s.id].done);
+  const donePts = done.reduce((a, s) => a + s.pts, 0);
+  document.getElementById('kpi-done').textContent = done.length;
+  document.getElementById('kpi-total').textContent = SKILLS.length;
+  document.getElementById('kpi-pts').textContent = donePts;
+  document.getElementById('ob-pct').textContent = `${done.length} / ${SKILLS.length} 項`;
+  document.getElementById('ob-fill').style.width = (done.length / SKILLS.length * 100) + '%';
+  CATEGORIES.forEach(cat => {
+    const cs = SKILLS.filter(s => s.cat === cat.id);
+    const cd = cs.filter(s => state[s.id].done);
+    const badge = document.getElementById(`tab-badge-${cat.id}`);
+    if (badge) badge.textContent = `${cd.length}/${cs.length}`;
+  });
+}
+
+initState();
+buildNav();
+buildContent();
+updateStats();
+</script>
+</body>
+</html>

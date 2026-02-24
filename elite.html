@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>摩研裝修 精英合夥計畫</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #9b59b6;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --gold: #d4a574;
+            --light: #ecf0f1;
+            --dark: #1a252f;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft JhengHei', 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            color: var(--dark);
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 30px 20px; }
+
+        header {
+            background: linear-gradient(135deg, var(--accent), #8e44ad);
+            color: white;
+            padding: 50px 40px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(155, 89, 182, 0.3);
+            text-align: center;
+        }
+        header h1 { font-size: 2.2rem; margin-bottom: 15px; }
+        header .subtitle { font-size: 1.1rem; opacity: 0.9; }
+
+        .vision-box {
+            background: linear-gradient(135deg, var(--gold), #b8956e);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 30px rgba(212, 165, 116, 0.3);
+        }
+        .vision-box h2 { font-size: 1.8rem; margin-bottom: 10px; }
+        .vision-box p { font-size: 1.1rem; opacity: 0.95; }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .card h3 {
+            color: var(--accent);
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--accent);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+        }
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        tr:hover td { background: #f8fafc; }
+
+        .gains-table td:first-child {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.3rem;
+            width: 50px;
+        }
+        .gains-G { color: #27ae60; }
+        .gains-A { color: #3498db; }
+        .gains-I { color: #f39c12; }
+        .gains-N { color: #e74c3c; }
+        .gains-S { color: #9b59b6; }
+
+        blockquote {
+            background: linear-gradient(135deg, #fff9e6, #fff3cd);
+            border-left: 4px solid var(--warning);
+            padding: 20px 25px;
+            margin: 20px 0;
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+        }
+        blockquote strong { color: var(--primary); }
+
+        .formula-box {
+            background: linear-gradient(135deg, var(--dark), var(--primary));
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            font-family: 'Consolas', monospace;
+            margin: 20px 0;
+        }
+        .formula-box code { display: block; padding: 5px 0; }
+
+        .flow-diagram {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .flow-step {
+            display: inline-block;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--accent);
+        }
+        .flow-arrow {
+            color: var(--accent);
+            font-size: 1.5rem;
+            margin: 0 5px;
+        }
+
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .checklist li::before {
+            content: "☐";
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+
+        .kaizen-diagram {
+            background: var(--dark);
+            color: #aaa;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            white-space: pre;
+            line-height: 1.4;
+        }
+
+        .color-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+        .color-red { background: #e74c3c; }
+        .color-blue { background: #3498db; }
+        .color-green { background: #27ae60; }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .section-item {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent);
+        }
+        .section-item h4 {
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        .section-item ul {
+            list-style: none;
+            padding: 0;
+        }
+        .section-item li {
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        .section-item li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.6rem; }
+            .vision-box h2 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⭐ 精英合夥計畫</h1>
+            <p class="subtitle">摩研室內裝修 2026 精英基地營運全書</p>
+        </header>
+
+        <div class="vision-box">
+            <h2>「摩研出品，必屬精品」</h2>
+            <p>從個人工作室轉向「摩研精英小組」合作模式</p>
+        </div>
+
+        <div class="card">
+            <h3>🎯 精英合夥夥伴制</h3>
+            <p style="margin-bottom: 20px;">精英合夥制對應「升職階梯架構」第 5 級「分潤」，分潤比例依年資與貢獻度調整（20-35%）。</p>
+
+            <table>
+                <tr><th>項目</th><th>內容</th></tr>
+                <tr><td><strong>分潤比例</strong></td><td>利潤 20-35%（新進夥伴起步 10%）</td></tr>
+                <tr><td><strong>年資要求</strong></td><td>領班滿 3 年以上</td></tr>
+                <tr><td><strong>團隊規模</strong></td><td>至少帶領 3 人以上</td></tr>
+                <tr><td><strong>升級條件</strong></td><td>年度業績達標、團隊穩定、獨立承接能力</td></tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3>🔍 GAINS 人才篩選框架</h3>
+            <p style="margin-bottom: 15px;">晉升分潤前，須通過 GAINS 面談評估：</p>
+
+            <table class="gains-table">
+                <tr><th>面向</th><th>英文</th><th>面談重點</th></tr>
+                <tr><td class="gains-G">G</td><td>Goals</td><td>未來三年的財務與職涯目標</td></tr>
+                <tr><td class="gains-A">A</td><td>Achievements</td><td>過去代表性的案場與技術強項</td></tr>
+                <tr><td class="gains-I">I</td><td>Interests</td><td>對木作、裝修的興趣與專精方向</td></tr>
+                <tr><td class="gains-N">N</td><td>Networks</td><td>人際網路、是否有介紹案源能力</td></tr>
+                <tr><td class="gains-S">S</td><td>Skills</td><td>具體技能項目與熟練程度</td></tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3>💡 識人金句（核心防呆）</h3>
+            <blockquote>
+                「如果你現在手上有 100 萬，你會選擇自立門戶扛風險，還是選擇加入一個強大分紅團隊，穩健拿走專案毛利的 10%？」
+            </blockquote>
+            <ul style="margin: 15px 0 0 20px;">
+                <li><strong>選擇自立門戶</strong>：創業型人才，適合發展為分潤夥伴或加盟</li>
+                <li><strong>選擇加入團隊</strong>：穩定型人才，適合培養為核心師傅</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>💰 激勵機制</h3>
+            <div class="flow-diagram">
+                <div class="flow-step">工具維護好 + 材料損耗低</div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-step">提升摩研工法效率</div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-step">減少隱形成本</div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-step">夥伴獎金實質增加</div>
+            </div>
+
+            <h4 style="margin-top: 25px; color: var(--primary);">分潤計算</h4>
+            <div class="formula-box">
+                <code>分潤金額 = (案件收入 - 材料成本 - 其他成本) × 分潤比例</code>
+                <code>公司抽成 = 利潤 × (1 - 分潤比例)</code>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>🧰 Kaizen 工具箱管理</h3>
+            <p style="margin-bottom: 15px;">視覺化箱體責任制 - 雙色影子板系統：</p>
+
+            <div class="kaizen-diagram">┌───────────────────────────────────────┐
+│  Kaizen Foam 影子板示意圖             │
+├───────────────────────────────────────┤
+│                                       │
+│   ┌───────┐  ┌───────┐  ┌───────┐    │
+│   │███████│  │▓▓▓▓▓▓▓│  │░░░░░░░│    │
+│   │深灰色 │  │ 紅色底 │  │ 空槽  │    │
+│   │(有工具)│  │(遺失!) │  │(預留) │    │
+│   └───────┘  └───────┘  └───────┘    │
+│                                       │
+│  工具不在位時露出「紅色底部」          │
+│  下班收工一眼揪出遺失                  │
+└───────────────────────────────────────┘</div>
+
+            <h4 style="margin-top: 25px; color: var(--primary);">組別顏色標記</h4>
+            <table>
+                <tr><th>顏色</th><th>組別</th><th>負責人</th></tr>
+                <tr><td><span class="color-tag color-red">紅色</span></td><td>陳瑋鑫組</td><td>陳瑋鑫</td></tr>
+                <tr><td><span class="color-tag color-blue">藍色</span></td><td>林哲立組</td><td>林哲立</td></tr>
+                <tr><td><span class="color-tag color-green">綠色</span></td><td>公司備品</td><td>倉管</td></tr>
+            </table>
+
+            <h4 style="margin-top: 25px; color: var(--primary);">管理儀式</h4>
+            <table>
+                <tr><th>頻率</th><th>作業</th><th>說明</th></tr>
+                <tr><td>每日</td><td>箱單位領用</td><td>以「箱」為單位領用，不拆散</td></tr>
+                <tr><td>每週五</td><td>摩研工具保養日</td><td>下班前 15 分鐘固定保養時間</td></tr>
+                <tr><td>每月</td><td>庫存盤點</td><td>對照 Kaizen 影子板確認</td></tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3>📋 職責與權利</h3>
+            <div class="section-grid">
+                <div class="section-item">
+                    <h4>職責範圍</h4>
+                    <ul>
+                        <li>案件獨立承接</li>
+                        <li>自組施工團隊</li>
+                        <li>業務開發</li>
+                        <li>財務管理</li>
+                        <li>工具維護與損耗控管</li>
+                    </ul>
+                </div>
+                <div class="section-item">
+                    <h4>權利義務</h4>
+                    <ul>
+                        <li>分享案件利潤</li>
+                        <li>自負團隊人事成本</li>
+                        <li>共用公司資源（工具、材料採購）</li>
+                        <li>遵守品牌規範</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p><em>本計畫自 2026-02-20 起實施</em></p>
+            <p style="margin-top: 10px;">摩研室內裝修有限公司</p>
+        </footer>
+    </div>
+</body>
+</html>
