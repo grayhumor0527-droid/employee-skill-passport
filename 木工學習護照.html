@@ -123,6 +123,26 @@
     border-radius: 6px;
     font-size: 1rem;
   }
+  .employee-banner {
+    margin-top: 20px;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    border-radius: 12px;
+    text-align: center;
+    color: white;
+  }
+  .banner-label {
+    display: block;
+    font-size: 0.85rem;
+    opacity: 0.8;
+    margin-bottom: 6px;
+  }
+  .banner-name {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 900;
+    letter-spacing: 4px;
+  }
 
   /* Dashboard */
   .dashboard {
@@ -555,6 +575,10 @@
       <div id="currentRank" class="info-display">-</div>
     </div>
   </div>
+  <div id="employeeNameBanner" class="employee-banner" style="display:none;">
+    <span class="banner-label">技能護照持有人</span>
+    <span class="banner-name" id="bannerName"></span>
+  </div>
 </div>
 
 <div class="dashboard">
@@ -578,9 +602,9 @@
     <div class="sub">新台幣</div>
   </div>
   <div class="stat-card">
-    <h3>8周培訓</h3>
+    <h3>入職訓練</h3>
     <div class="value" id="trainingProgress">0%</div>
-    <div class="sub" id="trainingWeek">第 1 周</div>
+    <div class="sub" id="trainingWeek">進行中</div>
   </div>
 </div>
 
@@ -592,7 +616,7 @@
 
 <div class="main-tabs">
   <div class="main-tab active" data-tab="skills">📋 技能認證</div>
-  <div class="main-tab" data-tab="training">📚 8周培訓</div>
+  <div class="main-tab" data-tab="training">📚 入職訓練</div>
   <div class="main-tab" data-tab="salary">💰 薪資對照表</div>
 </div>
 
@@ -845,72 +869,76 @@ const SKILLS = [
   { id:154, cat:'app', title:'TimeThree 學徒工作時間', desc:'', pts:1 },
 ];
 
-// Training Data (8 Weeks)
+// Training Data (8 Weeks) - 新人入職訓練
 const trainingData = {
-  "第一周": [
-    { id:"w1-01", text:"了解公司使命、願景、核心價值，各部門負責項目" },
-    { id:"w1-02", text:"加入Line群組，了解各群組功能並使用" },
-    { id:"w1-03", text:"TimeThree工作排程：能夠為自己安排與爭取工作定位" },
-    { id:"w1-04", text:"Asana訂貨系統教學：進料、退料、詢價" },
-    { id:"w1-05", text:"金豐打卡系統運用：清楚知道上下班及加班請假規範" },
-    { id:"w1-06", text:"EST系統操作與運用：能夠完成當日任務與回報" },
-    { id:"w1-07", text:"工具與系統操作：ON!Track工具使用" }
+  "第一周｜公司文化與行政": [
+    { id:"w1-01", text:"📋 簽署勞動契約、保密協議、員工手冊確認" },
+    { id:"w1-02", text:"🏢 認識公司：使命、願景、核心價值、組織架構" },
+    { id:"w1-03", text:"👥 認識團隊：導師、組長、同事介紹" },
+    { id:"w1-04", text:"📱 加入 Line 群組：公司群、組別群、案場群" },
+    { id:"w1-05", text:"⏰ 出勤規範：上下班時間、加班申請、請假流程" },
+    { id:"w1-06", text:"💰 薪資制度：日薪計算、外地加給、晚餐補貼說明" },
+    { id:"w1-07", text:"🎯 職涯發展：學徒→半技→師傅→領班 晉升路徑" }
   ],
-  "第二周": [
-    { id:"w2-01", text:"獎懲系統使用：為自己負責任，做到加減分" },
-    { id:"w2-02", text:"基本材料/五金認識：保護材料，矽酸�ite板與角材F1/F3" },
-    { id:"w2-03", text:"基本手工具認識：尺/筆/手鋸/鐵鎚/美工刀" },
-    { id:"w2-04", text:"基本電/氣動工具認識：釘槍/雷射/鋸台/風車" },
-    { id:"w2-05", text:"擔任案場值日生：關電/關窗/環境整潔" },
-    { id:"w2-06", text:"與導師週回顧，追蹤表現與挑戰" }
+  "第二周｜系統操作訓練": [
+    { id:"w2-01", text:"📲 金豐打卡系統：每日打卡、加班記錄、請假申請" },
+    { id:"w2-02", text:"📅 TimeThree 排程：查看工作安排、回報出勤" },
+    { id:"w2-03", text:"📦 Asana 訂貨系統：進料申請、退料流程、詢價作業" },
+    { id:"w2-04", text:"🔧 ON!Track 工具管理：領用、歸還、維修申報" },
+    { id:"w2-05", text:"📸 Asana 照片上傳：每日進度照、完工照規範" },
+    { id:"w2-06", text:"✅ 系統操作測驗：獨立完成各系統基本操作" }
   ],
-  "第三周": [
-    { id:"w3-01", text:"新人獨立操作：切副支、畫主支，知道121/151差別" },
-    { id:"w3-02", text:"確認工作技能進展（包括協作、系統運用能力）" },
-    { id:"w3-03", text:"基本材料/五金認識：ST45/F50/F30/J416" },
-    { id:"w3-04", text:"基本電/氣動工具認識：電動起子/角度裁斷機" },
-    { id:"w3-05", text:"擔任案場值日生" },
-    { id:"w3-06", text:"與導師週回顧" }
+  "第三周｜安全與工地規範": [
+    { id:"w3-01", text:"🦺 個人防護裝備：安全帽、護目鏡、手套、安全鞋" },
+    { id:"w3-02", text:"⚠️ 工地安全守則：高處作業、電氣安全、消防常識" },
+    { id:"w3-03", text:"🚨 緊急應變：受傷處理、火災逃生、急救箱位置" },
+    { id:"w3-04", text:"🧹 5S 整理原則：整理、整頓、清掃、清潔、素養" },
+    { id:"w3-05", text:"🏠 案場值日生職責：關電、關窗、垃圾清運、環境整潔" },
+    { id:"w3-06", text:"📋 工地禮儀：與業主應對、鄰居互動、噪音管制" }
   ],
-  "第四周": [
-    { id:"w4-01", text:"新人獨立操作：能夠協作封板，檢查平整度/不浮釘" },
-    { id:"w4-02", text:"確認工作技能進展" },
-    { id:"w4-03", text:"基本材料/五金認識：活頁/喇叭鎖/木心板" },
-    { id:"w4-04", text:"基本電/氣動工具認識：路打/模切機" },
-    { id:"w4-05", text:"擔任案場值日生" },
-    { id:"w4-06", text:"與導師週回顧" }
+  "第四周｜材料認識": [
+    { id:"w4-01", text:"🪵 骨料認識：角材規格（1×1、1×2）、F1/F3 等級" },
+    { id:"w4-02", text:"📐 板材認識：矽酸鈣板、木心板、夾板、塑合板" },
+    { id:"w4-03", text:"🔩 五金認識：釘子種類（ST、F、J）、螺絲規格" },
+    { id:"w4-04", text:"🔗 絞鍊認識：西德絞鍊、十字絞鍊、回歸絞鍊" },
+    { id:"w4-05", text:"📏 滑軌認識：三節式滑軌、座式滑軌" },
+    { id:"w4-06", text:"🧴 膠合劑認識：白膠、強力膠、矽利康用途" },
+    { id:"w4-07", text:"✅ 材料辨識測驗：正確辨認各類材料" }
   ],
-  "第五周": [
-    { id:"w5-01", text:"新人獨立操作：包樑骨架" },
-    { id:"w5-02", text:"確認工作技能進展" },
-    { id:"w5-03", text:"基本材料/五金認識：各類夾板/滑軌" },
-    { id:"w5-04", text:"基本電/氣動工具認識：線鋸機/砂輪機" },
-    { id:"w5-05", text:"擔任案場值日生" },
-    { id:"w5-06", text:"與導師週回顧" }
+  "第五周｜手工具操作": [
+    { id:"w5-01", text:"📏 量測工具：捲尺使用、角尺校正、雷射水平儀" },
+    { id:"w5-02", text:"✏️ 劃線工具：墨斗彈線、鉛筆標記技巧" },
+    { id:"w5-03", text:"🔨 敲擊工具：鐵鎚正確握法、釘釘技巧" },
+    { id:"w5-04", text:"✂️ 切割工具：美工刀安全使用、手鋸操作" },
+    { id:"w5-05", text:"🔧 拆裝工具：螺絲起子、老虎鉗、肉路阿" },
+    { id:"w5-06", text:"🪚 鉋削工具：鉋刀使用、鑿刀操作" },
+    { id:"w5-07", text:"✅ 手工具實作測驗：正確安全地操作各類手工具" }
   ],
-  "第六周": [
-    { id:"w6-01", text:"新人獨立操作：窗簾盒" },
-    { id:"w6-02", text:"確認工作技能進展" },
-    { id:"w6-03", text:"基本材料/五金認識：皮板/美耐板/西德絞鍊" },
-    { id:"w6-04", text:"基本電/氣動工具認識：大路打/竹竿槍" },
-    { id:"w6-05", text:"擔任案場值日生" },
-    { id:"w6-06", text:"與導師週回顧" }
+  "第六周｜電動與氣動工具": [
+    { id:"w6-01", text:"⚡ 電鑽/起子機：鑽孔、鎖螺絲、換鑽頭" },
+    { id:"w6-02", text:"🪚 電鋸/彎鋸：直線切割、曲線切割安全操作" },
+    { id:"w6-03", text:"📐 角度切斷機：45度、90度精準裁切" },
+    { id:"w6-04", text:"🌀 修邊機/砂磨機：邊緣修整、表面處理" },
+    { id:"w6-05", text:"💨 氣動釘槍：小鋼炮、鋼樑槍、蚊釘槍操作" },
+    { id:"w6-06", text:"🔌 空壓機：開機、調壓、接管、保養" },
+    { id:"w6-07", text:"✅ 電動工具實作測驗：安全操作各類電動工具" }
   ],
-  "第七周": [
-    { id:"w7-01", text:"新人獨立操作：拍拍手（出風口）" },
-    { id:"w7-02", text:"確認工作技能進展" },
-    { id:"w7-03", text:"基本材料/五金認識：三節式滑軌/拉門勾鎖" },
-    { id:"w7-04", text:"基本電/氣動工具認識：火藥槍/槌鑽" },
-    { id:"w7-05", text:"擔任案場值日生" },
-    { id:"w7-06", text:"與導師週回顧" }
+  "第七周｜基礎施作練習": [
+    { id:"w7-01", text:"📐 放樣練習：使用雷射儀、墨斗彈線" },
+    { id:"w7-02", text:"🔨 骨架組立：角材切割、組裝、固定" },
+    { id:"w7-03", text:"📦 封板練習：矽酸鈣板裁切、對位、固定" },
+    { id:"w7-04", text:"🔍 品質檢查：平整度確認、釘距檢查、不浮釘" },
+    { id:"w7-05", text:"🧹 收尾作業：批土、砂磨、清潔" },
+    { id:"w7-06", text:"📸 完工紀錄：拍照角度、上傳流程" },
+    { id:"w7-07", text:"✅ 基礎施作測驗：協助完成封板作業" }
   ],
-  "第八周": [
-    { id:"w8-01", text:"新人獨立操作：能夠獨立完成平釘天花板" },
-    { id:"w8-02", text:"確認工作技能進展" },
-    { id:"w8-03", text:"基本材料/五金認識：拉門軌道/回歸絞鍊/十字絞鍊" },
-    { id:"w8-04", text:"基本電/氣動工具認識：噴膠槍/電動鉋刀" },
-    { id:"w8-05", text:"擔任案場值日生" },
-    { id:"w8-06", text:"與導師週回顧" }
+  "第八周｜獨立作業與考核": [
+    { id:"w8-01", text:"🏗️ 獨立任務：完成指定區域平釘天花板" },
+    { id:"w8-02", text:"📋 技能考核：導師評分各項技能達成度" },
+    { id:"w8-03", text:"💬 導師面談：回顧8周學習、討論改進方向" },
+    { id:"w8-04", text:"📊 自我評估：填寫技能護照、設定下階段目標" },
+    { id:"w8-05", text:"🎓 結訓認證：通過考核獲得「學徒認證」" },
+    { id:"w8-06", text:"🚀 後續發展：制定3個月晉升半技計畫" }
   ]
 };
 
@@ -1034,6 +1062,14 @@ function updateEmployeeInfo(name) {
   const done = SKILLS.filter(s => state.skills[s.id]?.done);
   const total = done.reduce((a, s) => a + s.pts, 0);
   document.getElementById('currentRank').textContent = getRankByScore(total);
+
+  // 顯示員工名稱橫幅
+  const banner = document.getElementById('employeeNameBanner');
+  const bannerName = document.getElementById('bannerName');
+  if (name) {
+    bannerName.textContent = name;
+    banner.style.display = 'block';
+  }
 }
 
 // 清除員工資訊顯示
@@ -1041,6 +1077,7 @@ function clearEmployeeInfo() {
   document.getElementById('teamDisplay').textContent = '-';
   document.getElementById('currentSalary').textContent = '-';
   document.getElementById('currentRank').textContent = '-';
+  document.getElementById('employeeNameBanner').style.display = 'none';
 }
 
 // 查詢員工資料
@@ -1060,7 +1097,6 @@ function searchEmployee() {
     loadDataToUI();
     updateStats();
     updateEmployeeInfo(name);
-    alert(`已載入 ${name} 的技能資料`);
   } else {
     if (confirm(`找不到 ${name} 的技能資料，是否建立新紀錄？`)) {
       currentEmployee = name;
@@ -1466,7 +1502,7 @@ function renderStars(id) {
 // Training
 function buildTraining() {
   const container = document.getElementById('trainingContainer');
-  let html = '<div class="section-header">📚 8周導師培訓進度</div>';
+  let html = '<div class="section-header">📚 新人入職訓練（8周）</div>';
   for (const [week, items] of Object.entries(trainingData)) {
     html += `<div class="week-card">
       <div class="week-header" onclick="toggleWeek('${week}')">
