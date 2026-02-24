@@ -577,20 +577,28 @@
   </div>
 </header>
 
-<div class="employee-section">
+<div id="loginRequired" class="employee-section" style="display:none;">
+  <div style="text-align:center;padding:40px 20px;">
+    <div style="font-size:4rem;margin-bottom:16px;">🔐</div>
+    <h2 style="margin-bottom:12px;color:var(--primary);">請先登入</h2>
+    <p style="color:var(--muted);margin-bottom:24px;">請透過員工入口登入後再使用職能認證系統</p>
+    <a href="員工自助入口.html" style="display:inline-block;padding:14px 32px;background:var(--primary);color:white;text-decoration:none;border-radius:8px;font-weight:600;">前往員工入口登入</a>
+  </div>
+</div>
+
+<div id="mainContent" class="employee-section" style="display:none;">
   <div class="employee-grid">
     <div class="info-field">
       <label>🔐 登入身份</label>
-      <div class="name-search">
-        <select id="viewerLogin" onchange="onViewerChange()">
-          <option value="">請先登入</option>
-        </select>
+      <div id="viewerDisplay" class="info-display" style="display:flex;align-items:center;justify-content:space-between;">
+        <span id="viewerName">-</span>
+        <button onclick="logout()" style="padding:4px 12px;background:#e74c3c;color:white;border:none;border-radius:4px;font-size:0.8rem;cursor:pointer;">登出</button>
       </div>
     </div>
     <div class="info-field">
       <label>員工姓名</label>
       <div class="name-search">
-        <select id="employeeName" onchange="onEmployeeSelect()" disabled>
+        <select id="employeeName" onchange="onEmployeeSelect()">
           <option value="">請選擇員工</option>
         </select>
         <button class="btn-search" onclick="searchEmployee()">🔍 查詢</button>
@@ -1332,52 +1340,6 @@ function updateEmployeeIndex(name) {
   populateEmployeeList();
 }
 
-// 填充登入者下拉選單（導師及組長）
-function populateViewerList() {
-  const select = document.getElementById('viewerLogin');
-  // 所有可登入的人（管理員 + 組長 + 所有員工）
-  const viewers = Object.keys(EMPLOYEE_DATA.rates).sort((a, b) => {
-    // 管理員排第一
-    if (a === ADMIN_USER) return -1;
-    if (b === ADMIN_USER) return 1;
-    // 組長排前面
-    const aLeader = isLeaderOrAdmin(a);
-    const bLeader = isLeaderOrAdmin(b);
-    if (aLeader && !bLeader) return -1;
-    if (!aLeader && bLeader) return 1;
-    return a.localeCompare(b);
-  });
-  select.innerHTML = '<option value="">請先登入</option>' +
-    viewers.map(name => {
-      const badge = name === ADMIN_USER ? '👑 ' : (isLeaderOrAdmin(name) ? '⭐ ' : '');
-      return `<option value="${name}">${badge}${name}</option>`;
-    }).join('');
-}
-
-// 登入者變更
-function onViewerChange() {
-  const viewer = document.getElementById('viewerLogin').value;
-  currentViewer = viewer;
-
-  const employeeSelect = document.getElementById('employeeName');
-
-  if (!viewer) {
-    employeeSelect.disabled = true;
-    employeeSelect.innerHTML = '<option value="">請先登入</option>';
-    clearEmployeeInfo();
-    return;
-  }
-
-  employeeSelect.disabled = false;
-  populateEmployeeList();
-
-  // 如果是查看自己，自動選擇
-  if (!isLeaderOrAdmin(viewer)) {
-    employeeSelect.value = viewer;
-    onEmployeeSelect();
-    searchEmployee();
-  }
-}
 
 // 填充員工下拉選單（根據權限過濾）
 function populateEmployeeList() {
@@ -1582,8 +1544,11 @@ function initAllEmployees() {
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('currentDate').textContent = new Date().toLocaleDateString('zh-TW');
+
+  // 檢查是否從員工入口登入
+  checkLoginStatus();
+
   initState();
-  populateViewerList();
   buildSkillsNav();
   buildSkillsContent();
   buildTraining();
@@ -1598,6 +1563,57 @@ document.addEventListener('DOMContentLoaded', function() {
     initAllEmployeesSilent();
   }
 });
+
+// 檢查員工入口登入狀態
+function checkLoginStatus() {
+  const loginData = localStorage.getItem('moreyanUserLogin');
+
+  if (!loginData) {
+    // 未登入，顯示登入提示
+    document.getElementById('loginRequired').style.display = 'block';
+    document.getElementById('mainContent').style.display = 'none';
+    return;
+  }
+
+  try {
+    const user = JSON.parse(loginData);
+    const userName = user['姓名'] || user.name;
+
+    if (!userName) {
+      document.getElementById('loginRequired').style.display = 'block';
+      document.getElementById('mainContent').style.display = 'none';
+      return;
+    }
+
+    // 已登入，設定當前使用者
+    currentViewer = userName;
+    document.getElementById('loginRequired').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+
+    // 顯示登入者資訊
+    const badge = getViewerBadge(userName);
+    document.getElementById('viewerName').innerHTML = userName + badge;
+
+    // 填充可查看的員工列表
+    populateEmployeeList();
+
+    // 如果是一般員工，自動載入自己的資料
+    if (!isLeaderOrAdmin(userName)) {
+      document.getElementById('employeeName').value = userName;
+      searchEmployee();
+    }
+  } catch(e) {
+    console.error('Login data parse error:', e);
+    document.getElementById('loginRequired').style.display = 'block';
+    document.getElementById('mainContent').style.display = 'none';
+  }
+}
+
+// 登出
+function logout() {
+  localStorage.removeItem('moreyanUserLogin');
+  window.location.href = '員工自助入口.html';
+}
 
 // 靜默初始化所有員工（不彈出確認框）
 function initAllEmployeesSilent() {
@@ -1817,14 +1833,13 @@ function certifySkill(id) {
   renderHistory(id);
 }
 
-// 檢查技能是否已鎖定（滿星）
+// 檢查技能是否已鎖定（必須同時滿足：已完成且為5星）
 function isSkillLocked(id) {
   const s = state.skills[id];
-  if (!s) return false;
-  // 有滿星認證記錄即鎖定
-  if (s.locked) return true;
-  if (s.done && s.stars === 5) return true;
-  return false;
+  if (!s || !s.done) return false;
+  // 只有5星才鎖定，3星或其他星數不鎖定
+  const currentStars = getLastCertStars(id);
+  return currentStars === 5;
 }
 
 // 取得最後一次認證時間
