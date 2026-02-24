@@ -1496,25 +1496,28 @@ function autoCheckSkillsByScore(targetScore) {
     return a.pts - b.pts; // 同類別先勾低分的
   });
 
+  // 3星 = 60%，需要更多技能來達到目標分數
+  const adjustedTarget = targetScore / 0.6;
+
   for (const skill of sortedSkills) {
-    if (currentScore >= targetScore) break;
+    if (currentScore >= adjustedTarget) break;
     state.skills[skill.id] = {
       done: true,
       date: today,
-      stars: 5, // 初始設為5星，得滿分
+      stars: 3, // 初始設為3星（未滿星，可修改）
       mentor: '系統初始化',
-      locked: true, // 滿星自動鎖定
+      locked: false, // 未滿星不鎖定
       history: [{
         date: today,
         mentor: '系統初始化',
-        stars: 5,
+        stars: 3,
         time: new Date().toISOString()
       }]
     };
-    currentScore += skill.pts; // 5星 = 100% = 原始分數
+    currentScore += skill.pts;
   }
 
-  return currentScore;
+  return Math.round(currentScore * 0.6); // 回傳實際分數（3星=60%）
 }
 
 // 為所有員工建立初始資料
