@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>摩研案件總覽</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --bg-hover: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: #334155;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-orange: #f59e0b;
+            --accent-purple: #8b5cf6;
+            --accent-cyan: #06b6d4;
+            --accent-pink: #ec4899;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding: 24px;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header .date { color: var(--text-secondary); font-size: 14px; margin-top: 8px; }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0;
+            overflow-x: auto;
+        }
+        .tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .tab:hover { color: var(--text-primary); }
+        .tab.active {
+            color: var(--accent-blue);
+            border-bottom-color: var(--accent-blue);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .card-header h2 { font-size: 18px; font-weight: 600; }
+
+        /* Summary Grid */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .summary-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            position: relative;
+        }
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            border-radius: 12px 12px 0 0;
+        }
+        .summary-card.income::before { background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan)); }
+        .summary-card.expense::before { background: linear-gradient(90deg, var(--accent-red), var(--accent-orange)); }
+        .summary-card.profit::before { background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple)); }
+        .summary-card.rate::before { background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink)); }
+        .summary-card .label { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
+        .summary-card .value { font-size: 24px; font-weight: 700; }
+        .summary-card.income .value { color: var(--accent-green); }
+        .summary-card.expense .value { color: var(--accent-red); }
+        .summary-card.profit .value { color: var(--accent-blue); }
+        .summary-card.rate .value { color: var(--accent-purple); }
+
+        /* Chart Container */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+        .chart-box {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .chart-box h3 {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 280px;
+        }
+        .chart-wrapper-lg {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Structure */
+        .structure-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .structure-box {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 16px;
+        }
+        .structure-box h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .structure-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .structure-item:last-child { border-bottom: none; }
+        .structure-item .label { color: var(--text-secondary); font-size: 13px; }
+        .structure-item .value { font-weight: 600; font-size: 14px; }
+        .structure-item.sub { padding-left: 12px; }
+        .structure-item.sub .label { font-size: 12px; color: var(--text-muted); }
+        .structure-item.sub .value { font-size: 13px; font-weight: 500; }
+
+        /* Table */
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 10px; text-align: left; font-size: 13px; }
+        th {
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            font-weight: 500;
+            border-bottom: 2px solid var(--border-color);
+        }
+        td { border-bottom: 1px solid var(--border-color); }
+        tr:hover td { background: var(--bg-hover); }
+        .text-right { text-align: right; }
+        .profit-positive { color: var(--accent-green); }
+        .profit-negative { color: var(--accent-red); }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 24px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 16px; }
+            .summary-card .value { font-size: 20px; }
+            .chart-grid { grid-template-columns: 1fr; }
+        }
+
+        @media print {
+            body { background: white; color: #1e293b; }
+            .card { background: white; border: 1px solid #e2e8f0; }
+            .tabs { display: none; }
+            .tab-content { display: block !important; page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>摩研案件總覽</h1>
+            <p class="date" id="updateDate">資料更新：載入中...</p>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('overview')">財務總覽</button>
+            <button class="tab" onclick="showTab('expense')">支出明細</button>
+            <button class="tab" onclick="showTab('projects')">案場明細</button>
+            <button class="tab" onclick="showTab('income')">收款紀錄</button>
+            <button class="tab" onclick="showTab('sharing')">樂莫分潤</button>
+        </div>
+
+        <!-- Tab 1: 財務總覽 -->
+        <div id="overview" class="tab-content active">
+            <div class="summary-grid" id="summaryGrid"></div>
+            <div class="chart-grid">
+                <div class="card">
+                    <div class="chart-box">
+                        <h3>支出結構</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="expenseChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="chart-box">
+                        <h3>月度收支趨勢</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="chart-box">
+                    <h3>案場毛利比較</h3>
+                    <div class="chart-wrapper-lg">
+                        <canvas id="projectChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: 支出明細 -->
+        <div id="expense" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>支出結構明細</h2>
+                </div>
+                <div class="structure-grid" id="structureGrid"></div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2>按月份統計</h2>
+                </div>
+                <div class="table-container">
+                    <table id="monthlyTable">
+                        <thead>
+                            <tr>
+                                <th>月份</th>
+                                <th class="text-right">收入</th>
+                                <th class="text-right">小組</th>
+                                <th class="text-right">外調</th>
+                                <th class="text-right">廠商</th>
+                                <th class="text-right">其他</th>
+                                <th class="text-right">支出</th>
+                                <th class="text-right">毛利</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: 案場明細 -->
+        <div id="projects" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>案場明細</h2>
+                </div>
+                <div class="table-container">
+                    <table id="projectsTable">
+                        <thead>
+                            <tr>
+                                <th>案場</th>
+                                <th class="text-right">收入</th>
+                                <th class="text-right">小組</th>
+                                <th class="text-right">外調</th>
+                                <th class="text-right">廠商</th>
+                                <th class="text-right">其他</th>
+                                <th class="text-right">支出</th>
+                                <th class="text-right">毛利</th>
+                                <th class="text-right">毛利率</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: 收款紀錄 -->
+        <div id="income" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>收款紀錄</h2>
+                </div>
+                <div class="table-container">
+                    <table id="incomeTable">
+                        <thead>
+                            <tr>
+                                <th>日期</th>
+                                <th>案場</th>
+                                <th class="text-right">金額</th>
+                                <th>備註</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 5: 樂莫分潤 -->
+        <div id="sharing" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>樂莫總公司分潤（10%）</h2>
+                </div>
+                <div class="summary-grid" style="margin-bottom: 20px;" id="sharingTotal"></div>
+                <div class="table-container">
+                    <table id="sharingTable">
+                        <thead>
+                            <tr>
+                                <th>案場</th>
+                                <th class="text-right">收入</th>
+                                <th class="text-right">支出</th>
+                                <th class="text-right">毛利</th>
+                                <th class="text-right">分潤 (10%)</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer" id="footer">
+            自動產生於 載入中...
+        </div>
+    </div>
+
+    <script>
+        // ===== 資料區（由 sync_sheets.py 自動更新） =====
+        const DATA = {
+        'updateDate': '2026-03-01',
+        'summary': {
+                'totalIncome': 3927917,
+                'totalExpense': 3734069,
+                'grossProfit': 193848,
+                'profitRate': 4.9
+        },
+        'costStructure': {
+                'team': 1586960,
+                'external': 641475,
+                'profitSharing': 28404,
+                'vendor': 1331370,
+                'other': 145860,
+                'vendors': {
+                        '振鴻建材': 1091418,
+                        '毅鴻工具五金': 114300,
+                        '路徑CNC': 47231,
+                        '松梁': 27720,
+                        '毅鴻裝潢材料': 21710,
+                        '通裕建材': 19068,
+                        '樂美特': 9923
+                },
+                'others': {
+                        '賠償40000，紅包3000': 43000,
+                        '雷射4台': 32000,
+                        '小木屋租金': 30000,
+                        '小木屋房租': 15000,
+                        '30箱水': 4800,
+                        '年終禮盒': 4200,
+                        'PP垃圾袋': 2500,
+                        '輪子': 2000,
+                        '超速罰單': 1600
+                }
+        },
+        'monthly': [
+                {
+                        'month': '2026-02',
+                        'income': 995786,
+                        'team': 257250,
+                        'external': 38750,
+                        'vendor': 0,
+                        'other': 62200,
+                        'expense': 358200,
+                        'profit': 637586
+                },
+                {
+                        'month': '2026-01',
+                        'income': 1352751,
+                        'team': 747447,
+                        'external': 310975,
+                        'vendor': 222480,
+                        'other': 53500,
+                        'expense': 1334402,
+                        'profit': 18349
+                },
+                {
+                        'month': '2025-12',
+                        'income': 1579380,
+                        'team': 580013,
+                        'external': 291750,
+                        'profitSharing': 28404,
+                        'vendor': 1072582,
+                        'other': 19400,
+                        'expense': 1992149,
+                        'profit': -412769
+                },
+                {
+                        'month': '2025-11',
+                        'income': 0,
+                        'team': 2250,
+                        'external': 0,
+                        'vendor': 36308,
+                        'other': 0,
+                        'expense': 38558,
+                        'profit': -38558
+                }
+        ],
+        'projects': [
+                {
+                        'name': '德富2期',
+                        'income': 3246351,
+                        'team': 1211460,
+                        'external': 638475,
+                        'profitSharing': 28404,
+                        'vendor': 1140697,
+                        'other': 133500,
+                        'expense': 3259480,
+                        'profit': -13129,
+                        'rate': 2.9
+                },
+                {
+                        'name': '寶輝B6-14F',
+                        'income': 477566,
+                        'team': 283600,
+                        'external': 0,
+                        'vendor': 151781,
+                        'other': 1600,
+                        'expense': 436981,
+                        'profit': 40585,
+                        'rate': 8.5
+                },
+                {
+                        'name': '理仁24G',
+                        'income': 204000,
+                        'team': 78800,
+                        'external': 0,
+                        'vendor': 38892,
+                        'other': 0,
+                        'expense': 117692,
+                        'profit': 86308,
+                        'rate': 42.3
+                },
+                {
+                        'name': 'U寯展間',
+                        'expense': 7200,
+                        'income': 0,
+                        'profit': -7200,
+                        'team': 0,
+                        'external': 0,
+                        'vendor': 0,
+                        'other': 3600,
+                        'rate': 0
+                }
+        ],
+        'incomeRecords': [
+                {
+                        'date': '2026-02-11',
+                        'project': '寶輝B6-14F',
+                        'amount': 318386,
+                        'note': '第二期六成'
+                },
+                {
+                        'date': '2026-02-11',
+                        'project': '德富2期',
+                        'amount': 473400,
+                        'note': '第三期'
+                },
+                {
+                        'date': '2026-02-10',
+                        'project': '理仁24G',
+                        'amount': 204000,
+                        'note': '第一期八成8成'
+                },
+                {
+                        'date': '2026-01-05',
+                        'project': '德富2期',
+                        'amount': 1352751,
+                        'note': '收款'
+                },
+                {
+                        'date': '2025-12-10',
+                        'project': '寶輝B6-14F',
+                        'amount': 159180,
+                        'note': '含稅'
+                },
+                {
+                        'date': '2025-12-08',
+                        'project': '德富2期',
+                        'amount': 1420200,
+                        'note': '含稅'
+                }
+        ],
+        'salaryPeriods': [
+                {
+                        'period': '2026年2月 下半月',
+                        'type': 'lower',
+                        'payDay': '1號領',
+                        'workers': [
+                                {
+                                        'name': '陳瑋鑫',
+                                        'days': 3.125,
+                                        'salary': 11250,
+                                        'allowance': 0,
+                                        'advance': 1560
+                                },
+                                {
+                                        'name': '翁建信',
+                                        'days': 9.0,
+                                        'salary': 32400,
+                                        'allowance': 0,
+                                        'advance': 0
+                                },
+                                {
+                                        'name': '陳冠興',
+                                        'days': 7.875,
+                                        'salary': 18109,
+                                        'allowance': 0,
+                                        'advance': 0
+                                },
+                                {
+                                        'name': '陳偉瀚',
+                                        'days': 7.875,
+                                        'salary': 23625,
+                                        'allowance': 0,
+                                        'advance': 0
+                                },
+                                {
+                                        'name': '許子軒',
+                                        'days': 11.25,
+                                        'salary': 18000,
+                                        'allowance': 0,
+                                        'advance': 0
+                                }
+                        ]
+                },
+                {
+                        'period': '2026年2月 上半月',
+                        'type': 'upper',
+                        'payDay': '16號領',
+                        'workers': [
+                                {
+                                        'name': '翁建信',
+                                        'days': 0,
+                                        'salary': 0,
+                                        'allowance': 0,
+                                        'advance': 0
+                                },
+                                {
+                                        'name': '陳偉翰',
+                                        'days': 0,
+                                        'salary': 0,
+                                        'allowance': 0,
+                                        'advance': 0
+                                }
+                        ]
+                }
+        ]
+};
+
+        // ===== 工具函數 =====
+        function formatNumber(num) {
+            return num.toLocaleString('zh-TW');
+        }
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // ===== 渲染函數 =====
+        function renderSummary() {
+            const grid = document.getElementById('summaryGrid');
+            const s = DATA.summary;
+            grid.innerHTML = `
+                <div class="summary-card income">
+                    <div class="label">總收入</div>
+                    <div class="value">$${formatNumber(s.totalIncome)}</div>
+                </div>
+                <div class="summary-card expense">
+                    <div class="label">總支出</div>
+                    <div class="value">$${formatNumber(s.totalExpense)}</div>
+                </div>
+                <div class="summary-card profit">
+                    <div class="label">毛利</div>
+                    <div class="value">$${formatNumber(s.grossProfit)}</div>
+                </div>
+                <div class="summary-card rate">
+                    <div class="label">毛利率</div>
+                    <div class="value">${s.profitRate}%</div>
+                </div>
+            `;
+        }
+
+        function renderStructure() {
+            const grid = document.getElementById('structureGrid');
+            const c = DATA.costStructure;
+
+            let vendorItems = '';
+            for (const [name, amount] of Object.entries(c.vendors)) {
+                vendorItems += `
+                    <div class="structure-item sub">
+                        <span class="label">${name}</span>
+                        <span class="value">$${formatNumber(amount)}</span>
+                    </div>
+                `;
+            }
+
+            let otherItems = '';
+            for (const [name, amount] of Object.entries(c.others)) {
+                otherItems += `
+                    <div class="structure-item sub">
+                        <span class="label">${name}</span>
+                        <span class="value">$${formatNumber(amount)}</span>
+                    </div>
+                `;
+            }
+
+            grid.innerHTML = `
+                <div class="structure-box">
+                    <h3 style="color: var(--accent-blue);">人工成本 $${formatNumber(c.team + c.external)}</h3>
+                    <div class="structure-item">
+                        <span class="label">小組</span>
+                        <span class="value">$${formatNumber(c.team)}</span>
+                    </div>
+                    <div class="structure-item">
+                        <span class="label">外調</span>
+                        <span class="value">$${formatNumber(c.external)}</span>
+                    </div>
+                </div>
+                <div class="structure-box">
+                    <h3 style="color: var(--accent-purple);">廠商成本 $${formatNumber(c.vendor)}</h3>
+                    ${vendorItems}
+                </div>
+                <div class="structure-box">
+                    <h3 style="color: var(--accent-cyan);">其他成本 $${formatNumber(c.other)}</h3>
+                    ${otherItems}
+                </div>
+            `;
+        }
+
+        function renderMonthlyTable() {
+            const tbody = document.querySelector('#monthlyTable tbody');
+            tbody.innerHTML = DATA.monthly.map(m => `
+                <tr>
+                    <td>${m.month}</td>
+                    <td class="text-right">${formatNumber(m.income)}</td>
+                    <td class="text-right">${formatNumber(m.team)}</td>
+                    <td class="text-right">${formatNumber(m.external)}</td>
+                    <td class="text-right">${formatNumber(m.vendor)}</td>
+                    <td class="text-right">${formatNumber(m.other)}</td>
+                    <td class="text-right">${formatNumber(m.expense)}</td>
+                    <td class="text-right ${m.profit >= 0 ? 'profit-positive' : 'profit-negative'}">${formatNumber(m.profit)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderProjectsTable() {
+            const tbody = document.querySelector('#projectsTable tbody');
+            tbody.innerHTML = DATA.projects.map(p => `
+                <tr>
+                    <td>${p.name}</td>
+                    <td class="text-right">${formatNumber(p.income)}</td>
+                    <td class="text-right">${formatNumber(p.team)}</td>
+                    <td class="text-right">${formatNumber(p.external)}</td>
+                    <td class="text-right">${formatNumber(p.vendor)}</td>
+                    <td class="text-right">${formatNumber(p.other)}</td>
+                    <td class="text-right">${formatNumber(p.expense)}</td>
+                    <td class="text-right ${p.profit >= 0 ? 'profit-positive' : 'profit-negative'}">${formatNumber(p.profit)}</td>
+                    <td class="text-right">${p.rate}%</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderIncomeTable() {
+            const tbody = document.querySelector('#incomeTable tbody');
+            tbody.innerHTML = DATA.incomeRecords.map(r => `
+                <tr>
+                    <td>${r.date}</td>
+                    <td>${r.project}</td>
+                    <td class="text-right profit-positive">${formatNumber(r.amount)}</td>
+                    <td>${r.note}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderSharingTable() {
+            const totalDiv = document.getElementById('sharingTotal');
+            const tbody = document.querySelector('#sharingTable tbody');
+
+            let totalProfit = 0;
+            DATA.projects.forEach(p => { if (p.profit > 0) totalProfit += p.profit; });
+            const totalSharing = Math.round(totalProfit * 0.1);
+
+            totalDiv.innerHTML = `
+                <div class="summary-card" style="border-left: 4px solid var(--accent-pink);">
+                    <div class="label">總分潤金額</div>
+                    <div class="value" style="color: var(--accent-pink);">$${formatNumber(totalSharing)}</div>
+                </div>
+            `;
+
+            let rows = DATA.projects.map(p => {
+                const sharing = p.profit > 0 ? Math.round(p.profit * 0.1) : 0;
+                return `
+                    <tr>
+                        <td>${p.name}</td>
+                        <td class="text-right">${formatNumber(p.income)}</td>
+                        <td class="text-right">${formatNumber(p.expense)}</td>
+                        <td class="text-right ${p.profit >= 0 ? 'profit-positive' : 'profit-negative'}">${formatNumber(p.profit)}</td>
+                        <td class="text-right ${sharing > 0 ? 'profit-positive' : ''}">${formatNumber(sharing)}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            // 合計行
+            const totalIncome = DATA.projects.reduce((sum, p) => sum + p.income, 0);
+            const totalExpense = DATA.projects.reduce((sum, p) => sum + p.expense, 0);
+            rows += `
+                <tr style="font-weight: 600; border-top: 2px solid var(--border-color);">
+                    <td>合計</td>
+                    <td class="text-right">${formatNumber(totalIncome)}</td>
+                    <td class="text-right">${formatNumber(totalExpense)}</td>
+                    <td class="text-right">${formatNumber(totalProfit)}</td>
+                    <td class="text-right" style="color: var(--accent-pink);">${formatNumber(totalSharing)}</td>
+                </tr>
+            `;
+
+            tbody.innerHTML = rows;
+        }
+
+        function renderCharts() {
+            Chart.defaults.color = '#94a3b8';
+            Chart.defaults.borderColor = '#334155';
+
+            const c = DATA.costStructure;
+            new Chart(document.getElementById('expenseChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['小組', '外調', '廠商', '其他'],
+                    datasets: [{
+                        data: [c.team, c.external, c.vendor, c.other],
+                        backgroundColor: ['#3b82f6', '#f59e0b', '#8b5cf6', '#06b6d4'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+
+            const months = DATA.monthly.map(m => m.month).reverse();
+            const incomes = DATA.monthly.map(m => m.income).reverse();
+            const expenses = DATA.monthly.map(m => m.expense).reverse();
+
+            new Chart(document.getElementById('trendChart'), {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [
+                        {
+                            label: '收入',
+                            data: incomes,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: '支出',
+                            data: expenses,
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+
+            new Chart(document.getElementById('projectChart'), {
+                type: 'bar',
+                data: {
+                    labels: DATA.projects.map(p => p.name),
+                    datasets: [
+                        { label: '收入', data: DATA.projects.map(p => p.income), backgroundColor: '#10b981' },
+                        { label: '支出', data: DATA.projects.map(p => p.expense), backgroundColor: '#ef4444' },
+                        { label: '毛利', data: DATA.projects.map(p => p.profit), backgroundColor: '#3b82f6' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        // ===== 初始化 =====
+        document.getElementById('updateDate').textContent = `資料更新：${DATA.updateDate}`;
+        document.getElementById('footer').textContent = `自動產生於 ${DATA.updateDate}`;
+
+        renderSummary();
+        renderStructure();
+        renderMonthlyTable();
+        renderProjectsTable();
+        renderIncomeTable();
+        renderSharingTable();
+        renderCharts();
+    </script>
+</body>
+</html>
