@@ -1176,15 +1176,17 @@
         // 渲染薪資明細
         function renderSalaryDetail(records, period) {
             const container = document.getElementById('salaryDetailContainer');
-            let totalSalary = 0, totalRemote = 0, totalDinner = 0;
+            let totalSalary = 0, totalRemote = 0, totalDinner = 0, totalBonus = 0, totalAdvance = 0;
 
             records.forEach(r => {
                 totalSalary += r.salary || 0;
                 totalRemote += r.remote || 0;
                 totalDinner += r.dinner || 0;
+                totalBonus += r.bonus || 0;
+                totalAdvance += r.advance || 0;
             });
 
-            const grandTotal = totalSalary + totalRemote + totalDinner;
+            const grandTotal = totalSalary + totalRemote + totalDinner + totalBonus + totalAdvance;
             document.getElementById('salaryTotal').textContent = '$' + grandTotal.toLocaleString();
 
             let html = `
@@ -1192,7 +1194,8 @@
                     <div class="salary-detail-header">出勤明細</div>
             `;
 
-            records.forEach(r => {
+            // 出勤紀錄
+            records.filter(r => r.salary > 0).forEach(r => {
                 const rowTotal = (r.salary || 0) + (r.remote || 0) + (r.dinner || 0);
                 html += `
                     <div class="salary-detail-row">
@@ -1225,6 +1228,42 @@
                         <div class="salary-detail-row subtotal">
                             <span class="label">加給小計</span>
                             <span class="value">$${(totalRemote + totalDinner).toLocaleString()}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 獎金明細
+            if (totalBonus > 0) {
+                html += `
+                    <div class="salary-detail-card">
+                        <div class="salary-detail-header" style="background: linear-gradient(135deg, #F39C12, #E67E22);">獎金/津貼</div>
+                `;
+                records.filter(r => r.bonus > 0).forEach(r => {
+                    html += `<div class="salary-detail-row"><span class="label">${r.date} ${r.remark || '獎金'}</span><span class="value">$${r.bonus.toLocaleString()}</span></div>`;
+                });
+                html += `
+                        <div class="salary-detail-row subtotal">
+                            <span class="label">獎金小計</span>
+                            <span class="value">$${totalBonus.toLocaleString()}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 代墊款明細
+            if (totalAdvance > 0) {
+                html += `
+                    <div class="salary-detail-card">
+                        <div class="salary-detail-header" style="background: linear-gradient(135deg, #9B59B6, #8E44AD);">代墊返還</div>
+                `;
+                records.filter(r => r.advance > 0).forEach(r => {
+                    html += `<div class="salary-detail-row"><span class="label">${r.date} ${r.remark || '代墊'}</span><span class="value">$${r.advance.toLocaleString()}</span></div>`;
+                });
+                html += `
+                        <div class="salary-detail-row subtotal">
+                            <span class="label">代墊小計</span>
+                            <span class="value">$${totalAdvance.toLocaleString()}</span>
                         </div>
                     </div>
                 `;

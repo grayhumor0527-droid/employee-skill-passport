@@ -321,6 +321,71 @@ function getSalaryRecords(name, period) {
     });
   }
 
+  // 處理獎金和代墊款（從支出紀錄中查找）
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    var reportType = row[colReportType];
+
+    // 只處理支出報銷紀錄
+    if (reportType !== '支出報銷') continue;
+
+    // 解析日期
+    var dateVal = row[colDate];
+    var recordDate;
+    if (dateVal instanceof Date) {
+      recordDate = dateVal;
+    } else {
+      recordDate = new Date(dateVal);
+    }
+
+    if (isNaN(recordDate.getTime())) continue;
+
+    // 檢查是否在期間內
+    var rYear = recordDate.getFullYear();
+    var rMonth = recordDate.getMonth() + 1;
+    var rDay = recordDate.getDate();
+
+    if (rYear !== year || rMonth !== month) continue;
+    if (rDay < startDay || rDay > endDay) continue;
+
+    // 檢查備註欄是否包含此員工的獎金或代墊
+    var colNote = findColumn(headers, '品項說明');
+    var colAmount = findColumn(headers, '金額');
+    var note = String(row[colNote] || '');
+    var amount = parseFloat(row[colAmount]) || 0;
+
+    // 檢查是否是此員工的獎金或代墊（備註中包含員工姓名）
+    if (note.indexOf(name) >= 0 || note.indexOf('員工獎金(' + name + ')') >= 0) {
+      var project = row[colProject] || '';
+      var isBonus = note.indexOf('獎金') >= 0 || note.indexOf('津貼') >= 0 || note.indexOf('補貼') >= 0;
+      var isAdvance = note.indexOf('代墊') >= 0;
+
+      if (isBonus) {
+        records.push({
+          date: rMonth + '/' + rDay,
+          project: project,
+          hours: 0,
+          salary: 0,
+          remote: 0,
+          dinner: 0,
+          bonus: amount,
+          remark: note
+        });
+      } else if (isAdvance || note.indexOf(name + '代墊') >= 0) {
+        records.push({
+          date: rMonth + '/' + rDay,
+          project: project,
+          hours: 0,
+          salary: 0,
+          remote: 0,
+          dinner: 0,
+          advance: amount,
+          remark: note
+        });
+      }
+    }
+  }
+
   // 依日期排序
   records.sort(function(a, b) {
     var dA = parseInt(a.date.split('/')[1]);
